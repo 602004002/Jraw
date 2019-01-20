@@ -6,9 +6,9 @@
 package frontend;
 
 import common.Session;
+import input.MousePositionListener;
+import input.TabletPenPositionListener;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
@@ -35,26 +35,8 @@ public class Viewport extends JLayeredPane {
 
     private void init() {
         this.setCursor(new RasterCursor());
-        this.addMouseListener(new MouseListener() {
-            // <editor-fold defaultstate="collapsed" desc="Extraneous">
-            @Override
-            public void mouseClicked(MouseEvent e) {}
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            // </editor-fold>
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                //start precise listener thread
-            }
-            @Override
-            public void mouseExited(MouseEvent e) {
-                //kill thread
-            }
-        });
-        //this.addMouseListener(mpl);
-        //this.addMouseMotionListener(mpl);
+        this.addMouseListener(mpl);
+        this.addMouseMotionListener(mpl);
         //this.addMouseWheelListener(mpl);
         this.setBackground(Color.RED);
         session.hierarchy.forEach((JComponent dl) -> {

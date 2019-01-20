@@ -19,20 +19,26 @@ public class RasterCursor extends Cursor {
     //seperate icons for non-drawing tools
     private DrawingTool selectedTool;
     private RasterLayer selectedLayer;
-    private MousePositionListener mpl; //Listens for mouse input
-    private TabletPenPositionListener tppl; //Listens for pen input
+    private boolean drawing;
     private int xpos, ypos;
     private int radius;
 
     public RasterCursor() {
-        super(Cursor.CUSTOM_CURSOR);
+        super(Cursor.CROSSHAIR_CURSOR);
         this.xpos = 0;
         this.ypos = 0;
         this.radius = 10;
+        this.drawing = false;
     }
     
+    /**
+     * Draws on layer by replacing pixels that the cursor overlaps with
+     */
     public void draw () {
-        if (!this.selectedLayer.isVisible()) {
+        if (!this.selectedLayer.isVisible() && !this.drawing) {
+            
+            return;
+        } else if (!this.selectedLayer.isVisible() && this.drawing) {
             return;
         }
         System.out.println("Drawing... @ Cursor on " + this.selectedLayer.getName());
@@ -74,6 +80,12 @@ public class RasterCursor extends Cursor {
         this.radius = radius;
         
     }
-    
-    
+
+    public boolean isDrawing() {
+        return drawing;
+    }
+
+    public void setDrawing(boolean drawing) {
+        this.drawing = drawing;
+    }
 }

@@ -22,10 +22,14 @@ import javax.swing.JTabbedPane;
  */
 public class DocumentPane extends JTabbedPane {
 
-    private ImageIcon CLOSE_ICON;
+    private static final ImageIcon CLOSE_ICON = initCloseIcon();
+
+    private static ImageIcon initCloseIcon() {
+        return new ImageIcon("/resources/icon/close.png");
+    }
 
     public DocumentPane() {
-        CLOSE_ICON = new ImageIcon("/resources/icon/close.png");
+
     }
 
     @Override
