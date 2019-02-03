@@ -19,12 +19,10 @@ import java.awt.event.MouseMotionListener;
 public class MousePositionListener implements MouseMotionListener, MouseListener {
 
     private Viewport sender;
-    private boolean drawing;
     private MouseThread mt;
     private MovementThread mmt;
 
     public MousePositionListener(Viewport sender) {
-        this.drawing = false;
         System.out.println("MousePositionListener(Viewport \"" + sender.getName() + "\")");
         this.sender = sender;
     }
@@ -55,12 +53,12 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
 
     @Override
     public void mouseEntered(MouseEvent e) {
-
         this.checkRun();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        checkMovementRun();
         this.checkRun();
     }
 
@@ -74,24 +72,24 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.drawing = false;
+        this.mt.setDrawing(false);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        this.drawing = true;
+        this.mt.setDrawing(true);
         this.checkRun();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        this.drawing = true;
+        this.mt.setDrawing(true);
         this.checkRun();
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        this.drawing = true;
+        this.mt.setDrawing(true);
         this.checkRun();
 
     }
@@ -108,10 +106,6 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     @Override
     public void mouseExited(MouseEvent e) {
         this.checkTerminate();
-        this.drawing = false;
-    }
-
-    public boolean isDrawing() {
-        return this.drawing;
+        this.mt.setDrawing(false);
     }
 }

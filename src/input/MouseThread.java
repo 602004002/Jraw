@@ -1,7 +1,5 @@
 package input;
 
-import input.MouseThread;
-import java.awt.MouseInfo;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,7 +44,7 @@ public class MouseThread extends Thread {
         } catch (InterruptedException ex) {
             Logger.getLogger(MouseThread.class.getName()).log(Level.SEVERE, null, ex);
         }
-        assert (!killThread) : "Thread should be dead";
+        //assert (!killThread) : "Thread should be dead";
         assert (idleCounter < MouseThread.IDLE_THRESHOLD) : "Thread should have been terminated when reaching threshold";
         this.run();
     }
