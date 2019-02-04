@@ -35,6 +35,7 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
 
     private void checkRun() {
         if (this.mt == null || !this.mt.isAlive() || this.mt.isInterrupted()) {
+            System.out.println("New mouse thread started");
             this.mt = new MouseThread();
             this.mt.start();
         }
@@ -42,11 +43,8 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
 
     private void checkMovementRun() {
         if (this.mmt == null || !this.mmt.isAlive()) {
-            if (this.mmt != null) {
-                System.out.println("mmt thread alive: " + this.mmt.isAlive());
-            }
-            System.out.println("new movement thread started");
-            this.mmt = new MovementThread();
+            System.out.println("New Movement Thread started");
+            this.mmt = new MovementThread(this.mt);
             this.mmt.start();
         }
     }
@@ -60,6 +58,7 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     public void mouseMoved(MouseEvent e) {
         checkMovementRun();
         this.checkRun();
+        this.mmt.resetCounter();
     }
 
     /*
@@ -72,24 +71,25 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
      */
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.mt.setDrawing(false);
+        this.mt.setHolding(false);
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        this.mt.setDrawing(true);
+        this.mt.setHolding(true);
         this.checkRun();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        this.mt.setDrawing(true);
+        this.mt.setHolding(true);
         this.checkRun();
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        this.mt.setDrawing(true);
+        this.mt.setHolding(true);
+        this.mt.setMoving(true);
         this.checkRun();
 
     }
@@ -106,6 +106,6 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     @Override
     public void mouseExited(MouseEvent e) {
         this.checkTerminate();
-        this.mt.setDrawing(false);
+        this.mt.setHolding(false);
     }
 }

@@ -5,18 +5,20 @@ import java.util.logging.Logger;
 
 public class MovementThread extends Thread {
 
-    public static final short MOVEMENT_THRESHOLD = 2;
+    public static final short MOVEMENT_THRESHOLD = 50;
     private short movingCounter;
-    private boolean isMoving;
+    //private boolean isMoving;
+    private MouseThread mt;
 
-    public MovementThread() {
+    public MovementThread(MouseThread mt) {
+        super("MovementThread");
+        this.mt = mt;
         this.movingCounter = MovementThread.MOVEMENT_THRESHOLD;
     }
 
     @Override
     public void run() {
         if (movingCounter > 0) {
-            this.isMoving = true;
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ex) {
@@ -25,16 +27,16 @@ public class MovementThread extends Thread {
             movingCounter--;
             this.run();
         } else if (movingCounter <= 0) {
-            this.isMoving = false;
-            System.out.println("Moving == " + movingCounter);
+            //this.isMoving = false;
+            this.mt.setMoving(false);
+            this.mt.queueKillThread();
+            System.out.println("Movement thread stop!");
         }
     }
 
     public void resetCounter() {
         this.movingCounter = MovementThread.MOVEMENT_THRESHOLD;
-    }
-
-    public boolean isMoving() {
-        return this.isMoving;
+        this.mt.setMoving(true);
+        //this.isMoving = true;
     }
 }
