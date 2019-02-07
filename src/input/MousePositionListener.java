@@ -27,16 +27,10 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
         this.sender = sender;
     }
 
-    private void checkTerminate() {
-        if (this.mt.isAlive()) {
-            this.mt.queueKillThread();
-        }
-    }
-
     private void checkRun() {
         if (this.mt == null || !this.mt.isAlive() || this.mt.isInterrupted()) {
             System.out.println("New mouse thread started");
-            this.mt = new MouseThread();
+            this.mt = new MouseThread(this.mmt);
             this.mt.start();
         }
     }
@@ -44,13 +38,17 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     private void checkMovementRun() {
         if (this.mmt == null || !this.mmt.isAlive()) {
             System.out.println("New Movement Thread started");
-            this.mmt = new MovementThread(this.mt);
+            this.mmt = new MovementThread();
+            if (this.mt != null) {
+                this.mt.setMmt(this.mmt);
+            }
             this.mmt.start();
         }
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        checkMovementRun();
         this.checkRun();
     }
 
@@ -77,19 +75,21 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     @Override
     public void mouseClicked(MouseEvent e) {
         this.mt.setHolding(true);
+        checkMovementRun();
         this.checkRun();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
         this.mt.setHolding(true);
+        checkMovementRun();
         this.checkRun();
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
         this.mt.setHolding(true);
-        this.mt.setMoving(true);
+        checkMovementRun();
         this.checkRun();
 
     }
@@ -105,7 +105,6 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
 
     @Override
     public void mouseExited(MouseEvent e) {
-        this.checkTerminate();
         this.mt.setHolding(false);
     }
 }

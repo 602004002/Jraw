@@ -8,27 +8,33 @@ public class MouseThread extends Thread {
     /**
      * Should match mouse DPI
      */
-    private boolean killThread;
+    //private boolean killThread;
     private boolean holding;
-    private boolean moving;
-    public MouseThread() {
+    private MovementThread mmt;
+
+    public void setMmt(MovementThread mmt) {
+        this.mmt = mmt;
+    }
+    
+    public MouseThread(MovementThread mmt) {
         super("MouseThread");
+        this.mmt = mmt;
     }
 
     @Override
     public void run() {
         //System.out.println("MouseThread Loop run " + idleCounter);
         //assert (!killThread) : "Thread is queued to be killed";
-        System.out.println("");
-        if (holding && moving) {
+        //System.out.println("");
+        //if (killThread) {
+        if(!this.mmt.isAlive()) {
+            System.out.println("Mouse Thread stop!");
+            return;
+        }
+        if (holding) {
             //this.sender.getDrawingCursor().draw();
             //draw(new Point()); //get point relative to canvas
-            System.out.println("Drawing...");
-        }
-        if (killThread) {
-            System.out.println("Mouse Thread interrupted");
-            this.interrupt();
-            return;
+            //System.out.println("Drawing...");
         }
         try {
             Thread.sleep(1);
@@ -40,13 +46,5 @@ public class MouseThread extends Thread {
 
     public void setHolding(boolean holding) {
         this.holding = holding;
-    }
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
-    public void queueKillThread() {
-        this.killThread = true;
     }
 }

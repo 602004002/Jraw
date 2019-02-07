@@ -5,14 +5,11 @@ import java.util.logging.Logger;
 
 public class MovementThread extends Thread {
 
-    public static final short MOVEMENT_THRESHOLD = 50;
+    public static final short MOVEMENT_THRESHOLD = 200;
     private short movingCounter;
-    //private boolean isMoving;
-    private MouseThread mt;
 
-    public MovementThread(MouseThread mt) {
+    public MovementThread() {
         super("MovementThread");
-        this.mt = mt;
         this.movingCounter = MovementThread.MOVEMENT_THRESHOLD;
     }
 
@@ -27,16 +24,11 @@ public class MovementThread extends Thread {
             movingCounter--;
             this.run();
         } else if (movingCounter <= 0) {
-            //this.isMoving = false;
-            this.mt.setMoving(false);
-            this.mt.queueKillThread();
             System.out.println("Movement thread stop!");
         }
     }
 
     public void resetCounter() {
         this.movingCounter = MovementThread.MOVEMENT_THRESHOLD;
-        this.mt.setMoving(true);
-        //this.isMoving = true;
     }
 }
