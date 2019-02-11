@@ -76,6 +76,7 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     public void mouseClicked(MouseEvent e) {
         this.mt.setHolding(true);
         checkMovementRun();
+        this.mmt.resetCounter();
         this.checkRun();
     }
 
@@ -83,6 +84,7 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     public void mousePressed(MouseEvent e) {
         this.mt.setHolding(true);
         checkMovementRun();
+        this.mmt.resetCounter();
         this.checkRun();
     }
 
@@ -90,6 +92,7 @@ public class MousePositionListener implements MouseMotionListener, MouseListener
     public void mouseDragged(MouseEvent e) {
         this.mt.setHolding(true);
         checkMovementRun();
+        this.mmt.resetCounter();
         this.checkRun();
 
     }

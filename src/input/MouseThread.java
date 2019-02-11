@@ -12,10 +12,6 @@ public class MouseThread extends Thread {
     private boolean holding;
     private MovementThread mmt;
 
-    public void setMmt(MovementThread mmt) {
-        this.mmt = mmt;
-    }
-    
     public MouseThread(MovementThread mmt) {
         super("MouseThread");
         this.mmt = mmt;
@@ -23,28 +19,27 @@ public class MouseThread extends Thread {
 
     @Override
     public void run() {
-        //System.out.println("MouseThread Loop run " + idleCounter);
-        //assert (!killThread) : "Thread is queued to be killed";
-        //System.out.println("");
-        //if (killThread) {
-        if(!this.mmt.isAlive()) {
-            System.out.println("Mouse Thread stop!");
-            return;
+        while (this.mmt.isAlive()) {
+            assert (this.mmt != null) : "Why is the movement thread null?";
+            if (holding) {
+                //this.sender.getDrawingCursor().draw();
+                //draw(new Point()); //get point relative to canvas
+                System.out.println("Drawing...");
+            }
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MouseThread.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
-        if (holding) {
-            //this.sender.getDrawingCursor().draw();
-            //draw(new Point()); //get point relative to canvas
-            //System.out.println("Drawing...");
-        }
-        try {
-            Thread.sleep(1);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(MouseThread.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        this.run();
+        System.out.println("Mouse Thread stop!");
     }
 
     public void setHolding(boolean holding) {
         this.holding = holding;
+    }
+
+    public void setMmt(MovementThread mmt) {
+        this.mmt = mmt;
     }
 }

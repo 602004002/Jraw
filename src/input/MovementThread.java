@@ -15,17 +15,16 @@ public class MovementThread extends Thread {
 
     @Override
     public void run() {
-        if (movingCounter > 0) {
+        while (movingCounter > 0) {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ex) {
                 Logger.getLogger(MousePositionListener.class.getName()).log(Level.SEVERE, null, ex);
             }
             movingCounter--;
-            this.run();
-        } else if (movingCounter <= 0) {
-            System.out.println("Movement thread stop!");
         }
+        System.out.println("Movement thread stop!");
+
     }
 
     public void resetCounter() {
