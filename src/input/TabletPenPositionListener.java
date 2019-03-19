@@ -5,7 +5,7 @@
  */
 package input;
 
-import frontend.Viewport;
+import frontend.LayerViewport;
 
 /**
  *
@@ -14,7 +14,7 @@ import frontend.Viewport;
 public class TabletPenPositionListener {
     private int pressure, xpos, ypos;
 
-    public TabletPenPositionListener(Viewport aThis) {
+    public TabletPenPositionListener(LayerViewport aThis) {
         
     }
     

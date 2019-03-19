@@ -5,9 +5,8 @@
  */
 package frontend.subforms.newfile;
 
-import common.Session;
-import frontend.Viewport;
-import javax.swing.JTabbedPane;
+import frontend.subforms.newfile.FileController.NewFileFormOK;
+import java.awt.event.KeyEvent;
 
 /**
  *
@@ -15,14 +14,16 @@ import javax.swing.JTabbedPane;
  */
 public class NewFileForm extends javax.swing.JFrame {
 
-    private JTabbedPane jtp;
+    private final FileController fc;
+    private NewFileFormOK nffo;
 
     /**
      * Creates new form NewFileForm
      */
-    public NewFileForm(JTabbedPane jtp) {
-        this.jtp = jtp;
+    public NewFileForm(FileController fc) {
+        this.fc = fc;
         initComponents();
+        initHandlers();
     }
 
     /**
@@ -88,11 +89,6 @@ public class NewFileForm extends javax.swing.JFrame {
 
         okButton.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         okButton.setText("OK");
-        okButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                okButtonActionPerformed(evt);
-            }
-        });
 
         cancelButton.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         cancelButton.setText("Cancel");
@@ -105,6 +101,11 @@ public class NewFileForm extends javax.swing.JFrame {
         typeBox.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(common.DrawingType.values()));
         typeBox.setEditor(null);
+        typeBox.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                typeBoxKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -162,40 +163,34 @@ public class NewFileForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void initHandlers() {
+        this.nffo = fc.new NewFileFormOK(this);
+        this.okButton.addActionListener(nffo);
+    }
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-        Session s = new Session(this.filenameField.getText(),
-                (common.DrawingType) this.typeBox.getSelectedItem(),
-                (Integer) this.illustrationPanel.resolutionSpinner.getValue(),
-                (Integer) this.illustrationPanel.widthSpinner.getValue(),
-                (Integer) this.illustrationPanel.heightSpinner.getValue());
-        if (this.illustrationPanel.enableBackgroundColor.isSelected()) {
-            s.initWorkspace(this.illustrationPanel.backgroundColor.getBackground());
-        } else {
-            s.initWorkspace();
+    private void typeBoxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_typeBoxKeyReleased
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            nffo.actionPerformed(null);
         }
-        Viewport vp = new Viewport(s);
-        jtp.add(vp);
-        jtp.setSelectedComponent(vp);
-        this.dispose();
-    }//GEN-LAST:event_okButtonActionPerformed
+    }//GEN-LAST:event_typeBoxKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton deletePresetButton;
-    private javax.swing.JTextField filenameField;
+    public javax.swing.JTextField filenameField;
     public frontend.subforms.newfile.IllustrationPanel illustrationPanel;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JButton okButton;
     private javax.swing.JButton openButton;
     private javax.swing.JComboBox<String> presetBox;
     private javax.swing.JButton savePresetButton;
-    private javax.swing.JComboBox<common.DrawingType> typeBox;
+    public javax.swing.JComboBox<common.DrawingType> typeBox;
     private javax.swing.JPanel typePanel;
     // End of variables declaration//GEN-END:variables
 }

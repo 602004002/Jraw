@@ -6,7 +6,7 @@
 package layer.buffer;
 
 import java.util.ArrayList;
-import tools.vector.ControlPoint;
+import tools.vector.VectorPoint;
 
 /**
  *
@@ -14,6 +14,6 @@ import tools.vector.ControlPoint;
  */
 public class VectorChange extends LayerChange {
     public VectorChange () {
-        this.al = new ArrayList<ControlPoint>();
+        this.al = new ArrayList<VectorPoint>();
     }
 }

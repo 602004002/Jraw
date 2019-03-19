@@ -5,19 +5,25 @@
  */
 package common;
 
+import frontend.layerlist.LayerList;
+import frontend.layerlist.LayerListCell;
 import layer.LayerSettings;
 import layer.RasterLayer;
 import layer.buffer.ChangeBuffer;
 import frontend.toolbar.ColorPalette;
 import java.awt.Color;
 import java.util.ArrayList;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JComponent;
+import javax.swing.SwingConstants;
 
 /**
  *
  * @author nickz
  */
-public class Session {
+public class SessionModel {
     //this class is like a live file
 
     //keep a base image of commited changes
@@ -28,15 +34,18 @@ public class Session {
     public ChangeBuffer bf;
     private int resolution, width, height; //in pixels
     public final ArrayList<JComponent> hierarchy;
+    private int[] selectedLayerIndexes;
+    private LayerListCell[] cells;
 
     public ColorPalette cp;
+    public LayerList layerList;
 
-    public Session(String name,
+    public SessionModel(String name,
             DrawingType dt,
             int resolution,
             int xsize,
-            int ysize) {
-        System.out.println("Session()");
+            int ysize,
+            LayerList ll) {
         this.name = name;
         this.dt = dt;
         this.saved = false;
@@ -46,8 +55,8 @@ public class Session {
         this.saved = false;
         this.hierarchy = new ArrayList<>();
         this.cp = new ColorPalette();
+        this.layerList = ll;
     }
-
     public void initWorkspace(Color backgroundColor) {
         System.out.println("initWorkspace(Color) buffer 30");
         this.bf = new ChangeBuffer(30);
@@ -55,13 +64,23 @@ public class Session {
         this.hierarchy.add(new RasterLayer("Paper", this, ls1));
         this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
     }
-
     public void initWorkspace() {
         System.out.println("initWorkspace() buffer 30");
         this.bf = new ChangeBuffer(30);
         this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
     }
 
+    public void updateCells() {
+        this.cells = null;
+        int size = this.hierarchy.size();
+        this.cells = new LayerListCell[size];
+        for (int i = size - 1; i >= 0; i--) {
+            LayerListCell llc = new LayerListCell(this.hierarchy.get(i),
+                    this.layerList);
+            this.cells[i] = llc;
+        }
+    }
+    
     public String getName() {
         return name;
     }
@@ -94,20 +113,32 @@ public class Session {
         this.resolution = resolution;
     }
 
-    public int getCanvasWidth() {
+    public int getWidth() {
         return width;
     }
 
-    public void setXsize(int xsize) {
-        this.width = xsize;
+    public void setWidth(int width) {
+        this.width = width;
     }
 
-    public int getCanvasHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setYsize(int ysize) {
+    public void setHeight(int ysize) {
         this.height = ysize;
+    }
+
+    public int[] getSelectedLayerIndexes() {
+        return this.selectedLayerIndexes;
+    }
+
+    public void setSelectedLayerIndices(int[] indexes) {
+        this.selectedLayerIndexes = indexes;
+    }
+    
+    public int getLayerCount() {
+        return this.hierarchy.size();
     }
 
     public ColorPalette getColorPalette() {
@@ -124,6 +155,13 @@ public class Session {
 
     public void redo() {
 
+    }
+    
+    @Override
+    public String toString() {
+        return "Session: " + this.name
+                + "\n Width: " + this.width
+                + "\n Height: " + this.height;
     }
 
 }

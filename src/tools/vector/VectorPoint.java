@@ -9,7 +9,7 @@ package tools.vector;
  *
  * @author nickz
  */
-public class ControlPoint {
+public class VectorPoint {
 
     private int xsize, ysize, xpos, ypos;
 

@@ -5,7 +5,7 @@
  */
 package layer;
 
-import common.Session;
+import common.SessionModel;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -19,11 +19,11 @@ public class RasterLayerOld extends JLabel // implements DrawingLayer
 
     private LayerSettings layerSettings;
     private BufferedImage data;
-    private Session s;
+    private SessionModel s;
     private String name;
 
-    public RasterLayerOld(String name, Session s, LayerSettings layerSettings) {
-        this.data = new BufferedImage(s.getCanvasWidth(), s.getCanvasHeight(), BufferedImage.TYPE_INT_ARGB);
+    public RasterLayerOld(String name, SessionModel s, LayerSettings layerSettings) {
+        this.data = new BufferedImage(s.getWidth(), s.getHeight(), BufferedImage.TYPE_INT_ARGB);
         this.setIcon(new ImageIcon(this.data));
         this.name = name;
         this.s = s;

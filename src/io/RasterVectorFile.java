@@ -5,7 +5,7 @@
  */
 package io;
 
-import common.Session;
+import common.SessionModel;
 
 /**
  *
@@ -13,7 +13,7 @@ import common.Session;
  */
 public class RasterVectorFile {
 
-    private Session s; //aggregated object
+    private SessionModel s; //aggregated object
 
     public void save() {
 

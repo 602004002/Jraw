@@ -1,45 +1,59 @@
 package input;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import frontend.LayerViewport;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import layer.RasterLayer;
 
 public class MouseThread extends Thread {
 
     /**
      * Should match mouse DPI
      */
-    //private boolean killThread;
+    public static final short MOVEMENT_THRESHOLD = 200;
     private boolean holding;
-    private MovementThread mmt;
+    private int movingCounter;
+    private LayerViewport sender;
+    private BasicStroke bs;
+    private Point old;
 
-    public MouseThread(MovementThread mmt) {
+    public MouseThread(LayerViewport sender) {
         super("MouseThread");
-        this.mmt = mmt;
+        movingCounter = MouseThread.MOVEMENT_THRESHOLD;
+        this.sender = sender;
+        this.bs = new BasicStroke(5f);
     }
 
     @Override
     public void run() {
-        while (this.mmt.isAlive()) {
-            assert (this.mmt != null) : "Why is the movement thread null?";
-            if (holding) {
-                //this.sender.getDrawingCursor().draw();
-                //draw(new Point()); //get point relative to canvas
-                System.out.println("Drawing...");
+        while (movingCounter > 0) {
+            final Point p = this.sender.getVp().getMousePosition(true);
+            if (holding && p != null && old != null) {
+                //dirty code
+                RasterLayer get = (RasterLayer) this.sender.getSession().hierarchy.get(0);
+                //get from layerlist
+                Graphics2D g2d = (Graphics2D) get.getImg().createGraphics();
+                g2d.setColor(Color.BLACK);
+                g2d.setStroke(this.bs);
+                g2d.drawLine(old.x, old.y, p.x, p.y);
+                //g2d.fillRect(p.x, p.y, 10, 2);
+                g2d.dispose();
+
+                get.repaint();
             }
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(MouseThread.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            movingCounter--;
+            old = p;
         }
-        System.out.println("Mouse Thread stop!");
+        //System.out.println("Mouse Thread stop!");
+    }
+
+    public void resetCounter() {
+        this.movingCounter = MouseThread.MOVEMENT_THRESHOLD;
     }
 
     public void setHolding(boolean holding) {
         this.holding = holding;
-    }
-
-    public void setMmt(MovementThread mmt) {
-        this.mmt = mmt;
     }
 }

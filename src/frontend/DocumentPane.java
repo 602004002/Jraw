@@ -6,10 +6,7 @@
 package frontend;
 
 import java.awt.Component;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.Dimension;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -22,34 +19,52 @@ import javax.swing.JTabbedPane;
  */
 public class DocumentPane extends JTabbedPane {
 
-    private static final ImageIcon CLOSE_ICON = initCloseIcon();
+    private static final ImageIcon CLOSE_ICON;
+    private final ModelViewController mvc;
 
-    private static ImageIcon initCloseIcon() {
-        return new ImageIcon("/resources/icon/close.png");
+    static {
+        CLOSE_ICON = new ImageIcon(
+                DocumentPane.class.getResource("/frontend/close.png"));
     }
-
+    
     public DocumentPane() {
-
+        this.mvc = new ModelViewController();
+        init();
+    }
+    
+    public DocumentPane(ModelViewController mvc) {
+        this.mvc = mvc;
+        init();
+    }
+    
+    private void init() {
+        this.addChangeListener(this.mvc.new UpdateSelectedTab());
+        this.addContainerListener(this.mvc.new TabContainerListener());
     }
 
     @Override
     public Component add(Component component) {
         super.add(component);
-        JPanel jp = new JPanel();
-        jp.add(new JLabel(component.getName()));
-        JButton close = new JButton();
-        if (CLOSE_ICON != null) {
-            close.setIcon(this.CLOSE_ICON);
-        } else {
-            try {
-                System.out.println(new File("resources/icon/close.png").getCanonicalPath());
-            } catch (IOException ex) {
-                Logger.getLogger(DocumentPane.class.getName()).log(Level.SEVERE, null, ex);
-            }
+        int index = this.indexOfComponent(component);
+        if (index < 0) {
+            return component;
         }
-        jp.add(close);
-        System.out.println("Tab Count: " + this.getTabCount());
-        this.setTabComponentAt(this.getTabCount() - 1, jp);
+        JPanel namePlusCloseBtn = new JPanel();
+        JLabel name = new JLabel(component.getName());
+        JButton closeBtn = new JButton();
+        closeBtn.addActionListener(
+                this.mvc.new TabCloseAction((LayerViewport) component));
+        if (CLOSE_ICON != null) {
+            closeBtn.setIcon(DocumentPane.CLOSE_ICON);
+            closeBtn.setBorder(null);
+            Dimension tt = new Dimension(16, 16);
+            closeBtn.setPreferredSize(tt);
+            closeBtn.setMaximumSize(tt);
+        }
+        namePlusCloseBtn.add(name);
+        namePlusCloseBtn.add(closeBtn);
+        this.setTabComponentAt(index, namePlusCloseBtn);
         return component;
     }
+
 }

@@ -5,22 +5,33 @@
  */
 package frontend;
 
+import common.SessionModel;
+
 /**
  *
  * @author nickz
  */
 public class MainView extends javax.swing.JFrame {
 
-    private final MenuController controller;
+    private final ModelViewController controller;
+    private Model model;
 
     /**
      * Creates new form MainView
      *
      * @param controller A reference to the control logic for this view.
+     * @param model A reference to the model
      */
-    public MainView(MenuController controller) {
+    public MainView(ModelViewController controller, Model model) {
         this.controller = controller;
-        System.out.println("MainView()");
+        this.model = model;
+        initComponents();
+        initHandlers();
+    }
+    
+    public MainView() {
+        this.controller = new ModelViewController();
+        this.model = new Model();
         initComponents();
         initHandlers();
     }
@@ -39,7 +50,8 @@ public class MainView extends javax.swing.JFrame {
         subToolbarSplitPane = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        documentTabbedPane = new frontend.DocumentPane();
+        documentTabbedPane = new frontend.DocumentPane(this.controller);
+        layerList = new frontend.layerlist.LayerList();
         mainMenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newMenuItem = new javax.swing.JMenuItem();
@@ -120,7 +132,7 @@ public class MainView extends javax.swing.JFrame {
         toolbar.setToolTipText("");
         toolbar.setFocusable(false);
         toolbar.setMinimumSize(new java.awt.Dimension(40, 40));
-        toolbar.setPreferredSize(new java.awt.Dimension(40, 0));
+        toolbar.setPreferredSize(new java.awt.Dimension(40, 10));
 
         subToolbarSplitPane.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         subToolbarSplitPane.setDividerLocation(super.getSize().height / 2);
@@ -133,7 +145,7 @@ public class MainView extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 87, Short.MAX_VALUE)
+            .addGap(0, 129, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -148,35 +160,40 @@ public class MainView extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 87, Short.MAX_VALUE)
+            .addGap(0, 129, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 619, Short.MAX_VALUE)
+            .addGap(0, 637, Short.MAX_VALUE)
         );
 
         subToolbarSplitPane.setRightComponent(jPanel2);
 
-        documentTabbedPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEtchedBorder(javax.swing.border.EtchedBorder.RAISED)));
+        documentTabbedPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED)));
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
         mainPanel.setLayout(mainPanelLayout);
         mainPanelLayout.setHorizontalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
+                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 990, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 1027, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(subToolbarSplitPane)
             .addComponent(documentTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         mainMenuBar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -198,7 +215,7 @@ public class MainView extends javax.swing.JFrame {
         recentMenu.setText("Recent Files");
         recentMenu.add(jSeparator11);
 
-        recentClearMenuItem.setText("Clear Recent FIles");
+        recentClearMenuItem.setText("Clear Recent Files");
         recentMenu.add(recentClearMenuItem);
 
         fileMenu.add(recentMenu);
@@ -386,12 +403,15 @@ public class MainView extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1381, Short.MAX_VALUE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
 
@@ -400,6 +420,21 @@ public class MainView extends javax.swing.JFrame {
     private void initHandlers() {
         this.newMenuItem.addActionListener(controller.new NewFileAction());
         this.quitMenuItem.addActionListener(controller.new QuitAction());
+    }
+    
+    public void updateDocumentPane() {
+        DocumentPane dp = this.documentTabbedPane;
+        int slSize = model.sessionList.size();
+        int dpSize = dp.getTabCount();
+        if (slSize > dpSize) {
+            for (int i = dpSize; i < slSize; i++) {
+                SessionModel s = model.sessionList.get(i);
+                String name = s.getName();
+                LayerViewport lvp = new LayerViewport(s);
+                lvp.setName(name);
+                dp.add(lvp);
+            }
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -445,6 +480,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator7;
     private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JPopupMenu.Separator jSeparator9;
+    public frontend.layerlist.LayerList layerList;
     private javax.swing.JMenu layerMenu;
     private javax.swing.JMenuItem layerPropertiesMenuItem;
     private javax.swing.JMenuBar mainMenuBar;

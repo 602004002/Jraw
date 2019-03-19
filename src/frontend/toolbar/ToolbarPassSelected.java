@@ -9,6 +9,6 @@ package frontend.toolbar;
  *
  * @author nickz
  */
-public interface ToolbarPassSelected {
-    public void pass(ToolButton dt);
+interface ToolbarPassSelected {
+    void pass(ToolButton selected);
 }

@@ -5,8 +5,10 @@
  */
 package runner;
 
+import frontend.MainView;
 import layer.LayerSettings;
-import frontend.MenuController;
+import frontend.ModelViewController;
+import frontend.Model;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +32,13 @@ public class Main {
             System.out.println("Main program thread started");
             try {
                 rl.join();
-                MenuController c = new MenuController();
+                ModelViewController mc = new ModelViewController();
+                Model m = new Model();
+                MainView mv = new MainView(mc, m);
+                mc.setMainView(mv);
+                mc.setModel(m);
+                mv.setVisible(true);
+                System.out.println("MainView Open");
             } catch (InterruptedException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Failed to join ResourceLoader thread");

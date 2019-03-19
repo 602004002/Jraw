@@ -5,7 +5,7 @@
  */
 package layer;
 
-import common.Session;
+import common.SessionModel;
 
 /**
  *
@@ -15,7 +15,7 @@ public class VectorLayer {
     
     private String name;
 
-    public VectorLayer(String name, Session s, LayerSettings ls) {
+    public VectorLayer(String name, SessionModel s, LayerSettings ls) {
         this.name = name;
     }
 

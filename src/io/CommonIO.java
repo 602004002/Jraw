@@ -5,25 +5,48 @@
  */
 package io;
 
-import common.Session;
+import common.SessionModel;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author nickz
  */
 public class CommonIO {
-    private Session s;
     
-    public Image render () {//render to a single image
+    public enum ImageType {
+        BMP, JPEG, PNG, TIFF, Targa, PSD
+    }
+    private SessionModel s;
+    
+    public Image render() {//render to a single image
         return null;
         
     }
-    public void export(String type) {//change to enum for formats
-        
+    
+    public void export(ImageType type) {//change to enum for formats
+
     }
     
-    public void importImage(String type) {
-    
+    public Image importImage(String path, ImageType type) throws IOException {
+        BufferedImage ret = null;
+        switch (type) {
+            case BMP:
+            case JPEG:
+            case PNG:
+                ret = ImageIO.read(new File(path));
+                break;
+            case TIFF:
+            case Targa:
+            case PSD:
+            default:
+            
+        }
+        
+        return ret;
     }
 }
