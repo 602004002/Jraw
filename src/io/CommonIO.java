@@ -6,47 +6,69 @@
 package io;
 
 import common.SessionModel;
-import java.awt.Image;
+import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import layer.RasterLayer;
+import layer.VectorLayer;
 
 /**
  *
  * @author nickz
  */
 public class CommonIO {
-    
-    public enum ImageType {
-        BMP, JPEG, PNG, TIFF, Targa, PSD
+
+    public static BufferedImage render(SessionModel sm) {//render to a single image
+        Dimension size = sm.getSize();
+        BufferedImage ri = new BufferedImage(size.width, size.width,
+                BufferedImage.TYPE_INT_ARGB);
+        Graphics g = ri.getGraphics();
+        sm.hierarchy.forEach((JComponent layer) ->{
+            if (layer instanceof RasterLayer) {
+                g.drawImage(((RasterLayer) layer).getImg(), 0, 0, layer);
+            }
+            if (layer instanceof VectorLayer) {
+                throw new UnsupportedOperationException("VectorLayer is not implemented yet.");
+            }
+        });
+        g.dispose();
+        return ri;
     }
-    private SessionModel s;
-    
-    public Image render() {//render to a single image
-        return null;
+
+    public static void export(SessionModel sm, File path, ImageType type) throws IOException {
+        BufferedImage bi = render(sm);
+        System.out.println(type + "");
+        ImageIO.write(bi, type + "", path);
+    }
+
+    public static void saveProprieteryFormat(SessionModel sm, File path) throws IOException, FileExistsException {
+        System.out.println(path);
+        if (path.exists()) {
+            throw new FileExistsException("File exists");
+        }
         
     }
-    
-    public void export(ImageType type) {//change to enum for formats
 
-    }
-    
-    public Image importImage(String path, ImageType type) throws IOException {
+    public static BufferedImage importImage(File path, ImageType type) throws IOException {
         BufferedImage ret = null;
         switch (type) {
-            case BMP:
             case JPEG:
             case PNG:
-                ret = ImageIO.read(new File(path));
+                System.out.println(path);
+                ret = ImageIO.read(path);
                 break;
+            case GIF:
             case TIFF:
             case Targa:
             case PSD:
             default:
-            
+
         }
-        
+
         return ret;
     }
 }

@@ -5,19 +5,13 @@
  */
 package common;
 
-import frontend.layerlist.LayerList;
-import frontend.layerlist.LayerListCell;
 import layer.LayerSettings;
 import layer.RasterLayer;
 import layer.buffer.ChangeBuffer;
-import frontend.toolbar.ColorPalette;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.util.ArrayList;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.JComponent;
-import javax.swing.SwingConstants;
 
 /**
  *
@@ -29,58 +23,78 @@ public class SessionModel {
     //keep a base image of commited changes
     //private drawinglayer
     private String name;
-    private DrawingType dt;
+    private DrawingType drawingType;
     private boolean saved; //based on buffer changes
-    public ChangeBuffer bf;
-    private int resolution, width, height; //in pixels
+    public final ChangeBuffer changeBuffer;
+    private Dimension size;
+    private int resolution; //in pixels
+    private int framerate;
     public final ArrayList<JComponent> hierarchy;
     private int[] selectedLayerIndexes;
-    private LayerListCell[] cells;
 
-    public ColorPalette cp;
-    public LayerList layerList;
-
-    public SessionModel(String name,
-            DrawingType dt,
-            int resolution,
-            int xsize,
-            int ysize,
-            LayerList ll) {
-        this.name = name;
-        this.dt = dt;
+    private SessionModel(Builder sb) {
+        System.out.println("SessionModel(Builder)");
+        this.name = sb.name;
+        this.drawingType = sb.dt;
         this.saved = false;
-        this.resolution = resolution;
-        this.width = xsize;
-        this.height = ysize;
-        this.saved = false;
+        this.size = sb.size;
+        this.resolution = sb.resolution;
+        this.framerate = sb.framerate;
+        this.changeBuffer = new ChangeBuffer(30);
         this.hierarchy = new ArrayList<>();
-        this.cp = new ColorPalette();
-        this.layerList = ll;
-    }
-    public void initWorkspace(Color backgroundColor) {
-        System.out.println("initWorkspace(Color) buffer 30");
-        this.bf = new ChangeBuffer(30);
-        LayerSettings ls1 = new LayerSettings(backgroundColor);
-        this.hierarchy.add(new RasterLayer("Paper", this, ls1));
-        this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
-    }
-    public void initWorkspace() {
-        System.out.println("initWorkspace() buffer 30");
-        this.bf = new ChangeBuffer(30);
-        this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
-    }
-
-    public void updateCells() {
-        this.cells = null;
-        int size = this.hierarchy.size();
-        this.cells = new LayerListCell[size];
-        for (int i = size - 1; i >= 0; i--) {
-            LayerListCell llc = new LayerListCell(this.hierarchy.get(i),
-                    this.layerList);
-            this.cells[i] = llc;
+        if (sb.backgroundColor != null) {
+            LayerSettings ls1 = new LayerSettings(sb.backgroundColor);
+            this.hierarchy.add(new RasterLayer("Paper", this, ls1));
+            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+        } else {
+            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
         }
     }
-    
+
+    public static class Builder {
+
+        private String name;
+        private DrawingType dt;
+        private Dimension size;
+        private int resolution; //in pixels
+        private int framerate;
+        private Color backgroundColor;
+
+        public Builder name(final String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder drawingType(final DrawingType dt) {
+            this.dt = dt;
+            return this;
+        }
+
+        public Builder size(final Dimension size) {
+            this.size = size;
+            return this;
+        }
+
+        public Builder resolution(final int resolution) {
+            this.resolution = resolution;
+            return this;
+        }
+
+        public Builder backgroundColor(final Color backgroundColor) {
+            this.backgroundColor = backgroundColor;
+            return this;
+        }
+
+        public Builder framerate(final int framerate) {
+            this.framerate = framerate;
+            return this;
+        }
+
+        public SessionModel build() {
+            return new SessionModel(this);
+        }
+    }
+
     public String getName() {
         return name;
     }
@@ -90,11 +104,11 @@ public class SessionModel {
     }
 
     public DrawingType getDrawingType() {
-        return dt;
+        return drawingType;
     }
 
     public void setDrawingType(DrawingType dt) {
-        this.dt = dt;
+        this.drawingType = dt;
     }
 
     public boolean isSaved() {
@@ -113,40 +127,37 @@ public class SessionModel {
         this.resolution = resolution;
     }
 
-    public int getWidth() {
-        return width;
+    public Dimension getSize() {
+        return this.size;
     }
 
-    public void setWidth(int width) {
-        this.width = width;
+    public void setSize(Dimension size) {
+        this.size = size;
     }
 
-    public int getHeight() {
-        return height;
+    public int getFramerate() {
+        return framerate;
     }
 
-    public void setHeight(int ysize) {
-        this.height = ysize;
+    public void setFramerate(int framerate) {
+        this.framerate = framerate;
     }
 
     public int[] getSelectedLayerIndexes() {
         return this.selectedLayerIndexes;
     }
 
+    /**
+     * NOT meant to be used elsewhere other than controllers
+     *
+     * @param indexes Indexes to be selected
+     */
     public void setSelectedLayerIndices(int[] indexes) {
         this.selectedLayerIndexes = indexes;
     }
-    
+
     public int getLayerCount() {
         return this.hierarchy.size();
-    }
-
-    public ColorPalette getColorPalette() {
-        return cp;
-    }
-
-    public void setColorPalette(ColorPalette cp) {
-        this.cp = cp;
     }
 
     public void undo() {
@@ -156,12 +167,12 @@ public class SessionModel {
     public void redo() {
 
     }
-    
+
     @Override
     public String toString() {
         return "Session: " + this.name
-                + "\n Width: " + this.width
-                + "\n Height: " + this.height;
+                + "\n Width: " + this.size.width
+                + "\n Height: " + this.size.height;
     }
 
 }

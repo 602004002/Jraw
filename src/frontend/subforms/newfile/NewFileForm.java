@@ -5,8 +5,8 @@
  */
 package frontend.subforms.newfile;
 
-import frontend.subforms.newfile.FileController.NewFileFormOK;
-import java.awt.event.KeyEvent;
+import frontend.subforms.newfile.NewSessionController.NewFileFormOK;
+import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -14,16 +14,16 @@ import java.awt.event.KeyEvent;
  */
 public class NewFileForm extends javax.swing.JFrame {
 
-    private final FileController fc;
+    private final NewSessionController fc;
     private NewFileFormOK nffo;
 
     /**
      * Creates new form NewFileForm
      */
-    public NewFileForm(FileController fc) {
+    public NewFileForm(NewSessionController fc) {
         this.fc = fc;
         initComponents();
-        initHandlers();
+        initOtherStuff();
     }
 
     /**
@@ -38,14 +38,24 @@ public class NewFileForm extends javax.swing.JFrame {
         filenameField = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         presetBox = new javax.swing.JComboBox<>();
-        openButton = new javax.swing.JButton();
+        openPresetButton = new javax.swing.JButton();
         deletePresetButton = new javax.swing.JButton();
         savePresetButton = new javax.swing.JButton();
-        typePanel = new javax.swing.JPanel();
-        illustrationPanel = new frontend.subforms.newfile.IllustrationPanel();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        typeBox = new javax.swing.JComboBox<>();
+        drawingTypeTabs = new javax.swing.JTabbedPane();
+        illustrationTab = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        framerateSpinner = new javax.swing.JSpinner();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        widthSpinner = new javax.swing.JSpinner();
+        heightSpinner = new javax.swing.JSpinner();
+        resolutionSpinner = new javax.swing.JSpinner();
+        backgroundColorCheckbox = new javax.swing.JCheckBox();
+        colorButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("New File");
@@ -60,32 +70,11 @@ public class NewFileForm extends javax.swing.JFrame {
 
         presetBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default Preset", "Preset 1", "Preset 2", "Preset 3" }));
 
-        openButton.setText("...");
+        openPresetButton.setText("...");
 
         deletePresetButton.setText("Delete");
 
         savePresetButton.setText("Save");
-
-        typePanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        typePanel.setFocusable(false);
-        typePanel.setPreferredSize(new java.awt.Dimension(370, 236));
-
-        javax.swing.GroupLayout typePanelLayout = new javax.swing.GroupLayout(typePanel);
-        typePanel.setLayout(typePanelLayout);
-        typePanelLayout.setHorizontalGroup(
-            typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(illustrationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        typePanelLayout.setVerticalGroup(
-            typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(typePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(illustrationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(78, Short.MAX_VALUE))
-        );
 
         okButton.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
         okButton.setText("OK");
@@ -98,12 +87,70 @@ public class NewFileForm extends javax.swing.JFrame {
             }
         });
 
-        typeBox.setFont(new java.awt.Font("Dialog", 1, 24)); // NOI18N
-        typeBox.setModel(new javax.swing.DefaultComboBoxModel<>(common.DrawingType.values()));
-        typeBox.setEditor(null);
-        typeBox.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                typeBoxKeyReleased(evt);
+        illustrationTab.setName(""); // NOI18N
+
+        javax.swing.GroupLayout illustrationTabLayout = new javax.swing.GroupLayout(illustrationTab);
+        illustrationTab.setLayout(illustrationTabLayout);
+        illustrationTabLayout.setHorizontalGroup(
+            illustrationTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 368, Short.MAX_VALUE)
+        );
+        illustrationTabLayout.setVerticalGroup(
+            illustrationTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 190, Short.MAX_VALUE)
+        );
+
+        drawingTypeTabs.addTab("Illustration", illustrationTab);
+
+        framerateSpinner.setModel(new javax.swing.SpinnerNumberModel(24, null, null, 1));
+
+        jLabel5.setText("Framerate");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(framerateSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(217, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(framerateSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(158, Short.MAX_VALUE))
+        );
+
+        drawingTypeTabs.addTab("Animation", jPanel1);
+
+        jLabel2.setText("Width");
+
+        jLabel3.setText("Height");
+
+        jLabel4.setText("Resolution");
+
+        widthSpinner.setModel(new javax.swing.SpinnerNumberModel(1200, null, null, 1));
+        widthSpinner.setPreferredSize(new java.awt.Dimension(80, 26));
+
+        heightSpinner.setModel(new javax.swing.SpinnerNumberModel(1200, null, null, 1));
+        heightSpinner.setPreferredSize(new java.awt.Dimension(80, 26));
+
+        resolutionSpinner.setModel(new javax.swing.SpinnerNumberModel(300, null, null, 1));
+        resolutionSpinner.setPreferredSize(new java.awt.Dimension(80, 26));
+
+        backgroundColorCheckbox.setSelected(true);
+        backgroundColorCheckbox.setText("Background Color");
+
+        colorButton.setBackground(new java.awt.Color(255, 255, 255));
+        colorButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                colorButtonActionPerformed(evt);
             }
         });
 
@@ -113,36 +160,51 @@ public class NewFileForm extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(typeBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(typePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(presetBox, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(savePresetButton)
-                                .addGap(0, 0, 0)
-                                .addComponent(deletePresetButton)
-                                .addGap(0, 0, 0)
-                                .addComponent(openButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(filenameField)))
+                        .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(okButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(filenameField, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(presetBox, javax.swing.GroupLayout.PREFERRED_SIZE, 201, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(savePresetButton)
+                        .addGap(0, 0, 0)
+                        .addComponent(deletePresetButton)
+                        .addGap(0, 0, 0)
+                        .addComponent(openPresetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(widthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(backgroundColorCheckbox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(resolutionSpinner, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(heightSpinner, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(drawingTypeTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(okButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cancelButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(230, 230, 230))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(filenameField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -151,21 +213,34 @@ public class NewFileForm extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(presetBox, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(deletePresetButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(openButton)
-                            .addComponent(savePresetButton)))
-                    .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(typePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelButton, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                            .addComponent(openPresetButton)
+                            .addComponent(savePresetButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(colorButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(backgroundColorCheckbox)
+                                .addComponent(jLabel2))
+                            .addComponent(widthSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(heightSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(resolutionSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(drawingTypeTabs, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void initHandlers() {
+    private void initOtherStuff() {
         this.nffo = fc.new NewFileFormOK(this);
         this.okButton.addActionListener(nffo);
+        DocumentFilter df = new DocumentFilter();
     }
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
@@ -173,24 +248,33 @@ public class NewFileForm extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void typeBoxKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_typeBoxKeyReleased
+    private void colorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorButtonActionPerformed
         // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            nffo.actionPerformed(null);
-        }
-    }//GEN-LAST:event_typeBoxKeyReleased
+        ColorChooserButton ccb = new ColorChooserButton(this.colorButton);
+        ccb.setVisible(true);
+    }//GEN-LAST:event_colorButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    javax.swing.JCheckBox backgroundColorCheckbox;
     private javax.swing.JButton cancelButton;
+    javax.swing.JButton colorButton;
     private javax.swing.JButton deletePresetButton;
+    javax.swing.JTabbedPane drawingTypeTabs;
     public javax.swing.JTextField filenameField;
-    public frontend.subforms.newfile.IllustrationPanel illustrationPanel;
+    javax.swing.JSpinner framerateSpinner;
+    javax.swing.JSpinner heightSpinner;
+    javax.swing.JPanel illustrationTab;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JButton okButton;
-    private javax.swing.JButton openButton;
+    private javax.swing.JButton openPresetButton;
     private javax.swing.JComboBox<String> presetBox;
+    javax.swing.JSpinner resolutionSpinner;
     private javax.swing.JButton savePresetButton;
-    public javax.swing.JComboBox<common.DrawingType> typeBox;
-    private javax.swing.JPanel typePanel;
+    javax.swing.JSpinner widthSpinner;
     // End of variables declaration//GEN-END:variables
 }

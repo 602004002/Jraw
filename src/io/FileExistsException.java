@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.toolbar;
+package io;
 
 /**
  *
  * @author nickz
  */
-public class LayerList {
-    
+public class FileExistsException extends Exception {
+
+    public FileExistsException(String msg) {
+        super(msg);
+    }
 }

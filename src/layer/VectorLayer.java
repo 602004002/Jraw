@@ -6,21 +6,18 @@
 package layer;
 
 import common.SessionModel;
+import javax.swing.JComponent;
 
 /**
  *
  * @author nickz
  */
-public class VectorLayer {
-    
+public class VectorLayer extends JComponent {
+
     private String name;
 
     public VectorLayer(String name, SessionModel s, LayerSettings ls) {
         this.name = name;
-    }
-
-    public String getName() {
-        return this.name;
     }
 
 }

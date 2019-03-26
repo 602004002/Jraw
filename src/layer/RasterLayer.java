@@ -6,6 +6,7 @@
 package layer;
 
 import common.SessionModel;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
@@ -18,38 +19,32 @@ public class RasterLayer extends JComponent {
 
     private LayerSettings layerSettings;
     private BufferedImage data;
-    private SessionModel s;
+    private SessionModel sessionModel;
+    private Dimension size;
 
-    public RasterLayer(String name, SessionModel s, LayerSettings layerSettings) {
-        this.data = new BufferedImage(s.getWidth(), s.getHeight(),
+    public RasterLayer(String name,
+            SessionModel sessionModel,
+            LayerSettings layerSettings) {
+        this.size = sessionModel.getSize();
+        this.data = new BufferedImage(size.width, size.height,
                 BufferedImage.TYPE_INT_ARGB);
-        this.s = s;
-        this.setName(name);
+        this.sessionModel = sessionModel;
         this.layerSettings = layerSettings;
+        this.setName(name);
         fullColor();
     }
 
-    /**
-     * Very dangerous method to use!
-     */
     private void fullColor() {
-//        for (int y = 0; y < this.s.getCanvasHeight(); y++) {
-//            for (int x = 0; x < this.s.getCanvasWidth(); x++) {
-//                this.data.setRGB(x, y,
-//                        this.layerSettings.getLayercolor().getRGB());
-//            }
-//        }
         Graphics g = this.data.createGraphics();
         g.setColor(this.layerSettings.getLayercolor());
-        g.fillRect(0, 0, this.s.getWidth(), this.s.getHeight());
+        g.fillRect(0, 0, this.size.width, this.size.height);
+        g.dispose();
     }
 
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        int imgW = this.s.getWidth();
-        int imgH = this.s.getHeight();
-        g.drawImage(this.data, 0, 0, imgW, imgH, this);
+        g.drawImage(this.data, 0, 0, this.size.width, this.size.height, this);
     }
 
     public void bufferlog() {
@@ -68,9 +63,4 @@ public class RasterLayer extends JComponent {
     public BufferedImage getImg() {
         return this.data;
     }
-
-    public void setImg(BufferedImage data) {
-        this.data = data;
-    }
-
 }

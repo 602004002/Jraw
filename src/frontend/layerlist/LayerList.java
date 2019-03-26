@@ -6,11 +6,11 @@
 package frontend.layerlist;
 
 import common.SessionModel;
-import java.util.Arrays;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 
 /**
@@ -20,15 +20,17 @@ import javax.swing.SwingConstants;
 public class LayerList extends javax.swing.JPanel {
 
     private static final ImageIcon PEN_ICON;
+    private static final ImageIcon CHECKMARK;
 
     static {
         PEN_ICON = new ImageIcon(
                 LayerList.class.getResource("/frontend/layerlist/pen.png"));
+        CHECKMARK = new ImageIcon(
+                LayerList.class.getResource("/frontend/layerlist/checkmark.png"));
     }
 
-    private static final int WIDTHBUGFIX = 4;
     private SessionModel session;
-    private int[] selectedIndexes, visibleIndexes;
+    private int[] selectedIndexes;
     private LayerListCell[] cells;
 
     public LayerList() {
@@ -46,9 +48,6 @@ public class LayerList extends javax.swing.JPanel {
     private void initComponents() {
 
         jLabel3 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
         layersPane = new javax.swing.JPanel();
 
@@ -56,12 +55,6 @@ public class LayerList extends javax.swing.JPanel {
 
         setMinimumSize(new java.awt.Dimension(184, 0));
         setPreferredSize(new java.awt.Dimension(216, 300));
-
-        jLabel1.setText("Visible");
-
-        jLabel2.setText("Selected");
-
-        jLabel4.setText("Name");
 
         jScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -75,7 +68,7 @@ public class LayerList extends javax.swing.JPanel {
         );
         layersPaneLayout.setVerticalGroup(
             layersPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 266, Short.MAX_VALUE)
+            .addGap(0, 285, Short.MAX_VALUE)
         );
 
         jScrollPane.setViewportView(layersPane);
@@ -84,30 +77,16 @@ public class LayerList extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel4)
-                        .addGap(21, 21, 21))))
+                .addComponent(jScrollPane)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+                .addComponent(jScrollPane)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -137,11 +116,11 @@ public class LayerList extends javax.swing.JPanel {
                 javax.swing.GroupLayout.Alignment.LEADING, true);
         SequentialGroup vSeq = layersPaneLayout.createSequentialGroup();
         for (int i = size - 1; i >= 0; i--) {
-            LayerListCell llc = new LayerListCell(this.session.hierarchy.get(i),
-                    this);
+            JComponent layer = this.session.hierarchy.get(i);
+            LayerListCell llc = new LayerListCell(layer, this);
+            llc.visBtn.setSelected(layer.isVisible());
             horizontal = horizontal.addComponent(llc, GroupLayout.DEFAULT_SIZE,
-                    layersPane.getWidth() - LayerList.WIDTHBUGFIX,
-                    layersPane.getWidth() - LayerList.WIDTHBUGFIX);
+                    layersPane.getWidth(), layersPane.getWidth());
             vSeq = vSeq.addComponent(llc, GroupLayout.DEFAULT_SIZE,
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
             this.cells[i] = llc;
@@ -240,15 +219,15 @@ public class LayerList extends javax.swing.JPanel {
             for (LayerListCell llc : this.cells) {
                 llc.selBtn.setIcon(null);
             }
+            for (int i : this.selectedIndexes) {
+                this.cells[i].selBtn.setIcon(CHECKMARK);
+            }
             this.cells[this.selectedIndexes[0]].selBtn.setIcon(LayerList.PEN_ICON);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JPanel layersPane;
     // End of variables declaration//GEN-END:variables

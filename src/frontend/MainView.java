@@ -13,25 +13,18 @@ import common.SessionModel;
  */
 public class MainView extends javax.swing.JFrame {
 
-    private final ModelViewController controller;
+    private final MainViewController mvc;
+    private final MenuController mc;
     private Model model;
 
-    /**
-     * Creates new form MainView
-     *
-     * @param controller A reference to the control logic for this view.
-     * @param model A reference to the model
-     */
-    public MainView(ModelViewController controller, Model model) {
-        this.controller = controller;
-        this.model = model;
-        initComponents();
-        initHandlers();
-    }
-    
     public MainView() {
-        this.controller = new ModelViewController();
+        this.mvc = new MainViewController();
+        this.mc = new MenuController();
         this.model = new Model();
+        this.mvc.setMainView(this);
+        this.mvc.setModel(model);
+        this.mc.setMainView(this);
+        this.mc.setModel(model);
         initComponents();
         initHandlers();
     }
@@ -50,7 +43,7 @@ public class MainView extends javax.swing.JFrame {
         subToolbarSplitPane = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
-        documentTabbedPane = new frontend.DocumentPane(this.controller);
+        documentTabbedPane = new DocumentPane(this.mvc);
         layerList = new frontend.layerlist.LayerList();
         mainMenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
@@ -96,7 +89,7 @@ public class MainView extends javax.swing.JFrame {
         imageMenu = new javax.swing.JMenu();
         layerMenu = new javax.swing.JMenu();
         newLayerMenu = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        newRasterLayerMenuItem = new javax.swing.JMenuItem();
         newLayerFolderMenuItem = new javax.swing.JMenuItem();
         duplicateLayerMenuItem = new javax.swing.JMenuItem();
         deleteLayerMenuItem = new javax.swing.JMenuItem();
@@ -181,9 +174,9 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 990, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addContainerGap())
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,7 +186,7 @@ public class MainView extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addContainerGap())
         );
 
         mainMenuBar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -328,8 +321,8 @@ public class MainView extends javax.swing.JFrame {
 
         newLayerMenu.setText("New Layer");
 
-        jMenuItem2.setText("jMenuItem2");
-        newLayerMenu.add(jMenuItem2);
+        newRasterLayerMenuItem.setText("New Raster Layer");
+        newLayerMenu.add(newRasterLayerMenuItem);
 
         layerMenu.add(newLayerMenu);
 
@@ -405,7 +398,7 @@ public class MainView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(0, 0, 0)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1381, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1393, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
@@ -418,10 +411,13 @@ public class MainView extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void initHandlers() {
-        this.newMenuItem.addActionListener(controller.new NewFileAction());
-        this.quitMenuItem.addActionListener(controller.new QuitAction());
+        this.newMenuItem.addActionListener(this.mc.new NewFileAction());
+        this.quitMenuItem.addActionListener(this.mc.new QuitAction());
+        this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
+        
+        this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
     }
-    
+
     public void updateDocumentPane() {
         DocumentPane dp = this.documentTabbedPane;
         int slSize = model.sessionList.size();
@@ -429,9 +425,7 @@ public class MainView extends javax.swing.JFrame {
         if (slSize > dpSize) {
             for (int i = dpSize; i < slSize; i++) {
                 SessionModel s = model.sessionList.get(i);
-                String name = s.getName();
                 LayerViewport lvp = new LayerViewport(s);
-                lvp.setName(name);
                 dp.add(lvp);
             }
         }
@@ -465,7 +459,6 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem importMenuItem;
     private javax.swing.JMenuItem invertSelectionMenuItem;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -488,6 +481,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JMenuItem newLayerFolderMenuItem;
     private javax.swing.JMenu newLayerMenu;
     private javax.swing.JMenuItem newMenuItem;
+    private javax.swing.JMenuItem newRasterLayerMenuItem;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JMenuItem preferencesMenuItem;

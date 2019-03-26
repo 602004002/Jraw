@@ -20,23 +20,23 @@ import javax.swing.JTabbedPane;
 public class DocumentPane extends JTabbedPane {
 
     private static final ImageIcon CLOSE_ICON;
-    private final ModelViewController mvc;
+    private final MainViewController mvc;
 
     static {
         CLOSE_ICON = new ImageIcon(
                 DocumentPane.class.getResource("/frontend/close.png"));
     }
-    
+
     public DocumentPane() {
-        this.mvc = new ModelViewController();
+        this.mvc = new MainViewController();
         init();
     }
-    
-    public DocumentPane(ModelViewController mvc) {
+
+    public DocumentPane(MainViewController mvc) {
         this.mvc = mvc;
         init();
     }
-    
+
     private void init() {
         this.addChangeListener(this.mvc.new UpdateSelectedTab());
         this.addContainerListener(this.mvc.new TabContainerListener());

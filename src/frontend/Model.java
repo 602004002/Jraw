@@ -8,6 +8,7 @@ public class Model {
     public Model() {
         this.sessionList = new ArrayList<>();
     }
+
     public ArrayList<SessionModel> sessionList; //this is the absolute determiner
 
 }

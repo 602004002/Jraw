@@ -8,7 +8,6 @@ package frontend;
 import common.SessionModel;
 import input.MousePositionListener1;
 import input.TabletPenPositionListener;
-import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
@@ -25,11 +24,13 @@ public class LayerViewport extends JScrollPane {
     private TabletPenPositionListener tppl;
     private final SessionModel session;
     private JLayeredPane jlp;
+    private Dimension size;
 
     public LayerViewport(SessionModel session) {
-        System.out.println("LayerViewport(Session)");
         this.session = session;
-        this.mpl = new MousePositionListener1(this);
+        this.size = new Dimension(this.session.getSize());
+        this.setName(session.getName());
+        this.mpl = new MousePositionListener1(session);
         this.tppl = new TabletPenPositionListener(this);
         this.jlp = new JLayeredPane();
         init();
@@ -46,27 +47,26 @@ public class LayerViewport extends JScrollPane {
         this.jlp.addMouseListener(mpl);
         this.jlp.addMouseMotionListener(mpl);
         //this.addMouseWheelListener(mpl);
-        this.jlp.setBackground(Color.ORANGE);
-        for (int i = this.session.getLayerCount() - 1; i >= 0; i--) {
-            JComponent dl = session.hierarchy.get(i);
-            this.jlp.add(dl);
-            int w = this.session.getWidth();
-            int h = this.session.getHeight();
-            dl.setSize(w, h);
-            dl.setLocation(w / 2, h / 2);
-        }
-        
+        updateLayers();
+
     }
 
     private void setVPSize() {
-        Dimension d = new Dimension();
-        d.height = this.session.getHeight() * 2;
-        d.width = this.session.getWidth() * 2;
+        Dimension d = new Dimension(size);
+        d.height *= 1.25;
+        System.out.println(d.height);
+        d.width *= 1.25;
         this.jlp.setPreferredSize(d);
     }
-    
-    public SessionModel getSession() {
-        return session;
+
+    public void updateLayers() {
+        this.jlp.removeAll();
+        for (int i = this.session.getLayerCount() - 1; i >= 0; i--) {
+            JComponent dl = session.hierarchy.get(i);
+            this.jlp.add(dl);
+            dl.setSize(size);
+            dl.setLocation(size.width / 8, size.height / 8);
+        }
     }
 
     //zooms this amount in. should have a maximum and minimum

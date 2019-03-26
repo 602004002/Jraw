@@ -6,8 +6,6 @@
 package input;
 
 import common.SessionModel;
-import frontend.LayerViewport;
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -22,14 +20,12 @@ import layer.RasterLayer;
  */
 public class MousePositionListener1 implements MouseMotionListener, MouseListener {
 
-    private SessionModel session;
-    private LayerViewport vp;
+    private SessionModel sm;
     private Point old;
 
-    public MousePositionListener1(LayerViewport vp) {
-        System.out.println("MousePositionListener(Viewport \"" + vp.getName() + "\")");
-        this.session = vp.getSession();
-        this.vp = vp;
+    public MousePositionListener1(SessionModel sm) {
+        System.out.println("MousePositionListener(Viewport \"" + sm.getName() + "\")");
+        this.sm = sm;
     }
 
     @Override
@@ -74,23 +70,18 @@ public class MousePositionListener1 implements MouseMotionListener, MouseListene
     public void mouseExited(MouseEvent e) {
 
     }
-
+    
     private void draw() {
-        int[] indexes = this.session.getSelectedLayerIndexes();
+        int[] indexes = this.sm.getSelectedLayerIndexes();
         RasterLayer get = null;
         if (indexes.length != 0) {
-            get = (RasterLayer) this.session.hierarchy.get(indexes[0]);
+            get = (RasterLayer) this.sm.hierarchy.get(indexes[0]);
         }
-        final Point p = this.vp.getMousePosition(true);
-        if (p != null) {
-            p.x -= session.getWidth() / 2;
-            p.y -= session.getHeight() / 2;
-        }
+        final Point p = this.sm.hierarchy.get(this.sm.getLayerCount() - 1).getMousePosition();
         if (get != null && p != null && old != null && get.isVisible()) {
             //dirty code
             Graphics2D g2d = (Graphics2D) get.getImg().createGraphics();
             g2d.setColor(Color.BLACK);
-            g2d.setStroke(new BasicStroke(2));
             g2d.drawLine(old.x, old.y, p.x, p.y);
             //g2d.fillRect(p.x, p.y, 10, 2);
             g2d.dispose();

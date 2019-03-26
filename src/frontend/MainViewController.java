@@ -6,8 +6,6 @@
 package frontend;
 
 import common.SessionModel;
-import frontend.subforms.newfile.FileController;
-import frontend.subforms.newfile.NewFileForm;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ContainerEvent;
@@ -19,27 +17,13 @@ import javax.swing.event.ChangeListener;
  *
  * @author nickz
  */
-public class ModelViewController {
-
-    private MainView mainview;
-    private Model model;
-
-    public void setMainView(MainView mainview) {
-        this.mainview = mainview;
-    }
-
-    public void setModel(Model model) {
-        this.model = model;
-    }
-
+public class MainViewController extends Controller {
+    
     private void layerListUpdate() {
-        int index = mainview.documentTabbedPane.getSelectedIndex();
-        SessionModel s = null;
-        if (index >= 0) {
-            s = model.sessionList.get(index);
-        }
+        SessionModel s = this.getCurrentSessionModel();
         mainview.layerList.setSession(s);
         if (s != null) {
+            mainview.layerList.setSession(s);
             mainview.layerList.setSelectedIndices(s.getSelectedLayerIndexes());
         }
     }
@@ -78,39 +62,9 @@ public class ModelViewController {
         public void actionPerformed(ActionEvent e) {
             int index = mainview.documentTabbedPane.indexOfComponent(tabToClose);
             mainview.documentTabbedPane.remove(index);
-            model.sessionList.remove(tabToClose.getSession());
+            model.sessionList.remove(index);
             mainview.updateDocumentPane();
             layerListUpdate();
         }
     }
-
-    class QuitAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            //check for save
-
-        }
-    }
-
-    class NewFileAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            Thread nf = new Thread(() -> {
-                new NewFileForm(new FileController(model, mainview))
-                        .setVisible(true);
-            }, "New file thread");
-            nf.start();
-        }
-    }
-
-    class OpenFileAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
 }

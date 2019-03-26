@@ -9,24 +9,49 @@ package tools.vector;
  *
  * @author nickz
  */
-public class VectorPoint {
+public class VectorPoint { 
 
-    private int xsize, ysize, xpos, ypos;
+    private float weight, xPos, yPos;
+    private VectorPoint nextPoint;
+    private VectorPoint prevPoint;
 
-    public int getYpos() {
-        return this.ypos;
+    public VectorPoint(float weight, float xPos, float yPos) {
+        
+    }
+    
+    public float getWeight() {
+        return this.weight;
     }
 
-    public int getXpos() {
-        return this.xpos;
+    public float getXPos() {
+        return xPos;
     }
 
-    public int getYsize() {
-        return this.ysize;
+    public void setXPos(float xPos) {
+        this.xPos = xPos;
     }
 
-    public int getXsize() {
-        return this.xsize;
+    public float getYPos() {
+        return yPos;
     }
 
+    public void setYPos(float yPos) {
+        this.yPos = yPos;
+    }
+
+    public VectorPoint getNextPoint() {
+        return this.nextPoint;
+    }
+
+    public void setNextPoint(VectorPoint nextPoint) {
+        this.nextPoint = nextPoint;
+    }
+
+    public VectorPoint getPrevPoint() {
+        return this.prevPoint;
+    }
+
+    public void setPrevPoint(VectorPoint prevPoint) {
+        this.prevPoint = prevPoint;
+    }
 }

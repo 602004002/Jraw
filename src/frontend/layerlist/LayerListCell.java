@@ -16,12 +16,20 @@ import javax.swing.event.DocumentListener;
  * @author nickz
  */
 public class LayerListCell extends javax.swing.JPanel {
-    
+
+    private static final ImageIcon EYEOPEN, EYECLOSE;
+
+    static {
+        Class cl = LayerListCell.class;
+        EYEOPEN = new ImageIcon(cl.getResource("/frontend/layerlist/eyeOpen.png"));
+        EYECLOSE = new ImageIcon(cl.getResource("/frontend/layerlist/eyeClosed.png"));
+    }
+
     private JComponent layer;
     private Color defaultColor;
     private boolean selected;
     private final LayerList layerList;
-    
+
     public LayerListCell(JComponent layer, LayerList layerList) {
         this.layer = layer;
         this.layerList = layerList;
@@ -42,10 +50,20 @@ public class LayerListCell extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        layerNameField = new javax.swing.JTextField();
+        jLayeredPane1 = new javax.swing.JLayeredPane();
+
+        javax.swing.GroupLayout jLayeredPane1Layout = new javax.swing.GroupLayout(jLayeredPane1);
+        jLayeredPane1.setLayout(jLayeredPane1Layout);
+        jLayeredPane1Layout.setHorizontalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jLayeredPane1Layout.setVerticalGroup(
+            jLayeredPane1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setMinimumSize(new java.awt.Dimension(172, 42));
-        setPreferredSize(null);
         addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 formMouseClicked(evt);
@@ -58,6 +76,7 @@ public class LayerListCell extends javax.swing.JPanel {
             }
         });
 
+        visBtn.setSelected(true);
         visBtn.setMinimumSize(new java.awt.Dimension(30, 30));
         visBtn.setPreferredSize(new java.awt.Dimension(30, 30));
         visBtn.addActionListener(new java.awt.event.ActionListener() {
@@ -82,9 +101,9 @@ public class LayerListCell extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(visBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(visBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(selBtn, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(layerNameField)
                 .addContainerGap())
@@ -107,17 +126,19 @@ public class LayerListCell extends javax.swing.JPanel {
             public void insertUpdate(DocumentEvent e) {
                 layer.setName(layerNameField.getText());
             }
-            
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 layer.setName(layerNameField.getText());
             }
-            
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 System.out.println("changed?");
             }
         });
+        this.visBtn.setIcon(EYECLOSE);
+        this.visBtn.setSelectedIcon(EYEOPEN);
     }
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
@@ -158,11 +179,11 @@ public class LayerListCell extends javax.swing.JPanel {
         // TODO add your handling code here:
         this.layer.setVisible(this.visBtn.isSelected());
     }//GEN-LAST:event_visBtnActionPerformed
-    
+
     boolean isSelected() {
         return this.selected;
     }
-    
+
     void setSelected(boolean selected) {
         this.selected = selected;
         this.selBtn.setSelected(selected);
@@ -179,8 +200,9 @@ public class LayerListCell extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField layerNameField;
+    private javax.swing.JLayeredPane jLayeredPane1;
+    private final javax.swing.JTextField layerNameField = new javax.swing.JTextField();
     public final javax.swing.JToggleButton selBtn = new javax.swing.JToggleButton();
-    private final javax.swing.JToggleButton visBtn = new javax.swing.JToggleButton();
+    public final javax.swing.JToggleButton visBtn = new javax.swing.JToggleButton();
     // End of variables declaration//GEN-END:variables
 }
