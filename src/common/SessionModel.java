@@ -7,7 +7,7 @@ package common;
 
 import layer.LayerSettings;
 import layer.RasterLayer;
-import layer.buffer.ChangeBuffer;
+import changestack.UndoRedoStack;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
@@ -25,36 +25,18 @@ public class SessionModel {
     private String name;
     private DrawingType drawingType;
     private boolean saved; //based on buffer changes
-    public final ChangeBuffer changeBuffer;
     private Dimension size;
     private int resolution; //in pixels
     private int framerate;
+    
     public final ArrayList<JComponent> hierarchy;
+    public final UndoRedoStack changeBuffer;
     private int[] selectedLayerIndexes;
-
-    private SessionModel(Builder sb) {
-        System.out.println("SessionModel(Builder)");
-        this.name = sb.name;
-        this.drawingType = sb.dt;
-        this.saved = false;
-        this.size = sb.size;
-        this.resolution = sb.resolution;
-        this.framerate = sb.framerate;
-        this.changeBuffer = new ChangeBuffer(30);
-        this.hierarchy = new ArrayList<>();
-        if (sb.backgroundColor != null) {
-            LayerSettings ls1 = new LayerSettings(sb.backgroundColor);
-            this.hierarchy.add(new RasterLayer("Paper", this, ls1));
-            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
-        } else {
-            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
-        }
-    }
 
     public static class Builder {
 
         private String name;
-        private DrawingType dt;
+        private DrawingType drawingType;
         private Dimension size;
         private int resolution; //in pixels
         private int framerate;
@@ -65,8 +47,8 @@ public class SessionModel {
             return this;
         }
 
-        public Builder drawingType(final DrawingType dt) {
-            this.dt = dt;
+        public Builder drawingType(final DrawingType drawingType) {
+            this.drawingType = drawingType;
             return this;
         }
 
@@ -93,6 +75,29 @@ public class SessionModel {
         public SessionModel build() {
             return new SessionModel(this);
         }
+    }
+    
+    private SessionModel(Builder sb) {
+        this.name = sb.name;
+        this.drawingType = sb.drawingType;
+        this.saved = false;
+        this.size = sb.size;
+        this.resolution = sb.resolution;
+        this.framerate = sb.framerate;
+        this.changeBuffer = new UndoRedoStack();
+        this.hierarchy = new ArrayList<>();
+        if (sb.backgroundColor != null) {
+            LayerSettings ls1 = new LayerSettings(sb.backgroundColor);
+            this.hierarchy.add(new RasterLayer("Paper", this, ls1));
+            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+        } else {
+            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+        }
+        init();
+    }
+    
+    private void init() {
+        this.selectedLayerIndexes = new int[]{this.getLayerCount() - 1};
     }
 
     public String getName() {
@@ -142,7 +147,12 @@ public class SessionModel {
     public void setFramerate(int framerate) {
         this.framerate = framerate;
     }
-
+    
+    /**
+     * WARNING - May not be up to date. Recommended that you use 
+     * LayerList.getSelectedLayerIndexes() instead
+     * @return Returns an int array of all selected indexes.
+     */
     public int[] getSelectedLayerIndexes() {
         return this.selectedLayerIndexes;
     }

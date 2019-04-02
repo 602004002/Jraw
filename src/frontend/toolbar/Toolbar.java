@@ -39,12 +39,9 @@ public class Toolbar extends JToolBar {
     public void setTools(ArrayList<DrawingTool> dt) {
         dt.forEach((DrawingTool drawingTool) -> {
             if (!(drawingTool instanceof ToolSeparator)) {
-            ToolButton t = new ToolButton(
-                    drawingTool,
-                    (ToolButton tb) -> {
-                        this.setSelected(tb);
-                    });
-            this.add(t);
+                ToolButton t = new ToolButton(drawingTool,
+                        (ToolButton tb) -> this.setSelected(tb));
+                this.add(t);
             } else {
                 this.addSeparator();
             }
@@ -60,7 +57,7 @@ public class Toolbar extends JToolBar {
         selected.setBorder(new BevelBorder(BevelBorder.LOWERED));
         System.out.println("Selected tool is " + selected.getTool());
     }
-    
+
     public void clearTools() {
         this.removeAll();
         this.selected = null;

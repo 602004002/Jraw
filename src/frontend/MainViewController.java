@@ -17,22 +17,29 @@ import javax.swing.event.ChangeListener;
  *
  * @author nickz
  */
-public class MainViewController extends Controller {
-    
-    private void layerListUpdate() {
-        SessionModel s = this.getCurrentSessionModel();
-        mainview.layerList.setSession(s);
-        if (s != null) {
-            mainview.layerList.setSession(s);
-            mainview.layerList.setSelectedIndices(s.getSelectedLayerIndexes());
+public class MainViewController extends AbstractController {
+
+    void updateTabs() {
+        DocumentPane dp = this.mainview.documentTabbedPane;
+        for (int i = 0; i < model.size(); i++) {
+            LayerSubstrate ls = this.model.getSubstrate(i);
+            if (dp.indexOfComponent(ls) < 0) {
+                dp.add(ls);
+            }
         }
+    }
+
+    void update() {
+        SessionModel s = this.getCurrentSessionModel();
+        this.mainview.layerList.setSession(s);
+        this.mainview.pointerListener.setSession(s);
     }
 
     class UpdateSelectedTab implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            layerListUpdate();
+            update();
         }
     }
 
@@ -40,31 +47,41 @@ public class MainViewController extends Controller {
 
         @Override
         public void componentAdded(ContainerEvent e) {
-            layerListUpdate();
+            update();
         }
 
         @Override
         public void componentRemoved(ContainerEvent e) {
-            layerListUpdate();
+            update();
         }
 
     }
 
     class TabCloseAction implements ActionListener {
 
-        private final LayerViewport tabToClose;
+        private final LayerSubstrate tabToClose;
 
-        public TabCloseAction(LayerViewport tabToClose) {
+        TabCloseAction(LayerSubstrate tabToClose) {
             this.tabToClose = tabToClose;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int index = mainview.documentTabbedPane.indexOfComponent(tabToClose);
-            mainview.documentTabbedPane.remove(index);
-            model.sessionList.remove(index);
-            mainview.updateDocumentPane();
-            layerListUpdate();
+            int mainviewIndex = mainview.documentTabbedPane.indexOfComponent(tabToClose);
+            if (true) {
+                mainview.documentTabbedPane.remove(mainviewIndex);
+                remove();
+            } else {
+                //ask if they want to save
+                //remove(index) if no
+                //pop up with CommonIO savedialog if file doesn't exist
+            }
+        }
+
+        private void remove() {
+            int index = model.indexOf(tabToClose);
+            model.remove(index);
+            update();
         }
     }
 }

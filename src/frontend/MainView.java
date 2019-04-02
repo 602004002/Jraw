@@ -5,7 +5,8 @@
  */
 package frontend;
 
-import common.SessionModel;
+import input.PointerListener;
+import jwinpointer.JWinPointerReader;
 
 /**
  *
@@ -15,17 +16,26 @@ public class MainView extends javax.swing.JFrame {
 
     private final MainViewController mvc;
     private final MenuController mc;
-    private Model model;
+    private final Model model;
+    private JWinPointerReader pointerReader;
+    PointerListener pointerListener;
 
-    public MainView() {
+    public MainView(Model model) {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
-        this.model = new Model();
-        this.mvc.setMainView(this);
+        this.model = model;
         this.mvc.setModel(model);
-        this.mc.setMainView(this);
         this.mc.setModel(model);
+        this.mc.setMainViewController(this.mvc);
         initComponents();
+    }
+
+    public void finishInit() {
+        this.mvc.setMainView(this);
+        this.mc.setMainView(this);
+        this.pointerReader = new JWinPointerReader(this);
+        this.pointerListener = new PointerListener();
+        this.pointerReader.addPointerEventListener(pointerListener);
         initHandlers();
     }
 
@@ -38,13 +48,12 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        mainPanel = new javax.swing.JPanel();
         toolbar = new frontend.toolbar.Toolbar();
         subToolbarSplitPane = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
-        documentTabbedPane = new DocumentPane(this.mvc);
+        colorPalette2 = new frontend.toolbar.ColorToolbar();
         layerList = new frontend.layerlist.LayerList();
+        documentTabbedPane = new DocumentPane(this.mvc);
         mainMenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newMenuItem = new javax.swing.JMenuItem();
@@ -108,15 +117,15 @@ public class MainView extends javax.swing.JFrame {
         gfxMenu = new javax.swing.JMenu();
         windowMenu = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
+        helpMenu = new javax.swing.JMenu();
+        aboutMenuItem = new javax.swing.JMenuItem();
+        versionMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Jraw");
         setFocusable(false);
         setMinimumSize(new java.awt.Dimension(800, 600));
         setName("mainframe"); // NOI18N
-
-        mainPanel.setFocusable(false);
-        mainPanel.setPreferredSize(new java.awt.Dimension(1360, 720));
 
         toolbar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         toolbar.setFloatable(false);
@@ -128,66 +137,29 @@ public class MainView extends javax.swing.JFrame {
         toolbar.setPreferredSize(new java.awt.Dimension(40, 10));
 
         subToolbarSplitPane.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        subToolbarSplitPane.setDividerLocation(super.getSize().height / 2);
+        subToolbarSplitPane.setDividerLocation(-1);
+        subToolbarSplitPane.setDividerSize(8);
         subToolbarSplitPane.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         subToolbarSplitPane.setFocusable(false);
 
         jPanel1.setFocusable(false);
+        jPanel1.setPreferredSize(new java.awt.Dimension(169, 500));
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 129, Short.MAX_VALUE)
+            .addGap(0, 178, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 85, Short.MAX_VALUE)
+            .addGap(0, 500, Short.MAX_VALUE)
         );
 
         subToolbarSplitPane.setTopComponent(jPanel1);
-
-        jPanel2.setFocusable(false);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 129, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 637, Short.MAX_VALUE)
-        );
-
-        subToolbarSplitPane.setRightComponent(jPanel2);
+        subToolbarSplitPane.setRightComponent(colorPalette2);
 
         documentTabbedPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED)));
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(mainPanelLayout.createSequentialGroup()
-                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 990, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(subToolbarSplitPane)
-            .addComponent(documentTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
 
         mainMenuBar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         mainMenuBar.setFocusable(false);
@@ -216,21 +188,24 @@ public class MainView extends javax.swing.JFrame {
 
         closeMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         closeMenuItem.setText("Close File");
+        closeMenuItem.setEnabled(false);
         fileMenu.add(closeMenuItem);
 
         saveMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         saveMenuItem.setText("Save");
+        saveMenuItem.setEnabled(false);
         fileMenu.add(saveMenuItem);
 
         saveAsMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.SHIFT_MASK));
         saveAsMenuItem.setText("Save As...");
+        saveAsMenuItem.setEnabled(false);
         fileMenu.add(saveAsMenuItem);
         fileMenu.add(jSeparator2);
 
         importMenuItem.setText("Import...");
         fileMenu.add(importMenuItem);
 
-        exportMenuItem.setText("Export...");
+        exportMenuItem.setText("Export Visible...");
         fileMenu.add(exportMenuItem);
         fileMenu.add(jSeparator3);
 
@@ -390,6 +365,16 @@ public class MainView extends javax.swing.JFrame {
 
         mainMenuBar.add(windowMenu);
 
+        helpMenu.setText("Help");
+
+        aboutMenuItem.setText("About...");
+        helpMenu.add(aboutMenuItem);
+
+        versionMenuItem.setText("Version Information...");
+        helpMenu.add(versionMenuItem);
+
+        mainMenuBar.add(helpMenu);
+
         setJMenuBar(mainMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -397,71 +382,71 @@ public class MainView extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 1393, Short.MAX_VALUE)
+                .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 990, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(subToolbarSplitPane)
+            .addComponent(documentTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 738, Short.MAX_VALUE)
-                .addGap(0, 0, 0))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void initHandlers() {
+        this.documentTabbedPane.finishInit();
         this.newMenuItem.addActionListener(this.mc.new NewFileAction());
         this.quitMenuItem.addActionListener(this.mc.new QuitAction());
         this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
-        
+        this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
+
         this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
     }
 
-    public void updateDocumentPane() {
-        DocumentPane dp = this.documentTabbedPane;
-        int slSize = model.sessionList.size();
-        int dpSize = dp.getTabCount();
-        if (slSize > dpSize) {
-            for (int i = dpSize; i < slSize; i++) {
-                SessionModel s = model.sessionList.get(i);
-                LayerViewport lvp = new LayerViewport(s);
-                dp.add(lvp);
-            }
-        }
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem advancedFillMenuItem;
+    private javax.swing.JMenuItem aboutMenuItem;
+    public javax.swing.JMenuItem advancedFillMenuItem;
     private javax.swing.JMenu animationMenu;
-    private javax.swing.JMenuItem bufferMenuItem;
-    private javax.swing.JMenuItem changeCanvasSizeMenuItem;
-    private javax.swing.JMenuItem changeResolutionMenuItem;
-    private javax.swing.JMenuItem clearMenuItem;
-    private javax.swing.JMenuItem closeMenuItem;
+    public javax.swing.JMenuItem bufferMenuItem;
+    public javax.swing.JMenuItem changeCanvasSizeMenuItem;
+    public javax.swing.JMenuItem changeResolutionMenuItem;
+    public javax.swing.JMenuItem clearMenuItem;
+    public javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenu collaborateMenu;
-    private javax.swing.JMenuItem connectMenuItem;
-    private javax.swing.JMenuItem connectionSettingsMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cropMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
-    private javax.swing.JMenuItem deleteLayerMenuItem;
-    private javax.swing.JMenuItem deselectMenuItem;
-    private javax.swing.JMenuItem disconnectMenuItem;
+    private frontend.toolbar.ColorToolbar colorPalette2;
+    public javax.swing.JMenuItem connectMenuItem;
+    public javax.swing.JMenuItem connectionSettingsMenuItem;
+    public javax.swing.JMenuItem copyMenuItem;
+    public javax.swing.JMenuItem cropMenuItem;
+    public javax.swing.JMenuItem cutMenuItem;
+    public javax.swing.JMenuItem deleteLayerMenuItem;
+    public javax.swing.JMenuItem deselectMenuItem;
+    public javax.swing.JMenuItem disconnectMenuItem;
     public frontend.DocumentPane documentTabbedPane;
-    private javax.swing.JMenuItem duplicateLayerMenuItem;
-    private javax.swing.JMenu editMenu;
-    private javax.swing.JMenuItem exportMenuItem;
-    private javax.swing.JMenu fileMenu;
+    public javax.swing.JMenuItem duplicateLayerMenuItem;
+    public javax.swing.JMenu editMenu;
+    public javax.swing.JMenuItem exportMenuItem;
+    public javax.swing.JMenu fileMenu;
     private javax.swing.JMenuItem fillMenuItem;
     private javax.swing.JMenu gfxMenu;
+    private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu imageMenu;
-    private javax.swing.JMenuItem importMenuItem;
-    private javax.swing.JMenuItem invertSelectionMenuItem;
+    public javax.swing.JMenuItem importMenuItem;
+    public javax.swing.JMenuItem invertSelectionMenuItem;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator10;
     private javax.swing.JPopupMenu.Separator jSeparator11;
@@ -474,32 +459,32 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator8;
     private javax.swing.JPopupMenu.Separator jSeparator9;
     public frontend.layerlist.LayerList layerList;
-    private javax.swing.JMenu layerMenu;
-    private javax.swing.JMenuItem layerPropertiesMenuItem;
+    public javax.swing.JMenu layerMenu;
+    public javax.swing.JMenuItem layerPropertiesMenuItem;
     private javax.swing.JMenuBar mainMenuBar;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenuItem newLayerFolderMenuItem;
-    private javax.swing.JMenu newLayerMenu;
-    private javax.swing.JMenuItem newMenuItem;
-    private javax.swing.JMenuItem newRasterLayerMenuItem;
-    private javax.swing.JMenuItem openMenuItem;
-    private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem preferencesMenuItem;
-    private javax.swing.JMenuItem quitMenuItem;
-    private javax.swing.JMenuItem recentClearMenuItem;
-    private javax.swing.JMenu recentMenu;
-    private javax.swing.JMenuItem redoMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
-    private javax.swing.JMenuItem selectAllMenuItem;
-    private javax.swing.JMenu selectionMenu;
-    private javax.swing.JMenuItem shortcutSettingsMenuItem;
+    public javax.swing.JMenuItem newLayerFolderMenuItem;
+    public javax.swing.JMenu newLayerMenu;
+    public javax.swing.JMenuItem newMenuItem;
+    public javax.swing.JMenuItem newRasterLayerMenuItem;
+    public javax.swing.JMenuItem openMenuItem;
+    public javax.swing.JMenuItem pasteMenuItem;
+    public javax.swing.JMenuItem preferencesMenuItem;
+    public javax.swing.JMenuItem quitMenuItem;
+    public javax.swing.JMenuItem recentClearMenuItem;
+    public javax.swing.JMenu recentMenu;
+    public javax.swing.JMenuItem redoMenuItem;
+    public javax.swing.JMenuItem saveAsMenuItem;
+    public javax.swing.JMenuItem saveMenuItem;
+    public javax.swing.JMenuItem selectAllMenuItem;
+    public javax.swing.JMenu selectionMenu;
+    public javax.swing.JMenuItem shortcutSettingsMenuItem;
     private javax.swing.JSplitPane subToolbarSplitPane;
-    private javax.swing.JMenuItem tabletSettingsMenuItem;
-    private javax.swing.JMenu tonalCorrectionMenu;
+    public javax.swing.JMenuItem tabletSettingsMenuItem;
+    public javax.swing.JMenu tonalCorrectionMenu;
     private frontend.toolbar.Toolbar toolbar;
-    private javax.swing.JMenu transformMenu;
-    private javax.swing.JMenuItem undoMenuItem;
+    public javax.swing.JMenu transformMenu;
+    public javax.swing.JMenuItem undoMenuItem;
+    private javax.swing.JMenuItem versionMenuItem;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JMenu windowMenu;
     // End of variables declaration//GEN-END:variables

@@ -12,20 +12,24 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import javax.swing.JLayeredPane;
+import javax.swing.SwingUtilities;
 import layer.RasterLayer;
 
 /**
  *
  * @author nickz
  */
-public class MousePositionListener1 implements MouseMotionListener, MouseListener {
+public class MousePositionListener implements MouseMotionListener, MouseListener {
 
     private SessionModel sm;
+    private JLayeredPane jlp;
     private Point old;
 
-    public MousePositionListener1(SessionModel sm) {
+    public MousePositionListener(SessionModel sm, JLayeredPane jlp) {
         System.out.println("MousePositionListener(Viewport \"" + sm.getName() + "\")");
         this.sm = sm;
+        this.jlp = jlp;
     }
 
     @Override
@@ -73,11 +77,14 @@ public class MousePositionListener1 implements MouseMotionListener, MouseListene
     
     private void draw() {
         int[] indexes = this.sm.getSelectedLayerIndexes();
-        RasterLayer get = null;
+        RasterLayer get;
         if (indexes.length != 0) {
             get = (RasterLayer) this.sm.hierarchy.get(indexes[0]);
+        } else {
+            return;
         }
-        final Point p = this.sm.hierarchy.get(this.sm.getLayerCount() - 1).getMousePosition();
+        //final Point p = this.sm.hierarchy.get(this.sm.getLayerCount() - 1).getMousePosition();
+        final Point p = SwingUtilities.convertPoint(this.jlp, this.jlp.getMousePosition(true), get);
         if (get != null && p != null && old != null && get.isVisible()) {
             //dirty code
             Graphics2D g2d = (Graphics2D) get.getImg().createGraphics();

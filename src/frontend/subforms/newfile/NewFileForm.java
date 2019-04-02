@@ -5,7 +5,7 @@
  */
 package frontend.subforms.newfile;
 
-import frontend.subforms.newfile.NewSessionController.NewFileFormOK;
+import java.awt.event.ActionListener;
 import javax.swing.text.DocumentFilter;
 
 /**
@@ -14,14 +14,10 @@ import javax.swing.text.DocumentFilter;
  */
 public class NewFileForm extends javax.swing.JFrame {
 
-    private final NewSessionController fc;
-    private NewFileFormOK nffo;
-
     /**
      * Creates new form NewFileForm
      */
-    public NewFileForm(NewSessionController fc) {
-        this.fc = fc;
+    public NewFileForm() {
         initComponents();
         initOtherStuff();
     }
@@ -238,8 +234,6 @@ public class NewFileForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void initOtherStuff() {
-        this.nffo = fc.new NewFileFormOK(this);
-        this.okButton.addActionListener(nffo);
         DocumentFilter df = new DocumentFilter();
     }
 
@@ -254,15 +248,19 @@ public class NewFileForm extends javax.swing.JFrame {
         ccb.setVisible(true);
     }//GEN-LAST:event_colorButtonActionPerformed
 
+    public void addOkButtonActionListener(ActionListener al) {
+        this.okButton.addActionListener(al);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    javax.swing.JCheckBox backgroundColorCheckbox;
+    public javax.swing.JCheckBox backgroundColorCheckbox;
     private javax.swing.JButton cancelButton;
-    javax.swing.JButton colorButton;
+    public javax.swing.JButton colorButton;
     private javax.swing.JButton deletePresetButton;
-    javax.swing.JTabbedPane drawingTypeTabs;
+    public javax.swing.JTabbedPane drawingTypeTabs;
     public javax.swing.JTextField filenameField;
-    javax.swing.JSpinner framerateSpinner;
-    javax.swing.JSpinner heightSpinner;
+    public javax.swing.JSpinner framerateSpinner;
+    public javax.swing.JSpinner heightSpinner;
     javax.swing.JPanel illustrationTab;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -273,8 +271,8 @@ public class NewFileForm extends javax.swing.JFrame {
     private javax.swing.JButton okButton;
     private javax.swing.JButton openPresetButton;
     private javax.swing.JComboBox<String> presetBox;
-    javax.swing.JSpinner resolutionSpinner;
+    public javax.swing.JSpinner resolutionSpinner;
     private javax.swing.JButton savePresetButton;
-    javax.swing.JSpinner widthSpinner;
+    public javax.swing.JSpinner widthSpinner;
     // End of variables declaration//GEN-END:variables
 }

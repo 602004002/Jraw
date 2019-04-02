@@ -98,6 +98,9 @@ public class LayerList extends javax.swing.JPanel {
     public void setSession(SessionModel session) {
         this.session = session;
         this.updateCells();
+        if (session != null) {
+            setSelectedIndices(session.getSelectedLayerIndexes());
+        }
         this.revalidate();
         this.repaint();
     }

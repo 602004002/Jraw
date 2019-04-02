@@ -12,7 +12,6 @@ import java.awt.Color;
  * @author nickz
  */
 public class LayerSettings {
-
     //delegate object for layer settings. aggregated.
     //color of the layer
     private Color layercolor; //normally transparent

@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package layer.buffer;
+package frontend.toolbar;
 
-import java.util.ArrayList;
-import javax.swing.JComponent;
+import tools.ToolSettings;
 
 /**
  *
  * @author nickz
  */
-public abstract class LayerChange {
-    protected ArrayList al;
-    protected JComponent dl;
+public class ToolSettingsBar {//controls tool options
+    private ToolSettings ts; //controlled from here
+    
+    
 }
