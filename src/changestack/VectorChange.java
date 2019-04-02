@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package p2p;
+package changestack;
 
 /**
  *
  * @author nickz
  */
-public class Client {
-    //represents client information
-    private int currentLayerIndex;
-    
+public class VectorChange extends LayerChange {
+    public VectorChange () {
+        
+    }
 }

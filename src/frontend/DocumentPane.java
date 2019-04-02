@@ -1,16 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package frontend;
 
+import frontend.MainViewController.TabCloseAction;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 /**
@@ -19,52 +17,80 @@ import javax.swing.JTabbedPane;
  */
 public class DocumentPane extends JTabbedPane {
 
-    private static final ImageIcon CLOSE_ICON;
     private final MainViewController mvc;
-
-    static {
-        CLOSE_ICON = new ImageIcon(
-                DocumentPane.class.getResource("/frontend/close.png"));
-    }
 
     public DocumentPane() {
         this.mvc = new MainViewController();
-        init();
     }
 
     public DocumentPane(MainViewController mvc) {
         this.mvc = mvc;
-        init();
     }
 
-    private void init() {
+    public void finishInit() {
         this.addChangeListener(this.mvc.new UpdateSelectedTab());
         this.addContainerListener(this.mvc.new TabContainerListener());
     }
 
     @Override
     public Component add(Component component) {
-        super.add(component);
-        int index = this.indexOfComponent(component);
-        if (index < 0) {
+        if (!(component instanceof LayerSubstrate)) {
+            super.add(component);
             return component;
         }
-        JPanel namePlusCloseBtn = new JPanel();
-        JLabel name = new JLabel(component.getName());
-        JButton closeBtn = new JButton();
-        closeBtn.addActionListener(
-                this.mvc.new TabCloseAction((LayerViewport) component));
-        if (CLOSE_ICON != null) {
-            closeBtn.setIcon(DocumentPane.CLOSE_ICON);
-            closeBtn.setBorder(null);
-            Dimension tt = new Dimension(16, 16);
-            closeBtn.setPreferredSize(tt);
-            closeBtn.setMaximumSize(tt);
-        }
-        namePlusCloseBtn.add(name);
-        namePlusCloseBtn.add(closeBtn);
-        this.setTabComponentAt(index, namePlusCloseBtn);
+        JScrollPane jsp = new JScrollPane(component);
+        super.add(jsp);
+        TabLabel tl = new TabLabel(component.getName(), this.mvc.new TabCloseAction((LayerSubstrate) component));
+        int index = this.indexOfComponent(jsp);
+        this.setTabComponentAt(index, tl);
         return component;
     }
 
+    @Override
+    public Component getSelectedComponent() {
+        LayerSubstrate ls = null;
+        Component c = super.getSelectedComponent();
+        if (c != null) {
+            ls = (LayerSubstrate) ((JScrollPane) c).getViewport().getView();
+        }
+        return ls;
+    }
+
+    public int indexOfComponent(LayerSubstrate component) {
+        for (int i = 0; i < this.getTabCount(); i++) {
+            Component check = ((JScrollPane)this.getComponentAt(i))
+                    .getViewport().getView();
+            if (check == component) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private static class TabLabel extends JPanel {
+
+        private static final ImageIcon CLOSE_ICON;
+        private static final Dimension TT;
+
+        static {
+            CLOSE_ICON = new ImageIcon(
+                    TabLabel.class.getResource("/frontend/close.png"));
+            TT = new Dimension(16, 16);
+        }
+
+        private JLabel nameLabel;
+        private JButton closeBtn;
+
+        TabLabel(String name, ActionListener al) {
+            nameLabel = new JLabel(name);
+            closeBtn = new JButton();
+            closeBtn.setIcon(TabLabel.CLOSE_ICON);
+            closeBtn.setBorder(null);
+            closeBtn.setPreferredSize(TT);
+            closeBtn.setMaximumSize(TT);
+            closeBtn.addActionListener(al);
+            this.add(nameLabel);
+            this.add(closeBtn);
+        }
+    }
 }

@@ -26,6 +26,7 @@ public class ResourceLoader implements Runnable {
     private static void loadTools() {
         System.out.println("Begin tool load");
         //load preset files
+        
     }
 
     private static void loadLayerPresets() {
