@@ -13,7 +13,7 @@ import tools.DrawingTool;
  *
  * @author nickz
  */
-public class DisplayCursor extends Cursor {
+public class RasterCursor extends Cursor {
 
     //private icon
     //seperate icons for non-drawing tools
@@ -23,8 +23,8 @@ public class DisplayCursor extends Cursor {
     private int xpos, ypos;
     private int radius;
 
-    public DisplayCursor() {
-        super(Cursor.CUSTOM_CURSOR);
+    public RasterCursor() {
+        super(Cursor.CROSSHAIR_CURSOR);
         this.xpos = 0;
         this.ypos = 0;
         this.radius = 10;

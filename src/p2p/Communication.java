@@ -5,7 +5,7 @@
  */
 package p2p;
 
-import frontend.DisplayCursor;
+import frontend.RasterCursor;
 
 /**
  *
@@ -15,7 +15,7 @@ public class Communication {
     //P2P via hole punching
     //true false for successful unsuccessful
     private Client otherUser;
-    private DisplayCursor c; //for cursor activity
+    private RasterCursor c; //for cursor activity
     public boolean connect() {
         return false;
     }

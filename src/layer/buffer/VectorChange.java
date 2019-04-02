@@ -3,16 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package changestack;
+package layer.buffer;
 
 import java.util.ArrayList;
-import javax.swing.JComponent;
+import tools.vector.VectorPoint;
 
 /**
  *
  * @author nickz
  */
-public abstract class LayerChange {
-    protected ArrayList al;
-    protected JComponent dl;
+public class VectorChange extends LayerChange {
+    public VectorChange () {
+        this.al = new ArrayList<VectorPoint>();
+    }
 }

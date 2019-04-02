@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.dialog;
+package layer.buffer;
 
 /**
  *
  * @author nickz
  */
-public interface YesAction {
-    void action();
+public class RasterChange extends LayerChange {
+    public RasterChange () {
+        
+    }
 }

@@ -11,6 +11,4 @@ package p2p;
  */
 public class Client {
     //represents client information
-    private int currentLayerIndex;
-    
 }

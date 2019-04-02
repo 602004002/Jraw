@@ -6,6 +6,7 @@
 package runner;
 
 import frontend.MainView;
+import frontend.MainViewController;
 import layer.LayerSettings;
 import frontend.Model;
 import java.util.ArrayList;
@@ -31,10 +32,9 @@ public class Main {
             System.out.println("Main program thread started");
             try {
                 rl.join();
-                Model m = new Model();
-                MainView mv = new MainView(m);
-                mv.finishInit();
+                MainView mv = new MainView();
                 mv.setVisible(true);
+                System.out.println("MainView Open");
             } catch (InterruptedException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Failed to join ResourceLoader thread");

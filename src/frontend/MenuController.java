@@ -5,19 +5,15 @@
  */
 package frontend;
 
-import common.DrawingType;
 import common.SessionModel;
-import frontend.dialog.YesNoDialog;
+import frontend.subforms.newfile.NewSessionController;
 import frontend.subforms.newfile.NewFileForm;
-import io.CommonIO;
-import io.FileExistsException;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import layer.LayerSettings;
 import layer.RasterLayer;
@@ -26,20 +22,12 @@ import layer.RasterLayer;
  *
  * @author nickz
  */
-public class MenuController extends AbstractController {
+public class MenuController extends Controller {
 
-    private static final FileNameExtensionFilter JRAW, PNG, JPG;
+    private static final FileNameExtensionFilter FF;
 
     static {
-        JRAW = new FileNameExtensionFilter("Jraw File Format (.jraw)", "jraw");
-        PNG = new FileNameExtensionFilter("Portable Network Graphics (.png)", "png");
-        JPG = new FileNameExtensionFilter("JPG Image (.jpg)", "jpg", "jpeg");
-    }
-
-    private MainViewController mvc;
-
-    void setMainViewController(MainViewController mvc) {
-        this.mvc = mvc;
+        FF = new FileNameExtensionFilter("Jraw File Format", "jraw");
     }
 
     class QuitAction implements ActionListener {
@@ -55,47 +43,11 @@ public class MenuController extends AbstractController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            NewFileForm nff = new NewFileForm();
-            NewFileFormOK nffo = new NewFileFormOK(nff);
-            nff.addOkButtonActionListener(nffo);
-            nff.setVisible(true);
-        }
-    }
-
-    class NewFileFormOK implements ActionListener {
-
-        private NewFileForm nff;
-
-        public NewFileFormOK(NewFileForm nff) {
-            this.nff = nff;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int selectedIndex = nff.drawingTypeTabs.getSelectedIndex();
-            Dimension size = new Dimension((int) nff.widthSpinner.getValue(),
-                    (int) nff.heightSpinner.getValue());
-            SessionModel.Builder sb = new SessionModel.Builder()
-                    .name(nff.filenameField.getText())
-                    .resolution((int) nff.resolutionSpinner.getValue())
-                    .size(size);
-            if (nff.backgroundColorCheckbox.isSelected()) {
-                sb.backgroundColor(nff.colorButton.getBackground());
-            }
-            switch (selectedIndex) {
-                case 0:
-                    sb.drawingType(DrawingType.Illustration);
-                    break;
-                case 1:
-                    sb.drawingType(DrawingType.Animation)
-                            .framerate((int) nff.framerateSpinner.getValue());
-                    break;
-            }
-            SessionModel s = sb.build();
-            mainview.layerList.setSession(s);
-            model.add(s);
-            mvc.updateTabs();
-            nff.dispose();
+            Thread nf = new Thread(() -> {
+                new NewFileForm(new NewSessionController(model, mainview))
+                        .setVisible(true);
+            }, "New file thread");
+            nf.start();
         }
     }
 
@@ -111,64 +63,30 @@ public class MenuController extends AbstractController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
+            System.out.println("Action");
+            assert (mainview.documentTabbedPane.getTabCount()
+                    == model.sessionList.size()) : "Why do the sizes differ";
             SessionModel sm = getCurrentSessionModel();
             if (sm != null) {
-                File f = CommonIO.showSaveDialog(mainview, JRAW);
-                if (f != null) {
+                File f;
+                Thread jfcThread = new Thread(() -> {
+                    JFileChooser jfc = new JFileChooser();
+                    jfc.setVisible(true);
+                }, "JFileChooser Thread");
+                Thread saveThread = new Thread(() -> {
                     try {
-                        CommonIO.saveProprieteryFormat(sm, f, false);
-                    } catch (IOException ex) {
+                        jfcThread.join();
+                        System.out.println("Saving...");
+                        //CommonIO.saveProprieteryFormat(sm, path);
+                    } catch (InterruptedException ex) {
                         Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (FileExistsException ex) {
-                        //overwrite?
-                        YesNoDialog ynd = new YesNoDialog(mainview, () -> {
-                            try {
-                                CommonIO.saveProprieteryFormat(sm, f, true);
-                                System.out.println("overwriting...");
-                            } catch (IOException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            } catch (FileExistsException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            }
-                        });
-                        ynd.setVisible(true);
                     }
-                }
-            }
-
-        }
-
-    }
-
-    class ExportFileAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            SessionModel sm = getCurrentSessionModel();
-            if (sm != null) {
-                File f = CommonIO.showSaveDialog(mainview, PNG, JPG);
-                if (f != null) {
-                    try {
-                        CommonIO.export(sm, f, false);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (FileExistsException ex) {
-                        //overwrite?
-                        YesNoDialog ynd = new YesNoDialog(mainview, () -> {
-                            try {
-                                CommonIO.export(sm, f, true);
-                                System.out.println("overwriting...");
-                            } catch (IOException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            } catch (FileExistsException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            }
-                        });
-                        ynd.setVisible(true);
-                    }
-                }
+                }, "Saving Thread");
+                jfcThread.start();
+                saveThread.start();
             }
         }
+
     }
 
     class SaveAsFileAction implements ActionListener {
@@ -185,11 +103,14 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = getCurrentSessionModel();
-            LayerSubstrate lv = getCurrentViewport();
+            LayerViewport lv = getCurrentViewport();
+            System.out.println("action");
             sm.hierarchy.add(new RasterLayer("Layer " + sm.getLayerCount(),
                     sm, new LayerSettings()));
             lv.updateLayers();
             mainview.layerList.setSession(sm);
         }
+
     }
+
 }

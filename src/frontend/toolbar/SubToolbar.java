@@ -3,13 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package input;
+package frontend.toolbar;
+
+import tools.ToolSettings;
 
 /**
  *
  * @author nickz
  */
-public interface DrawMethod {
-
-    void draw(PointerInfo info);
+public class SubToolbar {//controls tool options
+    private ToolSettings ts; //controlled from here
+    
+    
 }
