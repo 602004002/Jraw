@@ -5,11 +5,15 @@
  */
 package changestack;
 
+import java.awt.image.Raster;
+
 /**
  *
  * @author nickz
  */
-public class RasterChange extends LayerChange {
+public class RasterChange extends Change {
+    private Raster r;
+    
     public RasterChange () {
         
     }

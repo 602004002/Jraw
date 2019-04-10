@@ -111,7 +111,7 @@ public class LayerList extends javax.swing.JPanel {
         if (this.session == null) {
             return;
         }
-        int size = this.session.hierarchy.size();
+        int size = this.session.layerHierarchy.size();
         this.cells = new LayerListCell[size];
         GroupLayout layersPaneLayout = new GroupLayout(this.layersPane);
         this.layersPane.setLayout(layersPaneLayout);
@@ -119,7 +119,7 @@ public class LayerList extends javax.swing.JPanel {
                 javax.swing.GroupLayout.Alignment.LEADING, true);
         SequentialGroup vSeq = layersPaneLayout.createSequentialGroup();
         for (int i = size - 1; i >= 0; i--) {
-            JComponent layer = this.session.hierarchy.get(i);
+            JComponent layer = this.session.layerHierarchy.get(i);
             LayerListCell llc = new LayerListCell(layer, this);
             llc.visBtn.setSelected(layer.isVisible());
             horizontal = horizontal.addComponent(llc, GroupLayout.DEFAULT_SIZE,

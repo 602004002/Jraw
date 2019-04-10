@@ -22,15 +22,15 @@ public class Model {
         return this.sessionList.get(index);
     }
 
+    public LayerSubstrate getSubstrate(int index) {
+        return this.substrateList.get(index);
+    }
+
     public SessionModel getSessionModel(LayerSubstrate substrate) {
         if (substrate == null) {
             return null;
         }
         return this.sessionList.get(this.substrateList.indexOf(substrate));
-    }
-
-    public LayerSubstrate getSubstrate(int index) {
-        return this.substrateList.get(index);
     }
 
     public LayerSubstrate getSubstrate(SessionModel session) {
@@ -45,6 +45,14 @@ public class Model {
         this.substrateList.remove(index);
     }
 
+    public void remove(SessionModel session) {
+        this.remove(this.sessionList.indexOf(session));
+    }
+
+    public void remove(LayerSubstrate substrate) {
+        this.remove(this.substrateList.indexOf(substrate));
+    }
+
     public int size() {
         assert (sessionList.size() == substrateList.size());
         return this.sessionList.size();
@@ -56,6 +64,11 @@ public class Model {
 
     public int indexOf(LayerSubstrate substrate) {
         return this.substrateList.indexOf(substrate);
+    }
+
+    public void clear() {
+        this.sessionList.clear();
+        this.substrateList.clear();
     }
 
     @Override

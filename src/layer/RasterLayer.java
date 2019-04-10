@@ -9,13 +9,12 @@ import common.SessionModel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import javax.swing.JComponent;
 
 /**
  *
  * @author nickz
  */
-public class RasterLayer extends JComponent {
+public class RasterLayer extends DrawingLayer {
 
     private LayerSettings layerSettings;
     private BufferedImage data;
@@ -25,7 +24,7 @@ public class RasterLayer extends JComponent {
     public RasterLayer(String name,
             SessionModel sessionModel,
             LayerSettings layerSettings) {
-        this.size = sessionModel.getSize();
+        this.size = sessionModel.size();
         this.data = new BufferedImage(size.width, size.height,
                 BufferedImage.TYPE_INT_ARGB);
         this.sessionModel = sessionModel;
@@ -60,7 +59,7 @@ public class RasterLayer extends JComponent {
         this.layerSettings = layerSettings;
     }
 
-    public BufferedImage getImg() {
+    public BufferedImage getRasterImage() {
         return this.data;
     }
 }

@@ -5,11 +5,16 @@
  */
 package input;
 
+import layer.RasterLayer;
+import layer.VectorLayer;
+
 /**
  *
  * @author nickz
  */
 public interface DrawMethod {
 
-    void draw(PointerInfo info);
+    void drawRaster(PointerInfo info, RasterLayer layer);
+
+    void drawVector(PointerInfo info, VectorLayer layer);
 }

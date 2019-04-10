@@ -16,13 +16,15 @@ public class PointerInfo {
     public int deviceType, pointerID;
     public boolean inverted;
     public int pressure;
-    public Point point;
+    public int maxPressure = 1023;
+    public Point currentPoint;
+    public Point prevPoint;
 
     public String getDevIdInvString() {
         return "dev,id,inv = " + deviceType + "," + pointerID + "," + inverted;
     }
 
     public String getXYPressureString() {
-        return "x,y,pressure = " + point.x + "," + point.y + "," + pressure;
+        return "x,y,pressure = " + currentPoint.x + "," + currentPoint.y + "," + pressure;
     }
 }

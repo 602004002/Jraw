@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.subforms.newfile;
+package frontend.newfile;
 
 import java.awt.event.ActionListener;
 import javax.swing.text.DocumentFilter;

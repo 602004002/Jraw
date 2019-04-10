@@ -6,13 +6,12 @@
 package layer;
 
 import common.SessionModel;
-import javax.swing.JComponent;
 
 /**
  *
  * @author nickz
  */
-public class VectorLayer extends JComponent {
+public class VectorLayer extends DrawingLayer {
 
     private String name;
 

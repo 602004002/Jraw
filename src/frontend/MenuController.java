@@ -8,7 +8,7 @@ package frontend;
 import common.DrawingType;
 import common.SessionModel;
 import frontend.dialog.YesNoDialog;
-import frontend.subforms.newfile.NewFileForm;
+import frontend.newfile.NewFileForm;
 import io.CommonIO;
 import io.FileExistsException;
 import java.awt.Dimension;
@@ -131,6 +131,7 @@ public class MenuController extends AbstractController {
                                 Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
                             }
                         });
+                        ynd.setMessage("Overwrite?");
                         ynd.setVisible(true);
                     }
                 }
@@ -164,6 +165,7 @@ public class MenuController extends AbstractController {
                                 Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
                             }
                         });
+                        ynd.setMessage("Overwrite?");
                         ynd.setVisible(true);
                     }
                 }
@@ -186,7 +188,7 @@ public class MenuController extends AbstractController {
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = getCurrentSessionModel();
             LayerSubstrate lv = getCurrentViewport();
-            sm.hierarchy.add(new RasterLayer("Layer " + sm.getLayerCount(),
+            sm.layerHierarchy.add(new RasterLayer("Layer " + sm.layerCount(),
                     sm, new LayerSettings()));
             lv.updateLayers();
             mainview.layerList.setSession(sm);

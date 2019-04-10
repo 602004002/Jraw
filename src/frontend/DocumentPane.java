@@ -27,7 +27,7 @@ public class DocumentPane extends JTabbedPane {
         this.mvc = mvc;
     }
 
-    public void finishInit() {
+    public final void finishInit() {
         this.addChangeListener(this.mvc.new UpdateSelectedTab());
         this.addContainerListener(this.mvc.new TabContainerListener());
     }

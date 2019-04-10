@@ -5,14 +5,10 @@
  */
 package changestack;
 
-import java.util.ArrayList;
-import javax.swing.JComponent;
-
 /**
  *
  * @author nickz
  */
-public abstract class LayerChange {
-    protected ArrayList al;
-    protected JComponent dl;
+public class ChangeFactory {
+    
 }

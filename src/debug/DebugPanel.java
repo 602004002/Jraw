@@ -28,18 +28,18 @@ public class DebugPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
         if (pi != null) {
-            this.pi.point = this.getMousePosition();
-            if (pi.point != null) {
-                ellipse2D.setFrame(pi.point.x - FONTHEIGHT, pi.point.y - FONTHEIGHT, 2 * FONTHEIGHT, 2 * FONTHEIGHT);
+            this.pi.currentPoint = this.getMousePosition();
+            if (pi.currentPoint != null) {
+                ellipse2D.setFrame(pi.currentPoint.x - FONTHEIGHT, pi.currentPoint.y - FONTHEIGHT, 2 * FONTHEIGHT, 2 * FONTHEIGHT);
                 g2.draw(ellipse2D);
 
-                line2D.setLine(pi.point.x, pi.point.y, pi.point.x + FONTHEIGHT, pi.point.y + 2 * FONTHEIGHT);
+                line2D.setLine(pi.currentPoint.x, pi.currentPoint.y, pi.currentPoint.x + FONTHEIGHT, pi.currentPoint.y + 2 * FONTHEIGHT);
                 g2.draw(line2D);
 
                 String s1 = "dev,id,inv = " + pi.deviceType + "," + pi.pointerID + "," + pi.inverted;
-                String s2 = "x,y,pressure = " + pi.point.x + "," + pi.point.y + "," + pi.pressure;
-                g2.drawString(s1, pi.point.x + FONTHEIGHT, pi.point.y + 2 * FONTHEIGHT);
-                g2.drawString(s2, pi.point.x + FONTHEIGHT, pi.point.y + 3 * FONTHEIGHT);
+                String s2 = "x,y,pressure = " + pi.currentPoint.x + "," + pi.currentPoint.y + "," + pi.pressure;
+                g2.drawString(s1, pi.currentPoint.x + FONTHEIGHT, pi.currentPoint.y + 2 * FONTHEIGHT);
+                g2.drawString(s2, pi.currentPoint.x + FONTHEIGHT, pi.currentPoint.y + 3 * FONTHEIGHT);
             }
         }
     }

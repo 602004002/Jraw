@@ -3,14 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package p2p;
+package vectorgraphics;
+
+import java.awt.Point;
 
 /**
  *
  * @author nickz
  */
-public class Client {
-    //represents client information
-    private int currentLayerIndex;
+public class VectorPoint extends Point {
+    public Point nextPoint;
+    public Point prevPoint;
     
+    private float weight;
+    private int diameterSize;
 }

@@ -22,7 +22,7 @@ public class LayerSubstrate extends JLayeredPane {
 
     public LayerSubstrate(SessionModel session) {
         this.session = session;
-        this.size = new Dimension(session.getSize());
+        this.size = new Dimension(session.size());
         //this.mpl = new MousePositionListener(session, this.layeredPane);
 
         init();
@@ -35,7 +35,7 @@ public class LayerSubstrate extends JLayeredPane {
 
     @Override
     public String getName() {
-        return this.session.getName();
+        return this.session.name();
     }
 
     private void init() {
@@ -55,8 +55,8 @@ public class LayerSubstrate extends JLayeredPane {
 
     public void updateLayers() {
         this.removeAll();
-        for (int i = this.session.getLayerCount() - 1; i >= 0; i--) {
-            JComponent dl = session.hierarchy.get(i);
+        for (int i = this.session.layerCount() - 1; i >= 0; i--) {
+            JComponent dl = session.layerHierarchy.get(i);
             this.add(dl);
             dl.setSize(size);
             dl.setLocation(size.width / 8, size.height / 8);

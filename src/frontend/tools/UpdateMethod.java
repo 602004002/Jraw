@@ -3,16 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.toolbar;
-
-import tools.ToolSettings;
+package frontend.tools;
 
 /**
  *
  * @author nickz
  */
-public class ToolSettingsBar {//controls tool options
-    private ToolSettings ts; //controlled from here
-    
-    
+public interface UpdateMethod {
+    void update();
 }

@@ -68,7 +68,7 @@ public class MainViewController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             int mainviewIndex = mainview.documentTabbedPane.indexOfComponent(tabToClose);
-            if (true) {
+            if (true) {//need to implement save state soon
                 mainview.documentTabbedPane.remove(mainviewIndex);
                 remove();
             } else {

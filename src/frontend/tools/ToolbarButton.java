@@ -3,33 +3,31 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.toolbar;
+package frontend.tools;
 
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import javax.swing.Icon;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.border.EtchedBorder;
-import tools.DrawingTool;
 
 /**
  *
  * @author nickz
  */
-public class ToolButton extends JButton{
+public class ToolbarButton extends JButton{
     
     private ToolbarPassSelected tps;
     private DrawingTool dt;
     
-    public ToolButton (DrawingTool dt, ToolbarPassSelected tps) {
+    public ToolbarButton (DrawingTool dt, ToolbarPassSelected tps) {
         this.tps = tps;
         this.dt = dt;
         this.init(dt);
     }
     private void init (DrawingTool dt) {
-        this.setIcon(dt.getIcon());
-        this.setBorder(new EtchedBorder());
+        this.setIcon(dt.toolbarIcon());
+        this.setBorder(BorderFactory.createEtchedBorder());
         this.setToolTipText(dt.toString());
         this.addActionListener((ActionEvent ae) -> {
             //System.out.println("Pass!");

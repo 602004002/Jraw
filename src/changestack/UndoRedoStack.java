@@ -13,28 +13,32 @@ import java.util.LinkedList;
  */
 public class UndoRedoStack {
 
-    private final LinkedList bf;
+    private final LinkedList<Change> bf;
     //some sort of array storing changes between every user interaction
 
-    public UndoRedoStack() {
+    public static UndoRedoStack createEmptyStack() {
+        return new UndoRedoStack();
+    }
+    
+    private UndoRedoStack() {
         this.bf = new LinkedList<>();
     }
 
     /**
      * @param change Push a LayerChange to end.
      */
-    public void push(Object change) {
+    public void push(Change change) {
         this.bf.addLast(change);
     }
 
     /**
      * @return Returns the last action.
      */
-    public Object pop() {
+    public Change pop() {
         return this.bf.removeLast();
     }
     
-   public Object peek() {
+   public Change peek() {
        return this.bf.getLast();
    }
 

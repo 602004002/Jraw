@@ -97,13 +97,13 @@ public class CommonIO {
     }
 
     public static BufferedImage render(SessionModel sm) {//render to a single image
-        Dimension size = sm.getSize();
+        Dimension size = sm.size();
         BufferedImage ri = new BufferedImage(size.width, size.height,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics g = ri.getGraphics();
-        sm.hierarchy.forEach((JComponent layer) -> {
+        sm.layerHierarchy.forEach((JComponent layer) -> {
             if (layer instanceof RasterLayer && layer.isVisible()) {
-                g.drawImage(((RasterLayer) layer).getImg(), 0, 0, layer);
+                g.drawImage(((RasterLayer) layer).getRasterImage(), 0, 0, layer);
             }
             if (layer instanceof VectorLayer) {
                 throw new UnsupportedOperationException("VectorLayer is not implemented yet.");

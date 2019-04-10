@@ -11,7 +11,7 @@ import changestack.UndoRedoStack;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
-import javax.swing.JComponent;
+import layer.DrawingLayer;
 
 /**
  *
@@ -19,19 +19,6 @@ import javax.swing.JComponent;
  */
 public class SessionModel {
     //this class is like a live file
-
-    //keep a base image of commited changes
-    //private drawinglayer
-    private String name;
-    private DrawingType drawingType;
-    private boolean saved; //based on buffer changes
-    private Dimension size;
-    private int resolution; //in pixels
-    private int framerate;
-    
-    public final ArrayList<JComponent> hierarchy;
-    public final UndoRedoStack changeBuffer;
-    private int[] selectedLayerIndexes;
 
     public static class Builder {
 
@@ -73,10 +60,22 @@ public class SessionModel {
         }
 
         public SessionModel build() {
+            if (name == null || name.isEmpty()) {
+                throw new IllegalStateException("Name cannot be null or empty");
+            }
+            if (drawingType == null) {
+                throw new IllegalStateException("Need a drawing type");
+            }
+            if (size == null) {
+                throw new IllegalStateException("Need a size");
+            }
+            if (resolution == 0) {
+                throw new IllegalStateException("Need a resolution");
+            }
             return new SessionModel(this);
         }
     }
-    
+
     private SessionModel(Builder sb) {
         this.name = sb.name;
         this.drawingType = sb.drawingType;
@@ -84,27 +83,40 @@ public class SessionModel {
         this.size = sb.size;
         this.resolution = sb.resolution;
         this.framerate = sb.framerate;
-        this.changeBuffer = new UndoRedoStack();
-        this.hierarchy = new ArrayList<>();
-        if (sb.backgroundColor != null) {
-            LayerSettings ls1 = new LayerSettings(sb.backgroundColor);
-            this.hierarchy.add(new RasterLayer("Paper", this, ls1));
-            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
-        } else {
-            this.hierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
-        }
-        init();
-    }
-    
-    private void init() {
-        this.selectedLayerIndexes = new int[]{this.getLayerCount() - 1};
+        this.stack = UndoRedoStack.createEmptyStack();
+        this.layerHierarchy = new ArrayList<>();
+        initializeFirstValues(sb.backgroundColor);
     }
 
-    public String getName() {
+    //keep a base image of commited changes
+    //private drawinglayer
+    private String name;
+    private DrawingType drawingType;
+    private boolean saved; //based on buffer changes
+    private int resolution; //in pixels
+    private int framerate;
+
+    public final Dimension size;
+    public final ArrayList<DrawingLayer> layerHierarchy;
+    public final UndoRedoStack stack;
+    private int[] selectedLayerIndexes;
+
+    private void initializeFirstValues(Color bgColor) {
+        if (bgColor != null) {
+            LayerSettings ls1 = new LayerSettings(bgColor);
+            this.layerHierarchy.add(new RasterLayer("Paper", this, ls1));
+            this.layerHierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+        } else {
+            this.layerHierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+        }
+        this.selectedLayerIndexes = new int[]{this.layerCount() - 1};
+    }
+
+    public String name() {
         return name;
     }
 
-    public void setName(String name) {
+    public void rename(String name) {
         this.name = name;
     }
 
@@ -112,7 +124,7 @@ public class SessionModel {
         return drawingType;
     }
 
-    public void setDrawingType(DrawingType dt) {
+    public void drawingType(DrawingType dt) {
         this.drawingType = dt;
     }
 
@@ -124,33 +136,41 @@ public class SessionModel {
         this.saved = saved;
     }
 
-    public int getResolution() {
-        return resolution;
+    public int resolution() {
+        return this.resolution;
     }
 
     public void setResolution(int resolution) {
         this.resolution = resolution;
     }
 
-    public Dimension getSize() {
+    public Dimension size() {
         return this.size;
     }
 
-    public void setSize(Dimension size) {
-        this.size = size;
+    public void resize(int width, int height) {
+        this.size.width = width;
+        this.size.height = height;
     }
 
-    public int getFramerate() {
+    public void resize(Dimension size) {
+        this.size.width = size.width;
+        this.size.height = size.height;
+    }
+
+    public int framerate() {
         return framerate;
     }
 
     public void setFramerate(int framerate) {
         this.framerate = framerate;
     }
-    
+
     /**
-     * WARNING - May not be up to date. Recommended that you use 
-     * LayerList.getSelectedLayerIndexes() instead
+     * WARNING - May not be up to date. Recommended that you use
+     * LayerList.getSelectedLayerIndexes() instead This is just meant as a
+     * hand-off when the user switches tabs
+     *
      * @return Returns an int array of all selected indexes.
      */
     public int[] getSelectedLayerIndexes() {
@@ -158,7 +178,8 @@ public class SessionModel {
     }
 
     /**
-     * NOT meant to be used elsewhere other than controllers
+     * WARNING - NOT meant to be used elsewhere other than controllers. This is
+     * just meant as a hand-off when the user switches tabs
      *
      * @param indexes Indexes to be selected
      */
@@ -166,23 +187,19 @@ public class SessionModel {
         this.selectedLayerIndexes = indexes;
     }
 
-    public int getLayerCount() {
-        return this.hierarchy.size();
-    }
-
-    public void undo() {
-
-    }
-
-    public void redo() {
-
+    public int layerCount() {
+        return this.layerHierarchy.size();
     }
 
     @Override
     public String toString() {
-        return "Session: " + this.name
-                + "\n Width: " + this.size.width
-                + "\n Height: " + this.size.height;
+        return "BEGIN_[SessionModel Name: " + this.name
+                + "\n Drawing Type: " + this.drawingType
+                + "\n isSaved: " + this.saved
+                + "\n Size: " + this.size
+                + "\n Resolution: " + this.resolution
+                + "\n Framerate (if Applicable): " + this.framerate
+                + "]_END";
     }
 
 }

@@ -3,12 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.toolbar;
+package layer;
+
+import javax.swing.JComponent;
 
 /**
  *
  * @author nickz
  */
-interface ToolbarPassSelected {
-    void pass(ToolButton selected);
+public abstract class DrawingLayer extends JComponent {
+    
 }

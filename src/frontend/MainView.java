@@ -5,6 +5,8 @@
  */
 package frontend;
 
+import frontend.tools.Toolbar;
+import input.PointerInfo;
 import input.PointerListener;
 import jwinpointer.JWinPointerReader;
 
@@ -19,10 +21,13 @@ public class MainView extends javax.swing.JFrame {
     private final Model model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
+    PointerInfo pointerInfo;
 
     public MainView(Model model) {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
+        this.pointerInfo = new PointerInfo();
+        this.pointerListener = new PointerListener(this.pointerInfo);
         this.model = model;
         this.mvc.setModel(model);
         this.mc.setModel(model);
@@ -30,11 +35,10 @@ public class MainView extends javax.swing.JFrame {
         initComponents();
     }
 
-    public void finishInit() {
+    public final void finishInit() {
         this.mvc.setMainView(this);
         this.mc.setMainView(this);
         this.pointerReader = new JWinPointerReader(this);
-        this.pointerListener = new PointerListener();
         this.pointerReader.addPointerEventListener(pointerListener);
         initHandlers();
     }
@@ -48,10 +52,10 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        toolbar = new frontend.toolbar.Toolbar();
+        toolbar = new Toolbar(this.pointerListener);
         subToolbarSplitPane = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
-        colorPalette2 = new frontend.toolbar.ColorToolbar();
+        colorPalette2 = new frontend.tools.ColorToolbar();
         layerList = new frontend.layerlist.LayerList();
         documentTabbedPane = new DocumentPane(this.mvc);
         mainMenuBar = new javax.swing.JMenuBar();
@@ -158,6 +162,8 @@ public class MainView extends javax.swing.JFrame {
 
         subToolbarSplitPane.setTopComponent(jPanel1);
         subToolbarSplitPane.setRightComponent(colorPalette2);
+
+        layerList.setMinimumSize(new java.awt.Dimension(216, 300));
 
         documentTabbedPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED)));
 
@@ -386,7 +392,7 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 990, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -398,8 +404,7 @@ public class MainView extends javax.swing.JFrame {
             .addComponent(documentTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -424,7 +429,7 @@ public class MainView extends javax.swing.JFrame {
     public javax.swing.JMenuItem clearMenuItem;
     public javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenu collaborateMenu;
-    private frontend.toolbar.ColorToolbar colorPalette2;
+    private frontend.tools.ColorToolbar colorPalette2;
     public javax.swing.JMenuItem connectMenuItem;
     public javax.swing.JMenuItem connectionSettingsMenuItem;
     public javax.swing.JMenuItem copyMenuItem;
@@ -481,7 +486,7 @@ public class MainView extends javax.swing.JFrame {
     private javax.swing.JSplitPane subToolbarSplitPane;
     public javax.swing.JMenuItem tabletSettingsMenuItem;
     public javax.swing.JMenu tonalCorrectionMenu;
-    private frontend.toolbar.Toolbar toolbar;
+    private frontend.tools.Toolbar toolbar;
     public javax.swing.JMenu transformMenu;
     public javax.swing.JMenuItem undoMenuItem;
     private javax.swing.JMenuItem versionMenuItem;

@@ -5,36 +5,42 @@
  */
 package p2p;
 
-import frontend.DisplayCursor;
-
 /**
  *
  * @author nickz
  */
 public class Communication {
+
     //P2P via hole punching
-    //true false for successful unsuccessful
-    private Client otherUser;
-    private DisplayCursor c; //for cursor activity
-    public boolean connect() {
-        return false;
+    public void connect(User otherUser) {
+
     }
-    public boolean disconnect() {
-        return false;
+
+    public void disconnect() {
+
     }
-    public boolean connect(boolean force) {
-        return false;
+
+    public void connect(User otherUser, boolean force) {
+        if (!force) {
+            this.connect(otherUser);
+        }
     }
-    public boolean disconnect(boolean force) {
-        return false;
+
+    public void disconnect(boolean force) {
+        if (!force) {
+            this.disconnect();
+        }
     }
-    public boolean sendData(byte[] bytes) {//using with sockets. will probably change later
-        return false;//there may be more of these methods instead of just for generic "data"
+
+    public void sendData(byte[] bytes) {//using with sockets. will probably change later
+        //there may be more of these methods instead of just for generic "data"
     }
-    public boolean compareData () {
-        return false;
+
+    public void compareData() {
+        
     }
-    public boolean sync () {
-        return false;
+
+    public void sync() {
+        
     }
 }

@@ -551,7 +551,7 @@
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="subToolbarSplitPane" min="-2" pref="184" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="documentTabbedPane" min="-2" pref="990" max="-2" attributes="0"/>
+              <Component id="documentTabbedPane" min="-2" pref="930" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="layerList" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -566,13 +566,12 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="layerList" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="frontend.toolbar.Toolbar" name="toolbar">
+    <Container class="frontend.tools.Toolbar" name="toolbar">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
@@ -591,6 +590,9 @@
           <Dimension value="[40, 10]"/>
         </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new Toolbar(this.pointerListener)"/>
+      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
     </Container>
@@ -637,7 +639,7 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Component class="frontend.toolbar.ColorToolbar" name="colorPalette2">
+        <Component class="frontend.tools.ColorToolbar" name="colorPalette2">
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="right"/>
@@ -647,6 +649,11 @@
       </SubComponents>
     </Container>
     <Component class="frontend.layerlist.LayerList" name="layerList">
+      <Properties>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[216, 300]"/>
+        </Property>
+      </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>

@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package changestack;
+package frontend.tools;
 
 /**
  *
  * @author nickz
  */
-public class VectorChange extends Change {
-    public VectorChange () {
-        
-    }
+interface ToolbarPassSelected {
+    void pass(ToolbarButton selected);
 }
