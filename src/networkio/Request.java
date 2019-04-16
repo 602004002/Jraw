@@ -3,23 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io;
-
-import common.SessionModel;
+package networkio;
 
 /**
  *
  * @author nickz
  */
-public class RasterVectorFile {
-
-    private SessionModel s; //aggregated object
-
-    public void save() {
-
-    }
-
-    public void load() {
-
-    }
+public enum Request {
+    UserInfo
 }

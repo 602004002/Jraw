@@ -3,12 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io;
+package fileio;
 
 /**
  *
  * @author nickz
  */
-public enum ImageType {
-        GIF, BMP, JPEG, PNG, TIFF, Targa, PSD
+public class FileExistsException extends Exception {
+
+    public FileExistsException(String msg) {
+        super(msg);
     }
+}

@@ -3,15 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io;
+package fileio;
+
+import common.SessionModel;
 
 /**
  *
  * @author nickz
  */
-public class FileExistsException extends Exception {
+public class RasterVectorFile {
 
-    public FileExistsException(String msg) {
-        super(msg);
+    private SessionModel s; //aggregated object
+
+    public void save() {
+
+    }
+
+    public void load() {
+
     }
 }

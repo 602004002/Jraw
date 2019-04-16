@@ -5,7 +5,7 @@
  */
 package frontend.tools;
 
-import input.PointerListener;
+import common.User;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -20,18 +20,10 @@ import javax.swing.border.EtchedBorder;
 public class Toolbar extends JToolBar {
 
     private ToolbarButton selected;
-    private ArrayList<DrawingTool> toolList;
-    private PointerListener pointerListener;
+    private final ArrayList<DrawingTool> toolList;
 
     public Toolbar() {
         //test
-        this.toolList = new ArrayList<>();
-        debug();
-    }
-
-    public Toolbar(PointerListener pointerListener) {
-        //test
-        this.pointerListener = pointerListener;
         this.toolList = new ArrayList<>();
         debug();
     }
@@ -81,7 +73,7 @@ public class Toolbar extends JToolBar {
         }
         this.selected = selected;
         selected.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        this.pointerListener.setDrawMethod(this.selected.getTool());
+        User.localUser.setDrawingTool(selected.getTool());
         System.out.println(selected.getTool());
     }
 

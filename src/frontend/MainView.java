@@ -5,8 +5,7 @@
  */
 package frontend;
 
-import frontend.tools.Toolbar;
-import input.PointerInfo;
+import common.User;
 import input.PointerListener;
 import jwinpointer.JWinPointerReader;
 
@@ -21,13 +20,11 @@ public class MainView extends javax.swing.JFrame {
     private final Model model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
-    PointerInfo pointerInfo;
 
     public MainView(Model model) {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
-        this.pointerInfo = new PointerInfo();
-        this.pointerListener = new PointerListener(this.pointerInfo);
+        this.pointerListener = new PointerListener(User.localUser.pointerInfo());
         this.model = model;
         this.mvc.setModel(model);
         this.mc.setModel(model);
@@ -41,6 +38,17 @@ public class MainView extends javax.swing.JFrame {
         this.pointerReader = new JWinPointerReader(this);
         this.pointerReader.addPointerEventListener(pointerListener);
         initHandlers();
+        mvc.menuUpdate();
+    }
+
+    private void initHandlers() {
+        this.documentTabbedPane.finishInit();
+        this.newMenuItem.addActionListener(this.mc.new NewFileAction());
+        this.quitMenuItem.addActionListener(this.mc.new QuitAction());
+        this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
+        this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
+
+        this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
     }
 
     /**
@@ -52,7 +60,7 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        toolbar = new Toolbar(this.pointerListener);
+        toolbar = new frontend.tools.Toolbar();
         subToolbarSplitPane = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         colorPalette2 = new frontend.tools.ColorToolbar();
@@ -338,7 +346,7 @@ public class MainView extends javax.swing.JFrame {
         viewMenu.setFocusable(false);
         mainMenuBar.add(viewMenu);
 
-        collaborateMenu.setText("Collaborate");
+        collaborateMenu.setText("Server");
 
         connectMenuItem.setText("Connect...");
         collaborateMenu.add(connectMenuItem);
@@ -409,18 +417,9 @@ public class MainView extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void initHandlers() {
-        this.documentTabbedPane.finishInit();
-        this.newMenuItem.addActionListener(this.mc.new NewFileAction());
-        this.quitMenuItem.addActionListener(this.mc.new QuitAction());
-        this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
-        this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
-
-        this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutMenuItem;
+    public javax.swing.JMenuItem aboutMenuItem;
     public javax.swing.JMenuItem advancedFillMenuItem;
     private javax.swing.JMenu animationMenu;
     public javax.swing.JMenuItem bufferMenuItem;
@@ -443,7 +442,7 @@ public class MainView extends javax.swing.JFrame {
     public javax.swing.JMenu editMenu;
     public javax.swing.JMenuItem exportMenuItem;
     public javax.swing.JMenu fileMenu;
-    private javax.swing.JMenuItem fillMenuItem;
+    public javax.swing.JMenuItem fillMenuItem;
     private javax.swing.JMenu gfxMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JMenu imageMenu;
@@ -489,7 +488,7 @@ public class MainView extends javax.swing.JFrame {
     private frontend.tools.Toolbar toolbar;
     public javax.swing.JMenu transformMenu;
     public javax.swing.JMenuItem undoMenuItem;
-    private javax.swing.JMenuItem versionMenuItem;
+    public javax.swing.JMenuItem versionMenuItem;
     private javax.swing.JMenu viewMenu;
     private javax.swing.JMenu windowMenu;
     // End of variables declaration//GEN-END:variables

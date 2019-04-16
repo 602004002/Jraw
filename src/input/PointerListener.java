@@ -6,14 +6,14 @@
 package input;
 
 import common.SessionModel;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
+import common.User;
+import frontend.display.DisplayCursor;
+import frontend.display.LayerSubstrate;
 import java.awt.Point;
-import javax.swing.JComponent;
+import java.util.Arrays;
+import javax.swing.SwingUtilities;
 import jwinpointer.JWinPointerReader.PointerEventListener;
-import layer.RasterLayer;
-import layer.VectorLayer;
+import layer.DrawingLayer;
 
 /**
  *
@@ -22,40 +22,41 @@ import layer.VectorLayer;
 public class PointerListener implements PointerEventListener {
 
     private SessionModel session;
+    private LayerSubstrate substrate;
     private PointerInfo pointerInfo;
-    private DrawMethod drawMethod;
 
-    public PointerListener(PointerInfo pointerInfo) {
-        this.pointerInfo = pointerInfo;
+    public PointerListener(PointerInfo pi) {
+        this.pointerInfo = pi;
     }
 
-    public void setDrawMethod(DrawMethod drawMethod) {
-        this.drawMethod = drawMethod;
-    }
-
-    public void setSession(SessionModel session) {
+    public void setSession(SessionModel session, LayerSubstrate substrate) {
+        if (this.substrate != null) {
+            this.substrate.disableOverlay(); //for old substrate
+        }
         this.session = session;
+        this.substrate = substrate;
+        if (substrate != null) {
+            substrate.enableOverlay();
+            //temp
+            substrate.getOverlay().setCursors(Arrays.asList(new DisplayCursor(this.pointerInfo, true)));
+        }
     }
 
     @Override
     public void pointerXYEvent(int deviceType, int pointerID, int eventType,
             boolean inverted, int x, int y, int pressure) {
-        pointerInfo.deviceType = deviceType;
-        pointerInfo.pointerID = pointerID;
-        pointerInfo.inverted = inverted;
-        pointerInfo.pressure = pressure;
-        JComponent layer = session.layerHierarchy.get(session.layerCount() - 1);
-        if (session != null) {
-            pointerInfo.currentPoint = layer.getMousePosition();
+        pointerInfo.setInverted(inverted);
+        pointerInfo.setPressure(pressure);
+        DrawingLayer drawLayer = session.layerHierarchy.get(session.getSelectedLayerIndexes()[0]);
+        if (session != null && substrate != null) {
+            Point p = substrate.getMousePosition(true);
+            pointerInfo.setCurrentPoint(SwingUtilities.convertPoint(substrate,
+                    p, drawLayer));
+            pointerInfo.setOverlayPoint(SwingUtilities.convertPoint(substrate,
+                    p, this.substrate.getOverlay()));
         }
-        if (drawMethod != null) {
-            if (layer instanceof RasterLayer) {
-                drawMethod.drawRaster(pointerInfo, (RasterLayer) layer);
-            } else if (layer instanceof VectorLayer) {
-                drawMethod.drawVector(pointerInfo, (VectorLayer) layer);
-            }
-        }
-        pointerInfo.prevPoint = pointerInfo.currentPoint;
+        User.localUser.drawingTool().draw(pointerInfo, (DrawingLayer) drawLayer);
+        pointerInfo.setPrevPoint(pointerInfo.getCurrentPoint());
     }
 
     @Override
@@ -66,6 +67,5 @@ public class PointerListener implements PointerEventListener {
     @Override
     public void pointerEvent(int deviceType, int pointerID, int eventType,
             boolean inverted) {
-
     }
 }

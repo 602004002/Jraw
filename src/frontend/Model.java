@@ -1,5 +1,6 @@
 package frontend;
 
+import frontend.display.LayerSubstrate;
 import common.SessionModel;
 import java.util.ArrayList;
 
@@ -16,6 +17,7 @@ public class Model {
     public void add(SessionModel session) {
         this.sessionList.add(session);
         this.substrateList.add(new LayerSubstrate(session));
+        System.out.println("Added to Model");
     }
 
     public SessionModel getSessionModel(int index) {
@@ -40,15 +42,30 @@ public class Model {
         return this.substrateList.get(this.sessionList.indexOf(session));
     }
 
+    /**
+     * Removes both session and substrate at the specified index
+     *
+     * @param index
+     */
     public void remove(int index) {
         this.sessionList.remove(index);
         this.substrateList.remove(index);
     }
 
+    /**
+     * Removes specified session and associated substrate
+     *
+     * @param session
+     */
     public void remove(SessionModel session) {
         this.remove(this.sessionList.indexOf(session));
     }
 
+    /**
+     * Removes specified substrate and associated session.
+     *
+     * @param substrate Substrate to remove
+     */
     public void remove(LayerSubstrate substrate) {
         this.remove(this.substrateList.indexOf(substrate));
     }
@@ -59,10 +76,16 @@ public class Model {
     }
 
     public int indexOf(SessionModel session) {
+        if (session == null) {
+            return -1;
+        }
         return this.sessionList.indexOf(session);
     }
 
     public int indexOf(LayerSubstrate substrate) {
+        if (substrate == null) {
+            return -1;
+        }
         return this.substrateList.indexOf(substrate);
     }
 

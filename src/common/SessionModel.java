@@ -5,13 +5,13 @@
  */
 package common;
 
-import layer.LayerSettings;
-import layer.RasterLayer;
-import changestack.UndoRedoStack;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
+
 import layer.DrawingLayer;
+import layer.RasterLayer;
+import changestack.UndoRedoStack;
 
 /**
  *
@@ -22,12 +22,19 @@ public class SessionModel {
 
     public static class Builder {
 
+        private User creator;
+
         private String name;
         private DrawingType drawingType;
         private Dimension size;
         private int resolution; //in pixels
         private int framerate;
         private Color backgroundColor;
+
+        public Builder creator(final User creator) {
+            this.creator = creator;
+            return this;
+        }
 
         public Builder name(final String name) {
             this.name = name;
@@ -77,6 +84,7 @@ public class SessionModel {
     }
 
     private SessionModel(Builder sb) {
+        this.creator = sb.creator;
         this.name = sb.name;
         this.drawingType = sb.drawingType;
         this.saved = false;
@@ -90,24 +98,33 @@ public class SessionModel {
 
     //keep a base image of commited changes
     //private drawinglayer
+    public final User creator;
+
     private String name;
     private DrawingType drawingType;
     private boolean saved; //based on buffer changes
     private int resolution; //in pixels
     private int framerate;
-
-    public final Dimension size;
+    private Dimension size;
     public final ArrayList<DrawingLayer> layerHierarchy;
     public final UndoRedoStack stack;
     private int[] selectedLayerIndexes;
 
     private void initializeFirstValues(Color bgColor) {
+        RasterLayer blankLayer = (RasterLayer) new RasterLayer.Builder()
+                .name("Layer 1")
+                .size(size)
+                .build();
         if (bgColor != null) {
-            LayerSettings ls1 = new LayerSettings(bgColor);
-            this.layerHierarchy.add(new RasterLayer("Paper", this, ls1));
-            this.layerHierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+            RasterLayer colorLayer = (RasterLayer) new RasterLayer.Builder()
+                    .fillColor(bgColor)
+                    .name("Paper")
+                    .size(size)
+                    .build();
+            this.layerHierarchy.add(colorLayer);
+            this.layerHierarchy.add(blankLayer);
         } else {
-            this.layerHierarchy.add(new RasterLayer("Layer 1", this, new LayerSettings()));
+            this.layerHierarchy.add(blankLayer);
         }
         this.selectedLayerIndexes = new int[]{this.layerCount() - 1};
     }
@@ -167,9 +184,6 @@ public class SessionModel {
     }
 
     /**
-     * WARNING - May not be up to date. Recommended that you use
-     * LayerList.getSelectedLayerIndexes() instead This is just meant as a
-     * hand-off when the user switches tabs
      *
      * @return Returns an int array of all selected indexes.
      */
@@ -194,6 +208,7 @@ public class SessionModel {
     @Override
     public String toString() {
         return "BEGIN_[SessionModel Name: " + this.name
+                + "\n" + this.layerHierarchy
                 + "\n Drawing Type: " + this.drawingType
                 + "\n isSaved: " + this.saved
                 + "\n Size: " + this.size

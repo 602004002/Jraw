@@ -255,6 +255,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Fill"/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="advancedFillMenuItem">
               <Properties>
@@ -435,7 +438,7 @@
         </Menu>
         <Menu class="javax.swing.JMenu" name="collaborateMenu">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Collaborate"/>
+            <Property name="text" type="java.lang.String" value="Server"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="connectMenuItem">
@@ -506,11 +509,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="About..."/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="versionMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Version Information..."/>
               </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+              </AuxValues>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -590,9 +599,6 @@
           <Dimension value="[40, 10]"/>
         </Property>
       </Properties>
-      <AuxValues>
-        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new Toolbar(this.pointerListener)"/>
-      </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
     </Container>

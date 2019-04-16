@@ -1,5 +1,6 @@
 package frontend;
 
+import frontend.display.LayerSubstrate;
 import frontend.MainViewController.TabCloseAction;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -48,19 +49,20 @@ public class DocumentPane extends JTabbedPane {
 
     @Override
     public Component getSelectedComponent() {
-        LayerSubstrate ls = null;
         Component c = super.getSelectedComponent();
-        if (c != null) {
-            ls = (LayerSubstrate) ((JScrollPane) c).getViewport().getView();
+        if (c instanceof JScrollPane) {
+            return ((JScrollPane)c).getViewport().getView();
         }
-        return ls;
+        return c;
     }
 
     public int indexOfComponent(LayerSubstrate component) {
         for (int i = 0; i < this.getTabCount(); i++) {
-            Component check = ((JScrollPane)this.getComponentAt(i))
-                    .getViewport().getView();
-            if (check == component) {
+            Component check = this.getComponentAt(i);
+            if (!(check instanceof JScrollPane)) {
+                continue;
+            }
+            if (((JScrollPane) check).getViewport().getView() == component) {
                 return i;
             }
         }

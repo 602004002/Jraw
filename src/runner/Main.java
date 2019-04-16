@@ -6,12 +6,12 @@
 package runner;
 
 import frontend.MainView;
-import layer.LayerSettings;
 import frontend.Model;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import frontend.tools.DrawingTool;
+import layer.LayerPreset;
 
 /**
  *
@@ -25,8 +25,8 @@ public class Main {
     public static void main(String args[]) {
         //Loading screen
         ArrayList<DrawingTool> dt = new ArrayList<>();
-        ArrayList<LayerSettings> ls = new ArrayList<>();
-        Thread rl = new Thread(new ResourceLoader(dt, ls), "ResourceLoader");
+        ArrayList<LayerPreset> lp = new ArrayList<>();
+        Thread rl = new Thread(new ResourceLoader(dt, lp), "ResourceLoader");
         Thread mw = new Thread(() -> {
             System.out.println("Main program thread started");
             try {

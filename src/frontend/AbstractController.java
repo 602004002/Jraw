@@ -1,8 +1,8 @@
 package frontend;
 
+import frontend.display.LayerSubstrate;
 import common.SessionModel;
 import java.awt.Component;
-import javax.swing.JScrollPane;
 
 /**
  *
@@ -13,7 +13,7 @@ public abstract class AbstractController {
     protected MainView mainview;
     protected Model model;
 
-    public void setMainView(MainView mainview) {
+    protected void setMainView(MainView mainview) {
         this.mainview = mainview;
     }
 
@@ -22,19 +22,18 @@ public abstract class AbstractController {
     }
 
     protected SessionModel getCurrentSessionModel() {
-        int index = -1;
-        Component c = mainview.documentTabbedPane.getSelectedComponent();
-        if (c != null) {
-            index = model.indexOf((LayerSubstrate) c);
-        }
-        SessionModel s = null;
+        int index = model.indexOf(this.getCurrentViewport());
         if (index >= 0) {
-            s = this.model.getSessionModel(index);
+            return this.model.getSessionModel(index);
         }
-        return s;
+        return null;
     }
 
     protected LayerSubstrate getCurrentViewport() {
-        return (LayerSubstrate) this.mainview.documentTabbedPane.getSelectedComponent();
+        Component c = this.mainview.documentTabbedPane.getSelectedComponent();
+        if (c instanceof LayerSubstrate) {
+            return (LayerSubstrate) c;
+        }
+        return null;
     }
 }

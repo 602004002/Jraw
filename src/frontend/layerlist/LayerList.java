@@ -97,7 +97,11 @@ public class LayerList extends javax.swing.JPanel {
 
     public void setSession(SessionModel session) {
         this.session = session;
-        this.updateCells();
+        this.refresh();
+    }
+
+    public void refresh() {
+        this.updateUICells();
         if (session != null) {
             setSelectedIndices(session.getSelectedLayerIndexes());
         }
@@ -105,7 +109,7 @@ public class LayerList extends javax.swing.JPanel {
         this.repaint();
     }
 
-    public void updateCells() {
+    void updateUICells() {
         this.layersPane.removeAll();
         this.cells = null;
         if (this.session == null) {
@@ -145,28 +149,43 @@ public class LayerList extends javax.swing.JPanel {
         return index;
     }
 
+    private int[] removeFromArrayAndResize(int[] arr, int index) {
+        if (arr.length == 0) {
+            return new int[0];
+        }
+        int[] newArr = new int[arr.length - 1];
+        System.arraycopy(arr, 0, newArr, 0, index);
+        System.arraycopy(arr, index + 1,
+                newArr, index,
+                newArr.length - index);
+        return newArr;
+    }
+
+    private int[] resizeAndAppendToArray(int[] arr, int data) {
+        if (arr.length == 0) {
+            return new int[]{data};
+        }
+        int[] newArr = new int[arr.length + 1];
+        System.arraycopy(arr, 0, newArr, 0, arr.length);
+        newArr[arr.length] = data;
+        return newArr;
+    }
+
     void appendSelfToSelectedIndexes(LayerListCell llc) {
         int index = indexOf(llc);
         assert (index >= 0) : "Why is was it not found?";
-        if (this.selectedIndexes != null) {
-            for (int id : this.selectedIndexes) {//scan array if already exists
-                if (id == index) {
+            for (int indexFromSel : this.selectedIndexes) {//scan array if already exists
+                if (indexFromSel == index) {
                     return;
                 }
             }
-        } else {
-            this.selectedIndexes = new int[0];
-        }
-        int[] resize = this.selectedIndexes;
-        this.selectedIndexes = new int[resize.length + 1];
-        System.arraycopy(resize, 0, this.selectedIndexes, 0, resize.length);
-        this.selectedIndexes[resize.length] = index;
+        this.selectedIndexes = resizeAndAppendToArray(this.selectedIndexes, index);
         this.session.setSelectedLayerIndices(this.selectedIndexes);
     }
 
     void removeSelfFromSelectedIndexes(LayerListCell llc) {
         int indexInCells = indexOf(llc);
-        if (indexInCells < 0 || this.selectedIndexes == null) {
+        if (indexInCells < 0) {
             return;
         }
         int indexInSelectedIndexes = -1;
@@ -178,12 +197,7 @@ public class LayerList extends javax.swing.JPanel {
         if (indexInSelectedIndexes < 0) {
             return;
         }
-        int[] old = this.selectedIndexes;
-        this.selectedIndexes = new int[old.length - 1];
-        System.arraycopy(old, 0, this.selectedIndexes, 0, indexInSelectedIndexes);
-        System.arraycopy(old, indexInSelectedIndexes + 1,
-                this.selectedIndexes, indexInSelectedIndexes,
-                this.selectedIndexes.length - indexInSelectedIndexes);
+        this.selectedIndexes = this.removeFromArrayAndResize(this.selectedIndexes, indexInSelectedIndexes);
         this.session.setSelectedLayerIndices(this.selectedIndexes);
     }
 
@@ -195,11 +209,11 @@ public class LayerList extends javax.swing.JPanel {
         for (int i : indexes) {
             cells[i].setSelected(true);
         }
-        session.setSelectedLayerIndices(this.selectedIndexes);
+        session.setSelectedLayerIndices(indexes); //handoff
     }
 
     public void clearSelection() {
-        this.selectedIndexes = null;
+        this.selectedIndexes = new int[0];
         for (LayerListCell llc : cells) {
             llc.setSelected(false);
         }
@@ -218,7 +232,7 @@ public class LayerList extends javax.swing.JPanel {
     }
 
     void updateIcons() {
-        if (this.selectedIndexes != null && this.selectedIndexes.length > 0) {
+        if (this.selectedIndexes.length > 0) {
             for (LayerListCell llc : this.cells) {
                 llc.selBtn.setIcon(null);
             }

@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend;
+package frontend.display;
 
 import common.SessionModel;
+import input.PointerInfo;
 import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.Point;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JLayeredPane;
 
@@ -17,20 +19,24 @@ import javax.swing.JLayeredPane;
  */
 public class LayerSubstrate extends JLayeredPane {
 
+    private LayerOverlay overlay;
     private final SessionModel session;
     private Dimension size;
 
     public LayerSubstrate(SessionModel session) {
         this.session = session;
-        this.size = new Dimension(session.size());
-        //this.mpl = new MousePositionListener(session, this.layeredPane);
-
+        this.size = session.size();
         init();
     }
+
+    public void enableOverlay() {
+        this.overlay = new LayerOverlay();
+        this.updateLayers();
+    }
     
-    @Override
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    public void disableOverlay() {
+        this.overlay = null;
+        this.updateLayers();
     }
 
     @Override
@@ -40,9 +46,6 @@ public class LayerSubstrate extends JLayeredPane {
 
     private void init() {
         this.setVPSize();
-        //this.layeredPane.addMouseListener(mpl);
-        //this.layeredPane.addMouseMotionListener(mpl);
-        //this.addMouseWheelListener(mpl);
         updateLayers();
     }
 
@@ -55,12 +58,25 @@ public class LayerSubstrate extends JLayeredPane {
 
     public void updateLayers() {
         this.removeAll();
+        if (this.overlay != null) {
+            this.add(this.overlay);
+            Dimension d = new Dimension(size);
+            d.height *= 1.25;
+            d.width *= 1.25;
+            this.overlay.setSize(d);
+            this.overlay.setLocation(0, 0);
+        }
+        Point loc = new Point(size.width / 8, size.height / 8);
         for (int i = this.session.layerCount() - 1; i >= 0; i--) {
             JComponent dl = session.layerHierarchy.get(i);
             this.add(dl);
             dl.setSize(size);
-            dl.setLocation(size.width / 8, size.height / 8);
+            dl.setLocation(loc);
         }
+    }
+
+    public LayerOverlay getOverlay() {
+        return this.overlay;
     }
 
     //zooms this amount in. should have a maximum and minimum

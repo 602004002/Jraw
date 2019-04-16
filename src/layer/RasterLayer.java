@@ -5,8 +5,7 @@
  */
 package layer;
 
-import common.SessionModel;
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 
@@ -16,26 +15,39 @@ import java.awt.image.BufferedImage;
  */
 public class RasterLayer extends DrawingLayer {
 
-    private LayerSettings layerSettings;
     private BufferedImage data;
-    private SessionModel sessionModel;
-    private Dimension size;
 
-    public RasterLayer(String name,
-            SessionModel sessionModel,
-            LayerSettings layerSettings) {
-        this.size = sessionModel.size();
-        this.data = new BufferedImage(size.width, size.height,
+    private RasterLayer(Builder b) {
+        super(b);
+        this.data = new BufferedImage(this.size.width, this.size.height,
                 BufferedImage.TYPE_INT_ARGB);
-        this.sessionModel = sessionModel;
-        this.layerSettings = layerSettings;
-        this.setName(name);
-        fullColor();
+        if (b.fillColor != null) {
+            fillColor(b.fillColor);
+        }
     }
 
-    private void fullColor() {
+    public static class Builder extends DrawingLayer.AbstractBuilder {
+
+        private Color fillColor;
+
+        public Builder fillColor(final Color fillColor) {
+            this.fillColor = fillColor;
+            return this;
+        }
+
+        @Override
+        public RasterLayer build() {
+            if (this.size == null) {
+                throw new IllegalStateException("Size cannot be null");
+            }
+            return new RasterLayer(this);
+        }
+
+    }
+
+    private void fillColor(Color c) {
         Graphics g = this.data.createGraphics();
-        g.setColor(this.layerSettings.getLayercolor());
+        g.setColor(c);
         g.fillRect(0, 0, this.size.width, this.size.height);
         g.dispose();
     }
@@ -43,20 +55,13 @@ public class RasterLayer extends DrawingLayer {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        System.out.println("Painting " + this.getName());
         g.drawImage(this.data, 0, 0, this.size.width, this.size.height, this);
     }
 
     public void bufferlog() {
         throw new UnsupportedOperationException("Not implemented yet.");
         //s.bf.push();//push 
-    }
-
-    public LayerSettings getLayerSettings() {
-        return this.layerSettings;
-    }
-
-    public void setLayerSettings(LayerSettings layerSettings) {
-        this.layerSettings = layerSettings;
     }
 
     public BufferedImage getRasterImage() {

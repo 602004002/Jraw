@@ -5,7 +5,6 @@
  */
 package frontend.tools;
 
-import input.DrawMethod;
 import input.PointerInfo;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -18,7 +17,7 @@ import layer.VectorLayer;
  *
  * @author nickz
  */
-public class PencilTool extends DrawingTool implements DrawMethod {
+public class PencilTool extends DrawingTool {
 
     private PencilTool(Builder b) {
         super(b);
@@ -41,10 +40,10 @@ public class PencilTool extends DrawingTool implements DrawMethod {
      */
     @Override
     public void drawRaster(PointerInfo pointerInfo, RasterLayer layer) {
-        if (layer.isVisible() && pointerInfo.pressure > 0) {
-            Graphics2D g2d = (Graphics2D) layer.getRasterImage().createGraphics();
+        if (layer.isVisible() && pointerInfo.getPressure() > 0) {
+            Graphics2D g2d = layer.getRasterImage().createGraphics();
             float stroke = this.diameterSize;
-            float multiplier = ((float) pointerInfo.pressure / pointerInfo.maxPressure);
+            float multiplier = ((float) pointerInfo.getPressure() / pointerInfo.getMaxPressure());
             if (this.pressureAffectsSize) {
                 stroke *= multiplier;
             }
@@ -59,8 +58,8 @@ public class PencilTool extends DrawingTool implements DrawMethod {
                 g2d.setColor(this.color);
             }
             g2d.setStroke(new BasicStroke(stroke));
-            Point old = pointerInfo.prevPoint;
-            Point cur = pointerInfo.currentPoint;
+            Point old = pointerInfo.getPrevPoint();
+            Point cur = pointerInfo.getCurrentPoint();
             if (old != null && cur != null) {
                 g2d.drawLine(old.x, old.y, cur.x, cur.y);
             }

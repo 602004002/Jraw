@@ -5,12 +5,6 @@
  */
 package frontend;
 
-import common.DrawingType;
-import common.SessionModel;
-import frontend.dialog.YesNoDialog;
-import frontend.newfile.NewFileForm;
-import io.CommonIO;
-import io.FileExistsException;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +13,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import layer.LayerSettings;
+
+import frontend.display.LayerSubstrate;
+import common.DrawingType;
+import common.SessionModel;
+import frontend.dialog.YesNoDialog;
+import frontend.newfile.NewFileForm;
+import fileio.CommonIO;
+import fileio.FileExistsException;
 import layer.RasterLayer;
 
 /**
@@ -92,7 +93,6 @@ public class MenuController extends AbstractController {
                     break;
             }
             SessionModel s = sb.build();
-            mainview.layerList.setSession(s);
             model.add(s);
             mvc.updateTabs();
             nff.dispose();
@@ -188,10 +188,13 @@ public class MenuController extends AbstractController {
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = getCurrentSessionModel();
             LayerSubstrate lv = getCurrentViewport();
-            sm.layerHierarchy.add(new RasterLayer("Layer " + sm.layerCount(),
-                    sm, new LayerSettings()));
+            RasterLayer newLayer = (RasterLayer) new RasterLayer.Builder()
+                    .name("Layer " + sm.layerCount())
+                    .size(sm.size())
+                    .build();
+            sm.layerHierarchy.add(newLayer);
             lv.updateLayers();
-            mainview.layerList.setSession(sm);
+            mainview.layerList.refresh();
         }
     }
 }

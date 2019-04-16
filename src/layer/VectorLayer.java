@@ -5,18 +5,23 @@
  */
 package layer;
 
-import common.SessionModel;
-
 /**
  *
  * @author nickz
  */
 public class VectorLayer extends DrawingLayer {
 
-    private String name;
+    private VectorLayer(Builder b) {
+        super(b);
+    }
+    
+    public static class Builder extends DrawingLayer.AbstractBuilder {
 
-    public VectorLayer(String name, SessionModel s, LayerSettings ls) {
-        this.name = name;
+        @Override
+        public VectorLayer build() {
+            return new VectorLayer(this);
+        }
+
     }
 
 }

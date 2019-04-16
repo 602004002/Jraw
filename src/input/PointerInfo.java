@@ -5,26 +5,87 @@
  */
 package input;
 
+import common.User;
 import java.awt.Point;
+import java.io.Serializable;
 
 /**
  *
  * @author nickz
  */
-public class PointerInfo {
+public class PointerInfo implements Serializable {
 
-    public int deviceType, pointerID;
-    public boolean inverted;
-    public int pressure;
-    public int maxPressure = 1023;
-    public Point currentPoint;
-    public Point prevPoint;
+    private boolean inverted;
+    private int pressure;
+    private int maxPressure = 1023;
+    private Point currentPoint;
+    private Point prevPoint;
+    private Point overlayPoint;
 
-    public String getDevIdInvString() {
-        return "dev,id,inv = " + deviceType + "," + pointerID + "," + inverted;
-    }
+    private User userTag;
 
     public String getXYPressureString() {
         return "x,y,pressure = " + currentPoint.x + "," + currentPoint.y + "," + pressure;
+    }
+
+    @Override
+    public String toString() {
+        return this.currentPoint.toString();
+    }
+
+    public boolean isInverted() {
+        return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
+    }
+
+    public int getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(int pressure) {
+        this.pressure = pressure;
+    }
+
+    public int getMaxPressure() {
+        return maxPressure;
+    }
+
+    public void setMaxPressure(int maxPressure) {
+        this.maxPressure = maxPressure;
+    }
+
+    public Point getCurrentPoint() {
+        return currentPoint;
+    }
+
+    public void setCurrentPoint(Point currentPoint) {
+        this.currentPoint = currentPoint;
+    }
+
+    public Point getPrevPoint() {
+        return prevPoint;
+    }
+
+    public void setPrevPoint(Point prevPoint) {
+        this.prevPoint = prevPoint;
+    }
+
+    public Point getOverlayPoint() {
+        return overlayPoint;
+    }
+
+    public void setOverlayPoint(Point overlayPoint) {
+        this.overlayPoint = overlayPoint;
+    }
+
+    public User getUserTag() {
+        return userTag;
+    }
+
+    public void setUserTag(User userTag) {
+        this.userTag = userTag;
     }
 }

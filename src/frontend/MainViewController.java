@@ -5,6 +5,7 @@
  */
 package frontend;
 
+import frontend.display.LayerSubstrate;
 import common.SessionModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,17 +30,49 @@ public class MainViewController extends AbstractController {
         }
     }
 
-    void update() {
+    void mvUpdate() {
+        System.out.println("MVC Update Call");
         SessionModel s = this.getCurrentSessionModel();
+        LayerSubstrate ls = this.getCurrentViewport();
         this.mainview.layerList.setSession(s);
-        this.mainview.pointerListener.setSession(s);
+        this.mainview.pointerListener.setSession(s, ls);
+        menuUpdate();
+    }
+    
+    void menuUpdate() {
+        boolean sessionExists = this.getCurrentSessionModel() != null;
+        this.mainview.closeMenuItem.setEnabled(sessionExists);
+        this.mainview.saveMenuItem.setEnabled(sessionExists);
+        this.mainview.saveAsMenuItem.setEnabled(sessionExists);
+        this.mainview.exportMenuItem.setEnabled(sessionExists);
+        this.mainview.undoMenuItem.setEnabled(sessionExists);
+        this.mainview.redoMenuItem.setEnabled(sessionExists);
+        this.mainview.cutMenuItem.setEnabled(sessionExists);
+        this.mainview.copyMenuItem.setEnabled(sessionExists);
+        this.mainview.pasteMenuItem.setEnabled(sessionExists);
+        this.mainview.clearMenuItem.setEnabled(sessionExists);
+        this.mainview.fillMenuItem.setEnabled(sessionExists);
+        this.mainview.advancedFillMenuItem.setEnabled(sessionExists);
+        this.mainview.changeResolutionMenuItem.setEnabled(sessionExists);
+        this.mainview.changeCanvasSizeMenuItem.setEnabled(sessionExists);
+        this.mainview.cropMenuItem.setEnabled(sessionExists);
+        this.mainview.layerPropertiesMenuItem.setEnabled(sessionExists);
+        this.mainview.bufferMenuItem.setEnabled(sessionExists);
+        this.mainview.newRasterLayerMenuItem.setEnabled(sessionExists);
+        this.mainview.newLayerFolderMenuItem.setEnabled(sessionExists);
+        this.mainview.duplicateLayerMenuItem.setEnabled(sessionExists);
+        this.mainview.deleteLayerMenuItem.setEnabled(sessionExists);
+        this.mainview.selectAllMenuItem.setEnabled(sessionExists);
+        this.mainview.deselectMenuItem.setEnabled(sessionExists);
+        this.mainview.invertSelectionMenuItem.setEnabled(sessionExists);
+        
     }
 
     class UpdateSelectedTab implements ChangeListener {
 
         @Override
         public void stateChanged(ChangeEvent e) {
-            update();
+            mvUpdate();
         }
     }
 
@@ -47,12 +80,12 @@ public class MainViewController extends AbstractController {
 
         @Override
         public void componentAdded(ContainerEvent e) {
-            update();
+            mvUpdate();
         }
 
         @Override
         public void componentRemoved(ContainerEvent e) {
-            update();
+            mvUpdate();
         }
 
     }
@@ -67,8 +100,9 @@ public class MainViewController extends AbstractController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int mainviewIndex = mainview.documentTabbedPane.indexOfComponent(tabToClose);
+            SessionModel sm = model.getSessionModel(tabToClose);
             if (true) {//need to implement save state soon
+                int mainviewIndex = mainview.documentTabbedPane.indexOfComponent(tabToClose);
                 mainview.documentTabbedPane.remove(mainviewIndex);
                 remove();
             } else {
@@ -79,9 +113,8 @@ public class MainViewController extends AbstractController {
         }
 
         private void remove() {
-            int index = model.indexOf(tabToClose);
-            model.remove(index);
-            update();
+            model.remove(tabToClose);
+            mvUpdate();
         }
     }
 }

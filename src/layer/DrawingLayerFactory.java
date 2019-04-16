@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package input;
-
-import layer.RasterLayer;
-import layer.VectorLayer;
+package layer;
 
 /**
  *
  * @author nickz
  */
-public interface DrawMethod {
-
-    void drawRaster(PointerInfo info, RasterLayer layer);
-
-    void drawVector(PointerInfo info, VectorLayer layer);
+public class DrawingLayerFactory {
+    
+    public static DrawingLayer.AbstractBuilder getBuilder(String type) {
+        
+        
+        return null;
+    }
+    
 }

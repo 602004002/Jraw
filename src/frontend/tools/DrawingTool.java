@@ -5,27 +5,30 @@
  */
 package frontend.tools;
 
-import input.DrawMethod;
-import input.PointerInfo;
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 import javax.swing.ImageIcon;
+
+import layer.DrawingLayer;
 import layer.RasterLayer;
 import layer.VectorLayer;
+import input.PointerInfo;
 
 /**
  *
  * @author nickz
  */
-public abstract class DrawingTool implements DrawMethod {
+public abstract class DrawingTool implements Serializable {
 
     //like a preset for the cursor to draw 
     protected String name;
     protected int diameterSize, crosshairLength, dithering, hardness, density;
     protected boolean pressureAffectsSize, pressureAffectsDensity;
     protected Color color;
-    protected ImageIcon toolbarIcon;
-    protected BufferedImage canvasIcon;
+    protected transient ImageIcon toolbarIcon;
+    protected transient BufferedImage canvasIcon; //this doesn't serialize
 
     protected DrawingTool(AbstractBuilder b) {
         this.name = b.name;
@@ -37,21 +40,21 @@ public abstract class DrawingTool implements DrawMethod {
         this.pressureAffectsDensity = b.pressureAffectsDensity;
         this.color = b.color;
         this.toolbarIcon = b.toolbarIcon;
-        if (b.canvasIcon == null) {
-            initCanvasIcon();
-        } else {
+        if (b.canvasIcon != null) {
             this.canvasIcon = b.canvasIcon;
+        } else {
+            generateCanvasIcon();
         }
     }
 
-    protected static abstract class AbstractBuilder {
+    public static abstract class AbstractBuilder {
 
-        private String name;
-        private int diameterSize, dithering, hardness, density;
-        private boolean pressureAffectsSize, pressureAffectsDensity;
-        private Color color;
-        private ImageIcon toolbarIcon;
-        private BufferedImage canvasIcon;
+        protected  String name;
+        protected int diameterSize, dithering, hardness, density;
+        protected boolean pressureAffectsSize, pressureAffectsDensity;
+        protected Color color;
+        protected ImageIcon toolbarIcon;
+        protected BufferedImage canvasIcon;
 
         public AbstractBuilder name(String name) {
             this.name = name;
@@ -106,6 +109,16 @@ public abstract class DrawingTool implements DrawMethod {
         public abstract DrawingTool build();
     }
 
+    public void draw(PointerInfo pointerInfo, DrawingLayer layer) {
+        if (layer instanceof RasterLayer) {
+            drawRaster(pointerInfo, (RasterLayer) layer);
+        } else if (layer instanceof VectorLayer) {
+            drawVector(pointerInfo, (VectorLayer) layer);
+        } else {
+            throw new IllegalArgumentException("Unsupported layer class");
+        }
+    }
+
     /**
      * Raster Draw Method. Writes directly to the image
      *
@@ -132,12 +145,19 @@ public abstract class DrawingTool implements DrawMethod {
 
     public void resizeDiameter(int diameter) {
         this.diameterSize = diameter;
-        this.initCanvasIcon();
+        this.generateCanvasIcon();
     }
 
-    public void initCanvasIcon() {
+    public int diameter() {
+        return this.diameterSize;
+    }
+
+    public final void generateCanvasIcon() {
         int size = diameterSize + crosshairLength;
         this.canvasIcon = new BufferedImage(size, size, BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D g2d = this.canvasIcon.createGraphics();
+
+        g2d.dispose();
     }
 
     @Override
