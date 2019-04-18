@@ -7,8 +7,9 @@ package input;
 
 import common.SessionModel;
 import common.User;
-import frontend.display.DisplayCursor;
-import frontend.display.LayerSubstrate;
+import frontend.layerdisplay.DisplayCursor;
+import frontend.layerdisplay.LayerOverlay;
+import frontend.layerdisplay.LayerSubstrate;
 import java.awt.Point;
 import java.util.Arrays;
 import javax.swing.SwingUtilities;
@@ -49,11 +50,11 @@ public class PointerListener implements PointerEventListener {
         pointerInfo.setPressure(pressure);
         DrawingLayer drawLayer = session.layerHierarchy.get(session.getSelectedLayerIndexes()[0]);
         if (session != null && substrate != null) {
-            Point p = substrate.getMousePosition(true);
-            pointerInfo.setCurrentPoint(SwingUtilities.convertPoint(substrate,
-                    p, drawLayer));
-            pointerInfo.setOverlayPoint(SwingUtilities.convertPoint(substrate,
-                    p, this.substrate.getOverlay()));
+            LayerOverlay lo = this.substrate.getOverlay();
+            Point p = lo.getMousePosition(true);
+            pointerInfo.setCurrentPoint(
+                    SwingUtilities.convertPoint(substrate, p, drawLayer));
+            pointerInfo.setOverlayPoint(p);
         }
         User.localUser.drawingTool().draw(pointerInfo, (DrawingLayer) drawLayer);
         pointerInfo.setPrevPoint(pointerInfo.getCurrentPoint());

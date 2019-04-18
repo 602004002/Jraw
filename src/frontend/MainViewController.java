@@ -5,12 +5,10 @@
  */
 package frontend;
 
-import frontend.display.LayerSubstrate;
+import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -20,7 +18,7 @@ import javax.swing.event.ChangeListener;
  */
 public class MainViewController extends AbstractController {
 
-    void updateTabs() {
+    public void updateTabs() {
         DocumentPane dp = this.mainview.documentTabbedPane;
         for (int i = 0; i < model.size(); i++) {
             LayerSubstrate ls = this.model.getSubstrate(i);
@@ -30,7 +28,7 @@ public class MainViewController extends AbstractController {
         }
     }
 
-    void mvUpdate() {
+    public void mvUpdate() {
         System.out.println("MVC Update Call");
         SessionModel s = this.getCurrentSessionModel();
         LayerSubstrate ls = this.getCurrentViewport();
@@ -38,8 +36,8 @@ public class MainViewController extends AbstractController {
         this.mainview.pointerListener.setSession(s, ls);
         menuUpdate();
     }
-    
-    void menuUpdate() {
+
+    public void menuUpdate() {
         boolean sessionExists = this.getCurrentSessionModel() != null;
         this.mainview.closeMenuItem.setEnabled(sessionExists);
         this.mainview.saveMenuItem.setEnabled(sessionExists);
@@ -65,7 +63,7 @@ public class MainViewController extends AbstractController {
         this.mainview.selectAllMenuItem.setEnabled(sessionExists);
         this.mainview.deselectMenuItem.setEnabled(sessionExists);
         this.mainview.invertSelectionMenuItem.setEnabled(sessionExists);
-        
+
     }
 
     class UpdateSelectedTab implements ChangeListener {
@@ -74,20 +72,6 @@ public class MainViewController extends AbstractController {
         public void stateChanged(ChangeEvent e) {
             mvUpdate();
         }
-    }
-
-    class TabContainerListener implements ContainerListener {
-
-        @Override
-        public void componentAdded(ContainerEvent e) {
-            mvUpdate();
-        }
-
-        @Override
-        public void componentRemoved(ContainerEvent e) {
-            mvUpdate();
-        }
-
     }
 
     class TabCloseAction implements ActionListener {
@@ -101,20 +85,16 @@ public class MainViewController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = model.getSessionModel(tabToClose);
-            if (true) {//need to implement save state soon
-                int mainviewIndex = mainview.documentTabbedPane.indexOfComponent(tabToClose);
+            if (sm.isSaved()) {
+                int mainviewIndex = model.indexOf(sm);
                 mainview.documentTabbedPane.remove(mainviewIndex);
-                remove();
+                model.remove(tabToClose);
+                mvUpdate();
             } else {
                 //ask if they want to save
                 //remove(index) if no
                 //pop up with CommonIO savedialog if file doesn't exist
             }
-        }
-
-        private void remove() {
-            model.remove(tabToClose);
-            mvUpdate();
         }
     }
 }

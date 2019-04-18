@@ -7,9 +7,9 @@ package frontend.layerlist;
 
 import java.awt.Color;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import layer.DrawingLayer;
 
 /**
  *
@@ -25,12 +25,12 @@ public class LayerListCell extends javax.swing.JPanel {
         EYECLOSE = new ImageIcon(cl.getResource("/frontend/layerlist/eyeClosed.png"));
     }
 
-    private JComponent layer;
+    private DrawingLayer layer;
     private Color defaultColor;
     private boolean selected;
     private final LayerList layerList;
 
-    public LayerListCell(JComponent layer, LayerList layerList) {
+    public LayerListCell(DrawingLayer layer, LayerList layerList) {
         this.layer = layer;
         this.layerList = layerList;
         this.defaultColor = this.getBackground();

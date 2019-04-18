@@ -5,6 +5,7 @@
  */
 package layer;
 
+import common.SessionModel;
 import java.awt.Dimension;
 import java.io.Serializable;
 import javax.swing.JComponent;
@@ -14,12 +15,16 @@ import javax.swing.JComponent;
  * @author nickz
  */
 public abstract class DrawingLayer extends JComponent implements Serializable {
+    
+    private transient SessionModel sm;
 
     protected Dimension size;
     protected int opacity;
+    private boolean scrolling;
 
     protected DrawingLayer(AbstractBuilder b) {
         this.size = b.size;
+        this.sm = b.sm;
         this.setName(b.name);
     }
 
@@ -30,6 +35,7 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
 
     public static abstract class AbstractBuilder {
 
+        protected SessionModel sm;
         protected String name;
         protected Dimension size;
 
@@ -42,6 +48,11 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
             this.size = size;
             return this;
         }
+        
+        public AbstractBuilder sessionModel(final SessionModel sm) {
+            this.sm = sm;
+            return this;
+        }
 
         public abstract DrawingLayer build();
     }
@@ -52,6 +63,18 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
 
     public void setOpacity(int opacity) {
         this.opacity = opacity;
+    }
+
+    public boolean isScrolling() {
+        return scrolling;
+    }
+
+    public void setScrolling(boolean scrolling) {
+        this.scrolling = scrolling;
+    }
+    
+    public SessionModel getSessionModel() {
+        return this.sm;
     }
 
     @Override

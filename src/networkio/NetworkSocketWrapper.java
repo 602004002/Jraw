@@ -24,7 +24,7 @@ public abstract class NetworkSocketWrapper {
     protected final Socket socket;
     protected final ObjectOutputStream oos;
     protected final ObjectInputStream ois;
-    
+
     private boolean disconnected;
 
     protected NetworkSocketWrapper(Socket socket) throws IOException {
@@ -68,7 +68,7 @@ public abstract class NetworkSocketWrapper {
         this.socket.close();
         this.disconnected = true;
     }
-    
+
     public boolean isDisconnected() {
         return this.disconnected;
     }
@@ -94,7 +94,6 @@ public abstract class NetworkSocketWrapper {
                     try {
                         disconnect();
                     } catch (IOException ex1) {
-
                     }
                     return;
                 }
@@ -125,7 +124,6 @@ public abstract class NetworkSocketWrapper {
                     try {
                         disconnect();
                     } catch (IOException ex1) {
-
                     }
                     return;
                 }

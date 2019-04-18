@@ -1,6 +1,6 @@
 package frontend;
 
-import frontend.display.LayerSubstrate;
+import frontend.layerdisplay.LayerSubstrate;
 import frontend.MainViewController.TabCloseAction;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -30,7 +30,6 @@ public class DocumentPane extends JTabbedPane {
 
     public final void finishInit() {
         this.addChangeListener(this.mvc.new UpdateSelectedTab());
-        this.addContainerListener(this.mvc.new TabContainerListener());
     }
 
     @Override

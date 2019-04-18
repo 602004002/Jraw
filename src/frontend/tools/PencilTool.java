@@ -40,33 +40,30 @@ public class PencilTool extends DrawingTool {
      */
     @Override
     public void drawRaster(PointerInfo pointerInfo, RasterLayer layer) {
-        if (layer.isVisible() && pointerInfo.getPressure() > 0) {
-            Graphics2D g2d = layer.getRasterImage().createGraphics();
-            float stroke = this.diameterSize;
-            float multiplier = ((float) pointerInfo.getPressure() / pointerInfo.getMaxPressure());
-            if (this.pressureAffectsSize) {
-                stroke *= multiplier;
-            }
-            if (this.pressureAffectsDensity) {
-                int r = this.color.getRed();
-                int g = this.color.getGreen();
-                int b = this.color.getBlue();
-                int a = (int) (multiplier * 255);
-                Color c = new Color(r, g, b, a);
-                g2d.setColor(c);
-            } else {
-                g2d.setColor(this.color);
-            }
-            g2d.setStroke(new BasicStroke(stroke));
-            Point old = pointerInfo.getPrevPoint();
-            Point cur = pointerInfo.getCurrentPoint();
-            if (old != null && cur != null) {
-                g2d.drawLine(old.x, old.y, cur.x, cur.y);
-            }
-            g2d.dispose();
-            layer.repaint();
-            System.gc();
+        Graphics2D g2d = layer.getRasterImage().createGraphics();
+        float stroke = this.diameterSize;
+        float multiplier = ((float) pointerInfo.getPressure() / pointerInfo.getMaxPressure());
+        if (this.pressureAffectsSize) {
+            stroke *= multiplier;
         }
+        if (this.pressureAffectsDensity) {
+            int r = this.color.getRed();
+            int g = this.color.getGreen();
+            int b = this.color.getBlue();
+            int a = (int) (multiplier * 255);
+            Color c = new Color(r, g, b, a);
+            g2d.setColor(c);
+        } else {
+            g2d.setColor(this.color);
+        }
+        g2d.setStroke(new BasicStroke(stroke));
+        Point old = pointerInfo.getPrevPoint();
+        Point cur = pointerInfo.getCurrentPoint();
+        if (old != null && cur != null) {
+            g2d.drawLine(old.x, old.y, cur.x, cur.y);
+        }
+        g2d.dispose();
+        //layer.repaint();
     }
 
     @Override

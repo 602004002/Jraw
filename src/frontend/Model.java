@@ -1,6 +1,6 @@
 package frontend;
 
-import frontend.display.LayerSubstrate;
+import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import java.util.ArrayList;
 
@@ -13,11 +13,18 @@ public class Model {
 
     private final ArrayList<SessionModel> sessionList; //this is the absolute determiner
     private final ArrayList<LayerSubstrate> substrateList;
+    
+    private MainViewController mvc;
+    
+    public void setMainViewController(MainViewController mvc) {
+        this.mvc = mvc;
+    }
 
     public void add(SessionModel session) {
         this.sessionList.add(session);
         this.substrateList.add(new LayerSubstrate(session));
         System.out.println("Added to Model");
+        mvc.updateTabs();
     }
 
     public SessionModel getSessionModel(int index) {

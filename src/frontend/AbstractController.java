@@ -1,6 +1,6 @@
 package frontend;
 
-import frontend.display.LayerSubstrate;
+import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import java.awt.Component;
 

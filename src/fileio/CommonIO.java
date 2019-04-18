@@ -10,12 +10,16 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import javax.imageio.ImageIO;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import layer.DrawingLayer;
 import layer.RasterLayer;
 import layer.VectorLayer;
 
@@ -74,6 +78,13 @@ public class CommonIO {
         }
         return null;
     }
+    
+    public static File showSaveDialog(File prev, JFrame parent, FileNameExtensionFilter... fnef) {
+        if (prev != null) {
+            setLastPath(prev.getPath());
+        }
+        return showSaveDialog(parent, fnef);
+    }
 
     public static File showOpenDialog(JFrame parent, FileNameExtensionFilter... fnef) {
         JFileChooser jfc = new JFileChooser();
@@ -101,7 +112,7 @@ public class CommonIO {
         BufferedImage ri = new BufferedImage(size.width, size.height,
                 BufferedImage.TYPE_INT_ARGB);
         Graphics g = ri.getGraphics();
-        sm.layerHierarchy.forEach((JComponent layer) -> {
+        sm.layerHierarchy.forEach((DrawingLayer layer) -> {
             if (layer instanceof RasterLayer && layer.isVisible()) {
                 g.drawImage(((RasterLayer) layer).getRasterImage(), 0, 0, layer);
             }
@@ -128,7 +139,27 @@ public class CommonIO {
         if (path.exists() && !overwrite) {
             throw new FileExistsException("File exists");
         }
-        throw new UnsupportedOperationException("not implemented yet.");
+        FileOutputStream fos = new FileOutputStream(path);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(sm);
+        oos.flush();
+        oos.close();
+        fos.flush();
+        fos.close();
+    }
+
+    public static SessionModel readProprieteryFormat(File path) throws IOException {
+        SessionModel sm = null;
+        try {
+            FileInputStream fis = new FileInputStream(path);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            sm = (SessionModel) ois.readObject();
+            ois.close();
+            fis.close();
+        } catch (ClassNotFoundException ex) {
+            System.err.println(ex);
+        }
+        return sm;
     }
 
     public static BufferedImage importImage(File path, ImageType type) throws IOException {

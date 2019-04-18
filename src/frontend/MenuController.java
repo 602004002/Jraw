@@ -5,22 +5,21 @@
  */
 package frontend;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import frontend.display.LayerSubstrate;
-import common.DrawingType;
+import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import frontend.dialog.YesNoDialog;
 import frontend.newfile.NewFileForm;
 import fileio.CommonIO;
 import fileio.FileExistsException;
+import frontend.newfile.NewFileFormController;
+import frontend.server.ServerView;
+import frontend.server.ServerViewController;
 import layer.RasterLayer;
 
 /**
@@ -48,7 +47,13 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             //check for save
-
+            boolean allSaved = true;
+            for (int i = 0; i < model.size(); i++) {
+                allSaved &= model.getSessionModel(i).isSaved();
+            }
+            if (allSaved) {
+                System.exit(0);
+            }
         }
     }
 
@@ -56,46 +61,11 @@ public class MenuController extends AbstractController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            NewFileForm nff = new NewFileForm();
-            NewFileFormOK nffo = new NewFileFormOK(nff);
-            nff.addOkButtonActionListener(nffo);
+            NewFileForm nff = new NewFileForm(mainview);
+            NewFileFormController nffo = new NewFileFormController(nff);
+            nffo.setModel(model);
+            nff.setController(nffo);
             nff.setVisible(true);
-        }
-    }
-
-    class NewFileFormOK implements ActionListener {
-
-        private NewFileForm nff;
-
-        public NewFileFormOK(NewFileForm nff) {
-            this.nff = nff;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int selectedIndex = nff.drawingTypeTabs.getSelectedIndex();
-            Dimension size = new Dimension((int) nff.widthSpinner.getValue(),
-                    (int) nff.heightSpinner.getValue());
-            SessionModel.Builder sb = new SessionModel.Builder()
-                    .name(nff.filenameField.getText())
-                    .resolution((int) nff.resolutionSpinner.getValue())
-                    .size(size);
-            if (nff.backgroundColorCheckbox.isSelected()) {
-                sb.backgroundColor(nff.colorButton.getBackground());
-            }
-            switch (selectedIndex) {
-                case 0:
-                    sb.drawingType(DrawingType.Illustration);
-                    break;
-                case 1:
-                    sb.drawingType(DrawingType.Animation)
-                            .framerate((int) nff.framerateSpinner.getValue());
-                    break;
-            }
-            SessionModel s = sb.build();
-            model.add(s);
-            mvc.updateTabs();
-            nff.dispose();
         }
     }
 
@@ -103,7 +73,16 @@ public class MenuController extends AbstractController {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-
+            File f = CommonIO.showOpenDialog(mainview, JRAW);
+            SessionModel sm;
+            if (f != null) {
+                try {
+                    sm = CommonIO.readProprieteryFormat(f);
+                    model.add(sm);
+                } catch (IOException ex) {
+                    System.err.println(ex);
+                }
+            }
         }
     }
 
@@ -112,33 +91,42 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = getCurrentSessionModel();
-            if (sm != null) {
-                File f = CommonIO.showSaveDialog(mainview, JRAW);
-                if (f != null) {
-                    try {
-                        CommonIO.saveProprieteryFormat(sm, f, false);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (FileExistsException ex) {
-                        //overwrite?
-                        YesNoDialog ynd = new YesNoDialog(mainview, () -> {
-                            try {
-                                CommonIO.saveProprieteryFormat(sm, f, true);
-                                System.out.println("overwriting...");
-                            } catch (IOException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            } catch (FileExistsException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            }
-                        });
-                        ynd.setMessage("Overwrite?");
-                        ynd.setVisible(true);
-                    }
-                }
-            }
-
         }
 
+    }
+
+    class SaveAsFileAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SessionModel sm = getCurrentSessionModel();
+            if (sm == null) {
+                return;
+            }
+            File f = CommonIO.showSaveDialog(sm.getLastPath(), mainview, JRAW);
+            if (f != null) {
+                try {
+                    CommonIO.saveProprieteryFormat(sm, f, false);
+                    System.out.println("Saved");
+                    sm.setSaved(true);
+                } catch (IOException ex) {
+                    System.err.println(ex);
+                } catch (FileExistsException ex) {
+                    //overwrite?
+                    YesNoDialog ynd = new YesNoDialog(mainview, () -> {
+                        try {
+                            CommonIO.saveProprieteryFormat(sm, f, true);
+                            System.out.println("Overwriting...");
+                            sm.setSaved(true);
+                        } catch (IOException | FileExistsException ex1) {
+                            System.err.println(ex1);
+                        }
+                    });
+                    ynd.setMessage("Overwrite?");
+                    ynd.setVisible(true);
+                }
+            }
+        }
     }
 
     class ExportFileAction implements ActionListener {
@@ -146,40 +134,30 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = getCurrentSessionModel();
-            if (sm != null) {
-                File f = CommonIO.showSaveDialog(mainview, PNG, JPG);
-                if (f != null) {
-                    try {
-                        CommonIO.export(sm, f, false);
-                    } catch (IOException ex) {
-                        Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (FileExistsException ex) {
-                        //overwrite?
-                        YesNoDialog ynd = new YesNoDialog(mainview, () -> {
-                            try {
-                                CommonIO.export(sm, f, true);
-                                System.out.println("overwriting...");
-                            } catch (IOException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            } catch (FileExistsException ex1) {
-                                Logger.getLogger(MenuController.class.getName()).log(Level.SEVERE, null, ex1);
-                            }
-                        });
-                        ynd.setMessage("Overwrite?");
-                        ynd.setVisible(true);
-                    }
+            if (sm == null) {
+                return;
+            }
+            File f = CommonIO.showSaveDialog(mainview, PNG, JPG);
+            if (f != null) {
+                try {
+                    CommonIO.export(sm, f, false);
+                } catch (IOException ex) {
+                    System.err.println(ex);
+                } catch (FileExistsException ex) {
+                    //overwrite?
+                    YesNoDialog ynd = new YesNoDialog(mainview, () -> {
+                        try {
+                            CommonIO.export(sm, f, true);
+                            System.out.println("overwriting...");
+                        } catch (IOException | FileExistsException ex1) {
+                            System.err.println(ex1);
+                        }
+                    });
+                    ynd.setMessage("Overwrite?");
+                    ynd.setVisible(true);
                 }
             }
         }
-    }
-
-    class SaveAsFileAction implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-
-        }
-
     }
 
     class NewRasterLayerAction implements ActionListener {
@@ -191,10 +169,23 @@ public class MenuController extends AbstractController {
             RasterLayer newLayer = (RasterLayer) new RasterLayer.Builder()
                     .name("Layer " + sm.layerCount())
                     .size(sm.size())
+                    .sessionModel(sm)
                     .build();
             sm.layerHierarchy.add(newLayer);
             lv.updateLayers();
             mainview.layerList.refresh();
         }
+    }
+
+    class ConnectAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ServerView sv = new ServerView(mainview);
+            ServerViewController svc = new ServerViewController(sv);
+            sv.setController(svc);
+            sv.setVisible(true);
+        }
+
     }
 }

@@ -12,14 +12,27 @@ import javax.swing.text.DocumentFilter;
  *
  * @author nickz
  */
-public class NewFileForm extends javax.swing.JFrame {
+public class NewFileForm extends javax.swing.JDialog {
+
+    private NewFileFormController nffo;
 
     /**
      * Creates new form NewFileForm
      */
-    public NewFileForm() {
+    public NewFileForm(java.awt.Frame parent) {
+        super(parent, false);
         initComponents();
+
+    }
+
+    public void setController(NewFileFormController nffo) {
+        this.nffo = nffo;
         initOtherStuff();
+    }
+
+    private void initOtherStuff() {
+        this.okButton.addActionListener(nffo);
+        DocumentFilter df = new DocumentFilter();
     }
 
     /**
@@ -233,9 +246,6 @@ public class NewFileForm extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    private void initOtherStuff() {
-        DocumentFilter df = new DocumentFilter();
-    }
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
@@ -248,10 +258,7 @@ public class NewFileForm extends javax.swing.JFrame {
         ccb.setVisible(true);
     }//GEN-LAST:event_colorButtonActionPerformed
 
-    public void addOkButtonActionListener(ActionListener al) {
-        this.okButton.addActionListener(al);
-    }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JCheckBox backgroundColorCheckbox;
     private javax.swing.JButton cancelButton;

@@ -8,8 +8,6 @@ package runner;
 import frontend.MainView;
 import frontend.Model;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import frontend.tools.DrawingTool;
 import layer.LayerPreset;
 
@@ -31,12 +29,10 @@ public class Main {
             System.out.println("Main program thread started");
             try {
                 rl.join();
-                Model m = new Model();
-                MainView mv = new MainView(m);
+                MainView mv = new MainView();
                 mv.finishInit();
                 mv.setVisible(true);
             } catch (InterruptedException ex) {
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
                 System.err.println("Failed to join ResourceLoader thread");
             }
         }, "Main Window");

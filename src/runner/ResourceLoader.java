@@ -88,7 +88,7 @@ public class ResourceLoader implements Runnable {
             loadLayerPresets();
             loadUser();
         } catch (IOException ex) {
-            Logger.getLogger(ResourceLoader.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex);
         }
     }
 }

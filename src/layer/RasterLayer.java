@@ -8,14 +8,19 @@ package layer;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import javax.imageio.ImageIO;
 
 /**
  *
  * @author nickz
  */
-public class RasterLayer extends DrawingLayer {
+public class RasterLayer extends DrawingLayer implements Serializable {
 
-    private BufferedImage data;
+    private transient BufferedImage data;
 
     private RasterLayer(Builder b) {
         super(b);
@@ -55,7 +60,6 @@ public class RasterLayer extends DrawingLayer {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("Painting " + this.getName());
         g.drawImage(this.data, 0, 0, this.size.width, this.size.height, this);
     }
 
@@ -66,5 +70,15 @@ public class RasterLayer extends DrawingLayer {
 
     public BufferedImage getRasterImage() {
         return this.data;
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        ImageIO.write(this.getRasterImage(), "png", out);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.data = ImageIO.read(in);
     }
 }

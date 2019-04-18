@@ -10,8 +10,8 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import javax.swing.SwingConstants;
+import layer.DrawingLayer;
 
 /**
  *
@@ -35,7 +35,6 @@ public class LayerList extends javax.swing.JPanel {
 
     public LayerList() {
         initComponents();
-        init();
     }
 
     /**
@@ -91,10 +90,6 @@ public class LayerList extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void init() {
-        this.setName("layerList");
-    }
-
     public void setSession(SessionModel session) {
         this.session = session;
         this.refresh();
@@ -123,7 +118,7 @@ public class LayerList extends javax.swing.JPanel {
                 javax.swing.GroupLayout.Alignment.LEADING, true);
         SequentialGroup vSeq = layersPaneLayout.createSequentialGroup();
         for (int i = size - 1; i >= 0; i--) {
-            JComponent layer = this.session.layerHierarchy.get(i);
+            DrawingLayer layer = this.session.layerHierarchy.get(i);
             LayerListCell llc = new LayerListCell(layer, this);
             llc.visBtn.setSelected(layer.isVisible());
             horizontal = horizontal.addComponent(llc, GroupLayout.DEFAULT_SIZE,

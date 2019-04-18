@@ -10,5 +10,5 @@ package networkio;
  * @author nickz
  */
 public enum Request {
-    UserInfo
+    SessionModel, UserInfo, Name
 }

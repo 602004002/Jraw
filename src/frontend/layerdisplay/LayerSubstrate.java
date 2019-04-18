@@ -3,15 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.display;
+package frontend.layerdisplay;
 
-import common.SessionModel;
-import input.PointerInfo;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.util.List;
-import javax.swing.JComponent;
+import java.awt.event.ActionEvent;
 import javax.swing.JLayeredPane;
+import javax.swing.Timer;
+
+import common.SessionModel;
+import layer.DrawingLayer;
 
 /**
  *
@@ -22,10 +23,16 @@ public class LayerSubstrate extends JLayeredPane {
     private LayerOverlay overlay;
     private final SessionModel session;
     private Dimension size;
+    private Timer timer;
 
     public LayerSubstrate(SessionModel session) {
         this.session = session;
         this.size = session.size();
+        this.timer = new Timer(10, (ActionEvent ae) -> {
+            this.repaint();
+            timer.restart();
+        });
+
         init();
     }
 
@@ -33,7 +40,7 @@ public class LayerSubstrate extends JLayeredPane {
         this.overlay = new LayerOverlay();
         this.updateLayers();
     }
-    
+
     public void disableOverlay() {
         this.overlay = null;
         this.updateLayers();
@@ -46,6 +53,7 @@ public class LayerSubstrate extends JLayeredPane {
 
     private void init() {
         this.setVPSize();
+        timer.start();
         updateLayers();
     }
 
@@ -64,11 +72,11 @@ public class LayerSubstrate extends JLayeredPane {
             d.height *= 1.25;
             d.width *= 1.25;
             this.overlay.setSize(d);
-            this.overlay.setLocation(0, 0);
+            //this.overlay.setLocation(0, 0);
         }
         Point loc = new Point(size.width / 8, size.height / 8);
         for (int i = this.session.layerCount() - 1; i >= 0; i--) {
-            JComponent dl = session.layerHierarchy.get(i);
+            DrawingLayer dl = session.layerHierarchy.get(i);
             this.add(dl);
             dl.setSize(size);
             dl.setLocation(loc);

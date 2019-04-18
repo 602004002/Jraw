@@ -14,41 +14,46 @@ import jwinpointer.JWinPointerReader;
  * @author nickz
  */
 public class MainView extends javax.swing.JFrame {
-
+    
     private final MainViewController mvc;
     private final MenuController mc;
     private final Model model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
-
-    public MainView(Model model) {
+    
+    public MainView() {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
+        this.model = new Model();
         this.pointerListener = new PointerListener(User.localUser.pointerInfo());
-        this.model = model;
         this.mvc.setModel(model);
         this.mc.setModel(model);
         this.mc.setMainViewController(this.mvc);
         initComponents();
     }
-
+    
     public final void finishInit() {
         this.mvc.setMainView(this);
         this.mc.setMainView(this);
+        this.model.setMainViewController(mvc);
         this.pointerReader = new JWinPointerReader(this);
         this.pointerReader.addPointerEventListener(pointerListener);
         initHandlers();
         mvc.menuUpdate();
     }
-
+    
     private void initHandlers() {
         this.documentTabbedPane.finishInit();
         this.newMenuItem.addActionListener(this.mc.new NewFileAction());
         this.quitMenuItem.addActionListener(this.mc.new QuitAction());
+        this.openMenuItem.addActionListener(this.mc.new OpenFileAction());
         this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
+        this.saveAsMenuItem.addActionListener(this.mc.new SaveAsFileAction());
         this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
-
+        
         this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
+        
+        this.connectMenuItem.addActionListener(this.mc.new ConnectAction());
     }
 
     /**

@@ -8,18 +8,22 @@ package common;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
+import java.io.Serializable;
 
 import layer.DrawingLayer;
 import layer.RasterLayer;
 import changestack.UndoRedoStack;
+import java.io.File;
 
 /**
  *
  * @author nickz
  */
-public class SessionModel {
-    //this class is like a live file
+public class SessionModel implements Serializable {
 
+    private static final long serialVersionUID = 10L;
+
+    //this class is like a live file
     public static class Builder {
 
         private User creator;
@@ -87,7 +91,7 @@ public class SessionModel {
         this.creator = sb.creator;
         this.name = sb.name;
         this.drawingType = sb.drawingType;
-        this.saved = false;
+        this.saved = true;
         this.size = sb.size;
         this.resolution = sb.resolution;
         this.framerate = sb.framerate;
@@ -99,27 +103,30 @@ public class SessionModel {
     //keep a base image of commited changes
     //private drawinglayer
     public final User creator;
+    private transient File lastPath;
 
     private String name;
     private DrawingType drawingType;
-    private boolean saved; //based on buffer changes
+    private transient boolean saved; //based on buffer changes
     private int resolution; //in pixels
     private int framerate;
     private Dimension size;
     public final ArrayList<DrawingLayer> layerHierarchy;
-    public final UndoRedoStack stack;
+    public transient final UndoRedoStack stack;
     private int[] selectedLayerIndexes;
 
     private void initializeFirstValues(Color bgColor) {
         RasterLayer blankLayer = (RasterLayer) new RasterLayer.Builder()
                 .name("Layer 1")
                 .size(size)
+                .sessionModel(this)
                 .build();
         if (bgColor != null) {
             RasterLayer colorLayer = (RasterLayer) new RasterLayer.Builder()
                     .fillColor(bgColor)
                     .name("Paper")
                     .size(size)
+                    .sessionModel(this)
                     .build();
             this.layerHierarchy.add(colorLayer);
             this.layerHierarchy.add(blankLayer);
@@ -141,7 +148,7 @@ public class SessionModel {
         return drawingType;
     }
 
-    public void drawingType(DrawingType dt) {
+    public void setDrawingType(DrawingType dt) {
         this.drawingType = dt;
     }
 
@@ -168,11 +175,6 @@ public class SessionModel {
     public void resize(int width, int height) {
         this.size.width = width;
         this.size.height = height;
-    }
-
-    public void resize(Dimension size) {
-        this.size.width = size.width;
-        this.size.height = size.height;
     }
 
     public int framerate() {
@@ -203,6 +205,14 @@ public class SessionModel {
 
     public int layerCount() {
         return this.layerHierarchy.size();
+    }
+
+    public File getLastPath() {
+        return this.lastPath;
+    }
+
+    public void setLastPath(File lastPath) {
+        this.lastPath = lastPath;
     }
 
     @Override

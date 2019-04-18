@@ -49,7 +49,7 @@ public abstract class DrawingTool implements Serializable {
 
     public static abstract class AbstractBuilder {
 
-        protected  String name;
+        protected String name;
         protected int diameterSize, dithering, hardness, density;
         protected boolean pressureAffectsSize, pressureAffectsDensity;
         protected Color color;
@@ -110,12 +110,13 @@ public abstract class DrawingTool implements Serializable {
     }
 
     public void draw(PointerInfo pointerInfo, DrawingLayer layer) {
-        if (layer instanceof RasterLayer) {
-            drawRaster(pointerInfo, (RasterLayer) layer);
-        } else if (layer instanceof VectorLayer) {
-            drawVector(pointerInfo, (VectorLayer) layer);
-        } else {
-            throw new IllegalArgumentException("Unsupported layer class");
+        if (layer.isVisible() && pointerInfo.getPressure() > 0) {
+            if (layer instanceof RasterLayer) {
+                drawRaster(pointerInfo, (RasterLayer) layer);
+            } else if (layer instanceof VectorLayer) {
+                drawVector(pointerInfo, (VectorLayer) layer);
+            }
+            layer.getSessionModel().setSaved(false);
         }
     }
 

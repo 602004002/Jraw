@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend.display;
+package frontend.layerdisplay;
 
 import common.User;
 import frontend.tools.DrawingTool;

@@ -5,7 +5,7 @@
  */
 package debug;
 
-import frontend.display.DisplayCursor;
+import frontend.layerdisplay.DisplayCursor;
 import java.awt.Graphics2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
