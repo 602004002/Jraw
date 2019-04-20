@@ -14,6 +14,8 @@ import java.io.Serializable;
  * @author nickz
  */
 public class PointerInfo implements Serializable {
+    
+    private static final long serialVersionUID = 10L;
 
     private boolean inverted;
     private int pressure;

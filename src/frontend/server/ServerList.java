@@ -5,8 +5,8 @@
  */
 package frontend.server;
 
+import java.awt.Color;
 import java.awt.Component;
-import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import networkio.ServerReply;
@@ -27,7 +27,12 @@ public class ServerList extends JList {
         public Component getListCellRendererComponent(
                 JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             ServerReply sr = (ServerReply) value;
-            ServerListCell slc = new ServerListCell(sr.getServerName(), sr.getAddress());
+            ServerListCell slc = new ServerListCell(sr);
+            if (isSelected) {
+                slc.setBackground(Color.lightGray);
+            } else {
+                slc.setBackground(Color.white);
+            }
             return slc;
         }
 

@@ -10,6 +10,8 @@ package layer;
  * @author nickz
  */
 public class VectorLayer extends DrawingLayer {
+    
+    private static final long serialVersionUID = 10L;
 
     private VectorLayer(Builder b) {
         super(b);

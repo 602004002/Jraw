@@ -20,6 +20,7 @@ public class ServerView extends javax.swing.JDialog {
 
     private void initHandlers() {
         this.rescanBtn.addActionListener(this.svc.new RefreshAction());
+        this.connectBtn.addActionListener(this.svc.new ConnectAction());
     }
 
     public void setController(ServerViewController svc) {
@@ -55,14 +56,10 @@ public class ServerView extends javax.swing.JDialog {
         jLabel1.setText("Local Servers");
 
         connectBtn.setText("Connect");
-        connectBtn.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectBtnActionPerformed(evt);
-            }
-        });
 
         rescanBtn.setText("Rescan");
 
+        serverList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(serverList);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -102,12 +99,6 @@ public class ServerView extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void connectBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectBtnActionPerformed
-        
-        
-        this.dispose();
-    }//GEN-LAST:event_connectBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton connectBtn;

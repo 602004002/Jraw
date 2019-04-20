@@ -19,6 +19,8 @@ import javax.imageio.ImageIO;
  * @author nickz
  */
 public class RasterLayer extends DrawingLayer implements Serializable {
+    
+    private static final long serialVersionUID = 10L;
 
     private transient BufferedImage data;
 

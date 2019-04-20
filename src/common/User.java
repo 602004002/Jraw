@@ -15,6 +15,8 @@ import java.util.UUID;
  * @author nickz
  */
 public class User implements Serializable {
+    
+    private static final long serialVersionUID = 10L;
 
     public static User localUser;
 

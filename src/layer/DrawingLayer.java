@@ -16,6 +16,8 @@ import javax.swing.JComponent;
  */
 public abstract class DrawingLayer extends JComponent implements Serializable {
     
+    private static final long serialVersionUID = 10L;
+    
     private transient SessionModel sm;
 
     protected Dimension size;

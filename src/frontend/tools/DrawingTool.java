@@ -21,6 +21,8 @@ import input.PointerInfo;
  * @author nickz
  */
 public abstract class DrawingTool implements Serializable {
+    
+    private static final long serialVersionUID = 10L;
 
     //like a preset for the cursor to draw 
     protected String name;

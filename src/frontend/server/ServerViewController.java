@@ -13,8 +13,11 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
+import java.net.Socket;
 import java.util.ArrayList;
+import javax.swing.JButton;
 import networkio.ClientQuery;
+import networkio.ClientToServerSocketWrapper;
 import networkio.P2PUtilities;
 import networkio.ServerReply;
 
@@ -71,6 +74,25 @@ public class ServerViewController extends AbstractController {
         }
     }
 
+    class ConnectAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            ServerReply reply = (ServerReply) serverView.serverList.getSelectedValue();
+            if (reply == null) {
+                return;
+            }
+            try {
+                Socket s = new Socket(reply.getAddress(), reply.getServerPort());
+                ClientToServerSocketWrapper ctssw = new ClientToServerSocketWrapper(s);
+                ctssw.startIOThreads();
+                serverView.dispose();
+            } catch (IOException ex) {
+                System.err.println(ex);
+            }
+        }
+    }
+
     class PacketListenerThread extends Thread {
 
         @Override
@@ -78,19 +100,14 @@ public class ServerViewController extends AbstractController {
             System.out.println("Starting new packet listener thread");
             while (true) {
                 try {
-                    if (Thread.interrupted()) {
-                        System.out.println("interrupt");
-                        throw new InterruptedException();
-                    }
                     DatagramPacket incomingPacket = P2PUtilities.getBufferPacket();
                     mcs.receive(incomingPacket); //this thread waits here
-                    InetSocketAddress serverAddress = (InetSocketAddress) incomingPacket.getSocketAddress();
                     ServerReply reply = (ServerReply) P2PUtilities.fromPacket(incomingPacket);
-                    reply.setAddress(serverAddress);
+                    reply.setAddress(incomingPacket.getAddress());
                     replies.add(reply);
                     System.out.println(reply);
                     updateServerView();
-                } catch (IOException | InterruptedException ex) {
+                } catch (IOException ex) {
                     System.err.println(ex);
                     return;
                 }

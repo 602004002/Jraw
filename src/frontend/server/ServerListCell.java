@@ -5,7 +5,7 @@
  */
 package frontend.server;
 
-import java.net.InetSocketAddress;
+import networkio.ServerReply;
 
 /**
  *
@@ -16,10 +16,10 @@ public class ServerListCell extends javax.swing.JPanel {
     /**
      * Creates new form ServerListCell
      */
-    public ServerListCell(String name, InetSocketAddress address) {
+    public ServerListCell(ServerReply reply) {
         initComponents();
-        this.serverName.setText(name);
-        this.ipLabel.setText(address.toString());
+        this.serverName.setText(reply.getServerName());
+        this.ipLabel.setText(reply.getAddress() + ":" + reply.getServerPort());
     }
 
     /**

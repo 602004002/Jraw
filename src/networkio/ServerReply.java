@@ -6,7 +6,7 @@
 package networkio;
 
 import java.io.Serializable;
-import java.net.InetSocketAddress;
+import java.net.InetAddress;
 import java.util.UUID;
 
 /**
@@ -14,11 +14,13 @@ import java.util.UUID;
  * @author nickz
  */
 public class ServerReply implements Serializable {
+    
+    private static final long serialVersionUID = 10L;
 
     private UUID clientUUID, serverUUID;
     private int serverPort;
     private String serverName;
-    private transient InetSocketAddress from;
+    private transient InetAddress from;
 
     public ServerReply(String serverName,
             UUID clientUUID, UUID serverUUID,
@@ -45,17 +47,17 @@ public class ServerReply implements Serializable {
         return this.serverPort;
     }
 
-    public void setAddress(InetSocketAddress from) {
+    public void setAddress(InetAddress from) {
         this.from = from;
     }
 
-    public InetSocketAddress getAddress() {
+    public InetAddress getAddress() {
         return this.from;
     }
 
     @Override
     public String toString() {
-        return "Server Reply " + this.serverUUID 
+        return "Server Reply " + this.serverUUID
                 + " @ " + from + "\nFrom client " + this.clientUUID;
     }
 }
