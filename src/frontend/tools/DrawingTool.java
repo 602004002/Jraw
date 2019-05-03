@@ -5,6 +5,7 @@
  */
 package frontend.tools;
 
+import common.SessionModel;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -21,7 +22,7 @@ import input.PointerInfo;
  * @author nickz
  */
 public abstract class DrawingTool implements Serializable {
-    
+
     private static final long serialVersionUID = 10L;
 
     //like a preset for the cursor to draw 
@@ -111,14 +112,16 @@ public abstract class DrawingTool implements Serializable {
         public abstract DrawingTool build();
     }
 
-    public void draw(PointerInfo pointerInfo, DrawingLayer layer) {
+    public void draw(PointerInfo pointerInfo, SessionModel sm) {
+        DrawingLayer layer = sm.getDrawLayer();
         if (layer.isVisible() && pointerInfo.getPressure() > 0) {
             if (layer instanceof RasterLayer) {
                 drawRaster(pointerInfo, (RasterLayer) layer);
             } else if (layer instanceof VectorLayer) {
                 drawVector(pointerInfo, (VectorLayer) layer);
             }
-            layer.getSessionModel().setSaved(false);
+            
+            sm.setSaved(false);
         }
     }
 

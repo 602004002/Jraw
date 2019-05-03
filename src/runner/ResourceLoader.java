@@ -12,8 +12,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import common.User;
 import java.util.ArrayList;
@@ -25,37 +23,43 @@ import layer.LayerPreset;
  * @author nickz
  */
 public class ResourceLoader implements Runnable {
-
+    
     private final ArrayList<DrawingTool> dtOut;
     private final ArrayList<LayerPreset> lsOut;
-
-    private static String APPDATA;
+    
+    private static String DIR;
     private static String FOLDER;
-
+    
     static {
-        APPDATA = System.getenv("APPDATA");
-        FOLDER = "\\Jraw\\";
+        String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("windows")) {
+            DIR = System.getenv("APPDATA");
+            FOLDER = "\\Jraw\\";
+        } else if (os.contains("linux")) {
+            DIR = System.getProperty("user.home");
+            FOLDER = "/Jraw/";
+        }
     }
-
+    
     public ResourceLoader(ArrayList<DrawingTool> out1, ArrayList<LayerPreset> out2) {
         this.dtOut = out1;
         this.lsOut = out2;
     }
-
+    
     private static void loadTools() throws IOException {
         System.out.println("Begin tool load");
         //load preset files
 
     }
-
+    
     private static void loadLayerPresets() throws IOException {
         System.out.println("Begin layer preset load");
         //load preset files
     }
-
+    
     private static void loadUser() throws IOException {
         System.out.println("Begin User load");
-        File f = new File(APPDATA + FOLDER + "localuser");
+        File f = new File(DIR + FOLDER + "localuser");
         if (!f.exists() || f.length() == 0) {
             f.createNewFile();
             FileWriter fw = new FileWriter(f);
@@ -70,17 +74,17 @@ public class ResourceLoader implements Runnable {
         BufferedReader br = new BufferedReader(new FileReader(f));
         String username = br.readLine();
         UUID uuid = UUID.fromString(br.readLine());
-
-        User.localUser = new User(username, uuid);
-        User.localUser.pointerInfo().setUserTag(User.localUser);
-        System.out.println(User.localUser);
+        
+        User.setLocalUser(new User(username, uuid));
+        User.getLocalUser().pointerInfo().setUserTag(User.getLocalUser());
+        System.out.println(User.getLocalUser());
     }
-
+    
     @Override
     public void run() {
         try {
             System.out.println("Resource Loader thread started");
-            File f = new File(APPDATA + FOLDER);
+            File f = new File(DIR + FOLDER);
             if (!f.exists()) {
                 f.mkdir();
             }

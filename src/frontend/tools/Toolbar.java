@@ -73,7 +73,7 @@ public class Toolbar extends JToolBar {
         }
         this.selected = selected;
         selected.setBorder(new BevelBorder(BevelBorder.LOWERED));
-        User.localUser.setDrawingTool(selected.getTool());
+        User.getLocalUser().setDrawingTool(selected.getTool());
         System.out.println(selected.getTool());
     }
 

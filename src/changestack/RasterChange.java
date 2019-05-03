@@ -14,7 +14,7 @@ import java.awt.image.Raster;
 public class RasterChange extends Change {
     private Raster r;
     
-    public RasterChange () {
-        
+    public RasterChange (String name) {
+        super(name);
     }
 }

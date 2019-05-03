@@ -21,7 +21,7 @@ import java.io.File;
  */
 public class SessionModel implements Serializable {
 
-    private static final long serialVersionUID = 10L;
+    private static final long serialVersionUID = 11L;
 
     //this class is like a live file
     public static class Builder {
@@ -87,7 +87,7 @@ public class SessionModel implements Serializable {
         }
     }
 
-    private SessionModel(Builder sb) {
+    protected SessionModel(Builder sb) {
         this.creator = sb.creator;
         this.name = sb.name;
         this.drawingType = sb.drawingType;
@@ -119,14 +119,12 @@ public class SessionModel implements Serializable {
         RasterLayer blankLayer = (RasterLayer) new RasterLayer.Builder()
                 .name("Layer 1")
                 .size(size)
-                .sessionModel(this)
                 .build();
         if (bgColor != null) {
             RasterLayer colorLayer = (RasterLayer) new RasterLayer.Builder()
                     .fillColor(bgColor)
                     .name("Paper")
                     .size(size)
-                    .sessionModel(this)
                     .build();
             this.layerHierarchy.add(colorLayer);
             this.layerHierarchy.add(blankLayer);
@@ -185,6 +183,10 @@ public class SessionModel implements Serializable {
         this.framerate = framerate;
     }
 
+    public DrawingLayer getDrawLayer() {
+        return this.layerHierarchy.get(this.selectedLayerIndexes[0]);
+    }
+    
     /**
      *
      * @return Returns an int array of all selected indexes.

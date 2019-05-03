@@ -6,7 +6,6 @@
 package runner;
 
 import frontend.MainView;
-import frontend.Model;
 import java.util.ArrayList;
 import frontend.tools.DrawingTool;
 import layer.LayerPreset;

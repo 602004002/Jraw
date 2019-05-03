@@ -18,7 +18,15 @@ public class User implements Serializable {
     
     private static final long serialVersionUID = 10L;
 
-    public static User localUser;
+    private static User localUser;
+
+    public static User getLocalUser() {
+        return localUser;
+    }
+
+    public static void setLocalUser(User aLocalUser) {
+        localUser = aLocalUser;
+    }
 
     private String username;
     private UUID uuid;
@@ -33,6 +41,10 @@ public class User implements Serializable {
 
     public PointerInfo pointerInfo() {
         return this.pointerInfo;
+    }
+    
+    public void setPointerInfo(PointerInfo pointerInfo) {
+        this.pointerInfo = pointerInfo;
     }
 
     public DrawingTool drawingTool() {

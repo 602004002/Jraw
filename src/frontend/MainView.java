@@ -25,10 +25,9 @@ public class MainView extends javax.swing.JFrame {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
         this.model = new Model();
-        this.pointerListener = new PointerListener(User.localUser.pointerInfo());
+        this.pointerListener = new PointerListener(User.getLocalUser().pointerInfo());
         this.mvc.setModel(model);
         this.mc.setModel(model);
-        this.mc.setMainViewController(this.mvc);
         initComponents();
     }
     

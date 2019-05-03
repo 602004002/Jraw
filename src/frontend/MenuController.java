@@ -36,12 +36,6 @@ public class MenuController extends AbstractController {
         JPG = new FileNameExtensionFilter("JPG Image (.jpg)", "jpg", "jpeg");
     }
 
-    private MainViewController mvc;
-
-    void setMainViewController(MainViewController mvc) {
-        this.mvc = mvc;
-    }
-
     class QuitAction implements ActionListener {
 
         @Override
@@ -91,6 +85,12 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = getCurrentSessionModel();
+            if (sm.isSaved()) {
+                return;
+            }
+            if (sm.getLastPath().exists()) {
+                
+            }
         }
 
     }
@@ -169,7 +169,6 @@ public class MenuController extends AbstractController {
             RasterLayer newLayer = (RasterLayer) new RasterLayer.Builder()
                     .name("Layer " + sm.layerCount())
                     .size(sm.size())
-                    .sessionModel(sm)
                     .build();
             sm.layerHierarchy.add(newLayer);
             lv.updateLayers();
@@ -184,6 +183,7 @@ public class MenuController extends AbstractController {
             ServerView sv = new ServerView(mainview);
             ServerViewController svc = new ServerViewController(sv);
             sv.setController(svc);
+            svc.setModel(model);
             sv.setVisible(true);
         }
 

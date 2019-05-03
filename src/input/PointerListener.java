@@ -11,7 +11,6 @@ import frontend.layerdisplay.DisplayCursor;
 import frontend.layerdisplay.LayerOverlay;
 import frontend.layerdisplay.LayerSubstrate;
 import java.awt.Point;
-import java.util.Arrays;
 import javax.swing.SwingUtilities;
 import jwinpointer.JWinPointerReader.PointerEventListener;
 import layer.DrawingLayer;
@@ -39,7 +38,7 @@ public class PointerListener implements PointerEventListener {
         if (substrate != null) {
             substrate.enableOverlay();
             //temp
-            substrate.getOverlay().setCursors(Arrays.asList(new DisplayCursor(this.pointerInfo, true)));
+            substrate.getOverlay().setCursors(new DisplayCursor(this.pointerInfo, true));
         }
     }
 
@@ -48,7 +47,7 @@ public class PointerListener implements PointerEventListener {
             boolean inverted, int x, int y, int pressure) {
         pointerInfo.setInverted(inverted);
         pointerInfo.setPressure(pressure);
-        DrawingLayer drawLayer = session.layerHierarchy.get(session.getSelectedLayerIndexes()[0]);
+        DrawingLayer drawLayer = session.getDrawLayer();
         if (session != null && substrate != null) {
             LayerOverlay lo = this.substrate.getOverlay();
             Point p = lo.getMousePosition(true);
@@ -56,7 +55,7 @@ public class PointerListener implements PointerEventListener {
                     SwingUtilities.convertPoint(substrate, p, drawLayer));
             pointerInfo.setOverlayPoint(p);
         }
-        User.localUser.drawingTool().draw(pointerInfo, (DrawingLayer) drawLayer);
+        User.getLocalUser().drawingTool().draw(pointerInfo, session);
         pointerInfo.setPrevPoint(pointerInfo.getCurrentPoint());
     }
 

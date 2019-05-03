@@ -3,23 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package fileio;
-
-import common.SessionModel;
+package common;
 
 /**
  *
  * @author nickz
  */
-public class RasterVectorFile {
+public class ServerSession extends SessionModel {
 
-    private SessionModel s; //aggregated object
-
-    public void save() {
-
+    private ServerSession(Builder sb) {
+        super(sb);
+    }
+    
+    public void update() {
+        
     }
 
-    public void load() {
-
-    }
 }

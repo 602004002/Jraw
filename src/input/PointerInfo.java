@@ -29,6 +29,10 @@ public class PointerInfo implements Serializable {
     public String getXYPressureString() {
         return "x,y,pressure = " + currentPoint.x + "," + currentPoint.y + "," + pressure;
     }
+    
+    public String getXYPressureStringRaw() {
+        return currentPoint.x + "," + currentPoint.y + "," + pressure;
+    }
 
     @Override
     public String toString() {

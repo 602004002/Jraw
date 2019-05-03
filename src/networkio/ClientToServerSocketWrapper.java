@@ -14,17 +14,22 @@ import java.net.Socket;
  * @author nickz
  */
 public class ClientToServerSocketWrapper extends NetworkSocketWrapper {
-    
+
     public ClientToServerSocketWrapper(Socket s) throws IOException {
         super(s);
+        init2();
     }
 
-    @Override
-    protected void handleIncomingObject(Object obj) {
-        System.out.println(obj);
-        if (obj.equals(Request.UserInfo)) {
-            this.queueSend(User.localUser);
-        }
+    private void init2() {
+        this.addObjectHandler((Object o) -> {
+            if (o.equals(Request.UserInfo)) {
+                this.queueSend(User.getLocalUser());
+            }
+        });
+        this.addObjectHandler((Object o) -> {
+            if (o instanceof String) {
+                System.out.println(o);
+            }
+        });
     }
-    
 }

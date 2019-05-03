@@ -10,7 +10,7 @@ package changestack;
  * @author nickz
  */
 public class VectorChange extends Change {
-    public VectorChange () {
-        
+    public VectorChange (String name) {
+        super(name);
     }
 }

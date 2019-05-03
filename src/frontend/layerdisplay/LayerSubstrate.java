@@ -30,7 +30,6 @@ public class LayerSubstrate extends JLayeredPane {
         this.size = session.size();
         this.timer = new Timer(10, (ActionEvent ae) -> {
             this.repaint();
-            timer.restart();
         });
 
         init();
@@ -38,11 +37,13 @@ public class LayerSubstrate extends JLayeredPane {
 
     public void enableOverlay() {
         this.overlay = new LayerOverlay();
+        timer.start();
         this.updateLayers();
     }
 
     public void disableOverlay() {
         this.overlay = null;
+        timer.stop();
         this.updateLayers();
     }
 
@@ -53,7 +54,6 @@ public class LayerSubstrate extends JLayeredPane {
 
     private void init() {
         this.setVPSize();
-        timer.start();
         updateLayers();
     }
 
