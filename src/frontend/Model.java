@@ -23,7 +23,6 @@ public class Model {
     public void add(SessionModel session) {
         this.sessionList.add(session);
         this.substrateList.add(new LayerSubstrate(session));
-        System.out.println("Added to Model");
         mvc.updateTabs();
     }
 

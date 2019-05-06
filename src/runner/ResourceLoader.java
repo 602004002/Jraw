@@ -77,7 +77,6 @@ public class ResourceLoader implements Runnable {
         
         User.setLocalUser(new User(username, uuid));
         User.getLocalUser().pointerInfo().setUserTag(User.getLocalUser());
-        System.out.println(User.getLocalUser());
     }
     
     @Override

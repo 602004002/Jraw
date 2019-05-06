@@ -67,14 +67,12 @@ public class Toolbar extends JToolBar {
     }
 
     private void setSelected(ToolbarButton selected) {
-        //System.out.println("Caught it!");
         if (this.selected != null) {
             this.selected.setBorder(new EtchedBorder());
         }
         this.selected = selected;
         selected.setBorder(new BevelBorder(BevelBorder.LOWERED));
         User.getLocalUser().setDrawingTool(selected.getTool());
-        System.out.println(selected.getTool());
     }
 
     /**

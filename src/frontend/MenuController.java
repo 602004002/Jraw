@@ -89,7 +89,7 @@ public class MenuController extends AbstractController {
                 return;
             }
             if (sm.getLastPath().exists()) {
-                
+
             }
         }
 
@@ -107,7 +107,6 @@ public class MenuController extends AbstractController {
             if (f != null) {
                 try {
                     CommonIO.saveProprieteryFormat(sm, f, false);
-                    System.out.println("Saved");
                     sm.setSaved(true);
                 } catch (IOException ex) {
                     System.err.println(ex);
@@ -116,7 +115,6 @@ public class MenuController extends AbstractController {
                     YesNoDialog ynd = new YesNoDialog(mainview, () -> {
                         try {
                             CommonIO.saveProprieteryFormat(sm, f, true);
-                            System.out.println("Overwriting...");
                             sm.setSaved(true);
                         } catch (IOException | FileExistsException ex1) {
                             System.err.println(ex1);
@@ -148,7 +146,6 @@ public class MenuController extends AbstractController {
                     YesNoDialog ynd = new YesNoDialog(mainview, () -> {
                         try {
                             CommonIO.export(sm, f, true);
-                            System.out.println("overwriting...");
                         } catch (IOException | FileExistsException ex1) {
                             System.err.println(ex1);
                         }

@@ -5,7 +5,6 @@
  */
 package fileio;
 
-import common.SessionModel;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -19,6 +18,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import common.SessionModel;
 import layer.DrawingLayer;
 import layer.RasterLayer;
 import layer.VectorLayer;
@@ -78,7 +79,7 @@ public class CommonIO {
         }
         return null;
     }
-    
+
     public static File showSaveDialog(File prev, JFrame parent, FileNameExtensionFilter... fnef) {
         if (prev != null) {
             setLastPath(prev.getPath());
@@ -107,10 +108,10 @@ public class CommonIO {
         return null;
     }
 
-    public static BufferedImage render(SessionModel sm) {//render to a single image
+    public static BufferedImage render(SessionModel sm, boolean transparency) {//render to a single image
         Dimension size = sm.size();
-        BufferedImage ri = new BufferedImage(size.width, size.height,
-                BufferedImage.TYPE_INT_ARGB);
+        int type = transparency ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+        BufferedImage ri = new BufferedImage(size.width, size.height, type);
         Graphics g = ri.getGraphics();
         sm.layerHierarchy.forEach((DrawingLayer layer) -> {
             if (layer instanceof RasterLayer && layer.isVisible()) {
@@ -128,10 +129,10 @@ public class CommonIO {
         if (path.exists() && !overwrite) {
             throw new FileExistsException("File exists");
         }
-        BufferedImage bi = render(sm);
         String stringpath = path.getPath();
         int dot = stringpath.lastIndexOf('.');
         String type = stringpath.substring(dot + 1, stringpath.length());
+        BufferedImage bi = render(sm, !type.equals("jpg"));
         ImageIO.write(bi, type, path);
     }
 

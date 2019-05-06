@@ -29,11 +29,10 @@ public class MainViewController extends AbstractController {
     }
 
     public void mvUpdate() {
-        System.out.println("MVC Update Call");
         SessionModel s = this.getCurrentSessionModel();
         LayerSubstrate ls = this.getCurrentViewport();
         this.mainview.layerList.setSession(s);
-        this.mainview.pointerListener.setSession(s, ls);
+        this.mainview.pointerListener.setCurrentSession(s, ls);
         menuUpdate();
     }
 

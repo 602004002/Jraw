@@ -9,7 +9,6 @@ package frontend.tools;
 import java.awt.event.ActionEvent;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.border.EtchedBorder;
 
 /**
  *
@@ -30,7 +29,6 @@ public class ToolbarButton extends JButton{
         this.setBorder(BorderFactory.createEtchedBorder());
         this.setToolTipText(dt.toString());
         this.addActionListener((ActionEvent ae) -> {
-            //System.out.println("Pass!");
             this.tps.pass(this);
         });
     }

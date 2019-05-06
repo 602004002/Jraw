@@ -29,7 +29,7 @@ public class PointerListener implements PointerEventListener {
         this.pointerInfo = pi;
     }
 
-    public void setSession(SessionModel session, LayerSubstrate substrate) {
+    public void setCurrentSession(SessionModel session, LayerSubstrate substrate) {
         if (this.substrate != null) {
             this.substrate.disableOverlay(); //for old substrate
         }

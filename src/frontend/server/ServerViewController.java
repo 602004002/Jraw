@@ -115,7 +115,6 @@ public class ServerViewController extends AbstractController {
         
         @Override
         public synchronized void run() {
-            System.out.println("Starting new packet listener thread");
             while (true) {
                 try {
                     DatagramPacket incomingPacket = P2PUtilities.getBufferPacket();
