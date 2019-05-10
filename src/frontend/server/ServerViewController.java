@@ -6,9 +6,6 @@
 package frontend.server;
 
 import common.ServerSession;
-import common.SessionModel;
-import common.User;
-import frontend.AbstractController;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -17,6 +14,10 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import common.SessionModel;
+import common.User;
+import frontend.AbstractController;
 import networkio.ClientQuery;
 import networkio.ClientToServerSocketWrapper;
 import networkio.ObjectHandler;
@@ -29,15 +30,15 @@ import networkio.ServerReply;
  * @author nickz
  */
 public class ServerViewController extends AbstractController {
-    
+
     private ServerView serverView;
     PacketListenerThread plt;
     MulticastSocket mcs;
     private InetSocketAddress address;
     private ClientQuery query;
-    
+
     private ArrayList<ServerReply> replies;
-    
+
     public ServerViewController(ServerView serverView) {
         query = new ClientQuery(User.getLocalUser().uuid());
         this.serverView = serverView;
@@ -52,7 +53,7 @@ public class ServerViewController extends AbstractController {
             System.err.println(ex);
         }
     }
-    
+
     void refresh() {
         this.replies.clear();
         try {
@@ -63,21 +64,21 @@ public class ServerViewController extends AbstractController {
         }
         updateServerView();
     }
-    
+
     void updateServerView() {
         serverView.serverList.setListData(replies.toArray());
     }
-    
+
     class RefreshAction implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             refresh();
         }
     }
-    
+
     class ConnectAction implements ActionListener {
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             ServerReply reply = (ServerReply) serverView.serverList.getSelectedValue();
@@ -93,8 +94,13 @@ public class ServerViewController extends AbstractController {
                     public void handleObject(Object o) {
                         if (o instanceof SessionModel) {
                             //create new server session object
-                            model.add((ServerSession) o);
-                            ctssw.removeObjectHandler(this);
+                            if (model.contains((SessionModel) o)) {
+
+                            } else {
+                                ServerSession s = new ServerSession((SessionModel) o);
+                                s.setServer(ctssw);
+                                model.add(s);
+                            }
                         }
                     }
                 };
@@ -106,13 +112,13 @@ public class ServerViewController extends AbstractController {
             }
         }
     }
-    
+
     class PacketListenerThread extends Thread {
-        
+
         public PacketListenerThread() {
             super("PacketListener");
         }
-        
+
         @Override
         public synchronized void run() {
             while (true) {
@@ -129,5 +135,5 @@ public class ServerViewController extends AbstractController {
             }
         }
     }
-    
+
 }

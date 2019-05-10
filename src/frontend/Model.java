@@ -13,14 +13,17 @@ public class Model {
 
     private final ArrayList<SessionModel> sessionList; //this is the absolute determiner
     private final ArrayList<LayerSubstrate> substrateList;
-    
+
     private MainViewController mvc;
-    
+
     public void setMainViewController(MainViewController mvc) {
         this.mvc = mvc;
     }
 
     public void add(SessionModel session) {
+        if (session == null) {
+            throw new IllegalArgumentException("Input cannot be null");
+        }
         this.sessionList.add(session);
         this.substrateList.add(new LayerSubstrate(session));
         mvc.updateTabs();
@@ -85,7 +88,12 @@ public class Model {
         if (session == null) {
             return -1;
         }
-        return this.sessionList.indexOf(session);
+        for (int i = 0; i < this.sessionList.size(); i++) {
+            if (this.sessionList.get(i).uuid().equals(session.uuid())) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public int indexOf(LayerSubstrate substrate) {
@@ -93,6 +101,10 @@ public class Model {
             return -1;
         }
         return this.substrateList.indexOf(substrate);
+    }
+
+    public boolean contains(SessionModel sm) {
+        return this.indexOf(sm) >= 0;
     }
 
     public void clear() {

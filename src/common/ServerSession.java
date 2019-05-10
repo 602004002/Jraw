@@ -5,18 +5,31 @@
  */
 package common;
 
+import networkio.ClientToServerSocketWrapper;
+
 /**
  *
  * @author nickz
  */
 public class ServerSession extends SessionModel {
 
-    private ServerSession(Builder sb) {
-        super(sb);
+    private ClientToServerSocketWrapper server;
+
+    public ServerSession(SessionModel sm) {
+        super(new Builder().creator(sm.creator)
+                .name(sm.name())
+                .drawingType(sm.getDrawingType())
+                .size(sm.size())
+                .resolution(sm.resolution())
+                .layerHierarchy(sm.layerHierarchy));
     }
-    
-    public void update() {
-        
+
+    public void setServer(ClientToServerSocketWrapper ctssw) {
+        this.server = ctssw;
+    }
+
+    public ClientToServerSocketWrapper getServer() {
+        return this.server;
     }
 
 }

@@ -6,6 +6,8 @@
 package frontend.layerlist;
 
 import common.SessionModel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -48,7 +50,7 @@ public class LayerList extends javax.swing.JPanel {
 
         jLabel3 = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
-        layersPane = new javax.swing.JPanel();
+        cellsPane = new javax.swing.JPanel();
 
         jLabel3.setText("Selected");
 
@@ -57,20 +59,20 @@ public class LayerList extends javax.swing.JPanel {
 
         jScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-        layersPane.setMinimumSize(new java.awt.Dimension(172, 0));
+        cellsPane.setMinimumSize(new java.awt.Dimension(172, 0));
 
-        javax.swing.GroupLayout layersPaneLayout = new javax.swing.GroupLayout(layersPane);
-        layersPane.setLayout(layersPaneLayout);
-        layersPaneLayout.setHorizontalGroup(
-            layersPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout cellsPaneLayout = new javax.swing.GroupLayout(cellsPane);
+        cellsPane.setLayout(cellsPaneLayout);
+        cellsPaneLayout.setHorizontalGroup(
+            cellsPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 201, Short.MAX_VALUE)
         );
-        layersPaneLayout.setVerticalGroup(
-            layersPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        cellsPaneLayout.setVerticalGroup(
+            cellsPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 285, Short.MAX_VALUE)
         );
 
-        jScrollPane.setViewportView(layersPane);
+        jScrollPane.setViewportView(cellsPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -96,7 +98,7 @@ public class LayerList extends javax.swing.JPanel {
     }
 
     public void refresh() {
-        this.updateUICells();
+        this.replaceCells();
         if (session != null) {
             setSelectedIndices(session.getSelectedLayerIndexes());
         }
@@ -104,33 +106,34 @@ public class LayerList extends javax.swing.JPanel {
         this.repaint();
     }
 
-    void updateUICells() {
-        this.layersPane.removeAll();
+    void replaceCells() {
+        this.cellsPane.removeAll();
         this.cells = null;
         if (this.session == null) {
             return;
         }
         int size = this.session.layerHierarchy.size();
         this.cells = new LayerListCell[size];
-        GroupLayout layersPaneLayout = new GroupLayout(this.layersPane);
-        this.layersPane.setLayout(layersPaneLayout);
-        ParallelGroup horizontal = layersPaneLayout.createParallelGroup(
+        GroupLayout cellsPaneLayout = new GroupLayout(this.cellsPane);
+        
+        ParallelGroup horizontal = cellsPaneLayout.createParallelGroup(
                 javax.swing.GroupLayout.Alignment.LEADING, true);
-        SequentialGroup vSeq = layersPaneLayout.createSequentialGroup();
+        SequentialGroup vSeq = cellsPaneLayout.createSequentialGroup();
         for (int i = size - 1; i >= 0; i--) {
             DrawingLayer layer = this.session.layerHierarchy.get(i);
             LayerListCell llc = new LayerListCell(layer, this);
-            llc.visBtn.setSelected(layer.isVisible());
             horizontal = horizontal.addComponent(llc, GroupLayout.DEFAULT_SIZE,
-                    layersPane.getWidth(), layersPane.getWidth());
+                    cellsPane.getWidth(), cellsPane.getWidth());
             vSeq = vSeq.addComponent(llc, GroupLayout.DEFAULT_SIZE,
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE);
+            llc.visBtn.setSelected(layer.isVisible());
             this.cells[i] = llc;
         }
-        layersPaneLayout.linkSize(SwingConstants.HORIZONTAL,
-                this.layersPane.getComponents());
-        layersPaneLayout.setHorizontalGroup(horizontal);
-        layersPaneLayout.setVerticalGroup(vSeq);
+        cellsPaneLayout.linkSize(SwingConstants.HORIZONTAL,
+                this.cellsPane.getComponents());
+        cellsPaneLayout.setHorizontalGroup(horizontal);
+        cellsPaneLayout.setVerticalGroup(vSeq);
+        this.cellsPane.setLayout(cellsPaneLayout);
     }
 
     int indexOf(LayerListCell llc) {
@@ -169,11 +172,11 @@ public class LayerList extends javax.swing.JPanel {
     void appendSelfToSelectedIndexes(LayerListCell llc) {
         int index = indexOf(llc);
         assert (index >= 0) : "Why is was it not found?";
-            for (int indexFromSel : this.selectedIndexes) {//scan array if already exists
-                if (indexFromSel == index) {
-                    return;
-                }
+        for (int indexFromSel : this.selectedIndexes) {//scan array if already exists
+            if (indexFromSel == index) {
+                return;
             }
+        }
         this.selectedIndexes = resizeAndAppendToArray(this.selectedIndexes, index);
         this.session.setSelectedLayerIndices(this.selectedIndexes);
     }
@@ -204,7 +207,6 @@ public class LayerList extends javax.swing.JPanel {
         for (int i : indexes) {
             cells[i].setSelected(true);
         }
-        session.setSelectedLayerIndices(indexes); //handoff
     }
 
     public void clearSelection() {
@@ -239,8 +241,8 @@ public class LayerList extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel cellsPane;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JPanel layersPane;
     // End of variables declaration//GEN-END:variables
 }

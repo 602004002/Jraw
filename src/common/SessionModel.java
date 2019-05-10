@@ -14,6 +14,8 @@ import layer.DrawingLayer;
 import layer.RasterLayer;
 import changestack.UndoRedoStack;
 import java.io.File;
+import java.util.Arrays;
+import java.util.UUID;
 
 /**
  *
@@ -21,7 +23,7 @@ import java.io.File;
  */
 public class SessionModel implements Serializable {
 
-    private static final long serialVersionUID = 11L;
+    private static final long serialVersionUID = 12L;
 
     //this class is like a live file
     public static class Builder {
@@ -34,6 +36,8 @@ public class SessionModel implements Serializable {
         private int resolution; //in pixels
         private int framerate;
         private Color backgroundColor;
+
+        private ArrayList<DrawingLayer> layerHierarchy;
 
         public Builder creator(final User creator) {
             this.creator = creator;
@@ -70,6 +74,11 @@ public class SessionModel implements Serializable {
             return this;
         }
 
+        protected Builder layerHierarchy(final ArrayList<DrawingLayer> layerHierarchy) {
+            this.layerHierarchy = layerHierarchy;
+            return this;
+        }
+
         public SessionModel build() {
             if (name == null || name.isEmpty()) {
                 throw new IllegalStateException("Name cannot be null or empty");
@@ -89,6 +98,7 @@ public class SessionModel implements Serializable {
 
     protected SessionModel(Builder sb) {
         this.creator = sb.creator;
+        this.uuid = UUID.randomUUID();
         this.name = sb.name;
         this.drawingType = sb.drawingType;
         this.saved = true;
@@ -96,13 +106,18 @@ public class SessionModel implements Serializable {
         this.resolution = sb.resolution;
         this.framerate = sb.framerate;
         this.stack = UndoRedoStack.createEmptyStack();
-        this.layerHierarchy = new ArrayList<>();
-        initializeFirstValues(sb.backgroundColor);
+        if (sb.layerHierarchy == null) {
+            this.layerHierarchy = new ArrayList<>();
+            initializeFirstValues(sb.backgroundColor);
+        } else {
+            this.layerHierarchy = sb.layerHierarchy;
+        }
+        this.selectedLayerIndexes = new int[]{this.layerCount() - 1};
     }
-
     //keep a base image of commited changes
     //private drawinglayer
     public final User creator;
+    private UUID uuid;
     private transient File lastPath;
 
     private String name;
@@ -131,7 +146,6 @@ public class SessionModel implements Serializable {
         } else {
             this.layerHierarchy.add(blankLayer);
         }
-        this.selectedLayerIndexes = new int[]{this.layerCount() - 1};
     }
 
     public String name() {
@@ -186,7 +200,7 @@ public class SessionModel implements Serializable {
     public DrawingLayer getDrawLayer() {
         return this.layerHierarchy.get(this.selectedLayerIndexes[0]);
     }
-    
+
     /**
      *
      * @return Returns an int array of all selected indexes.
@@ -205,7 +219,7 @@ public class SessionModel implements Serializable {
         this.selectedLayerIndexes = indexes;
     }
 
-    public int layerCount() {
+    public final int layerCount() {
         return this.layerHierarchy.size();
     }
 
@@ -217,15 +231,20 @@ public class SessionModel implements Serializable {
         this.lastPath = lastPath;
     }
 
+    public UUID uuid() {
+        return this.uuid;
+    }
+
     @Override
     public String toString() {
-        return "BEGIN_[SessionModel Name: " + this.name
+        return "Class: " + getClass().getName() + "\nBEGIN_[Name: " + this.name
                 + "\n" + this.layerHierarchy
                 + "\n Drawing Type: " + this.drawingType
                 + "\n isSaved: " + this.saved
                 + "\n Size: " + this.size
                 + "\n Resolution: " + this.resolution
                 + "\n Framerate (if Applicable): " + this.framerate
+                + "\n Selected Indexes: " + Arrays.toString(this.getSelectedLayerIndexes())
                 + "]_END";
     }
 
