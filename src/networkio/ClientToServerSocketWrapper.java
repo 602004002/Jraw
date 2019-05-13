@@ -21,12 +21,12 @@ public class ClientToServerSocketWrapper extends NetworkSocketWrapper {
     }
 
     private void init2() {
-        this.addObjectHandler((Object o) -> {
+        this.addHandler((Object o) -> {
             if (o.equals(Request.UserInfo)) {
                 this.queueSend(User.getLocalUser());
             }
         });
-        this.addObjectHandler((Object o) -> {
+        this.addHandler((Object o) -> {
             if (o instanceof String) {
                 System.out.println(o);
             }

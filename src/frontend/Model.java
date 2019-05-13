@@ -59,6 +59,7 @@ public class Model {
     public void remove(int index) {
         this.sessionList.remove(index);
         this.substrateList.remove(index);
+        this.mvc.updateTabs();
     }
 
     /**

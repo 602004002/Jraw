@@ -5,6 +5,7 @@
  */
 package input;
 
+import common.ServerSession;
 import common.SessionModel;
 import common.User;
 import frontend.layerdisplay.DisplayCursor;
@@ -20,15 +21,15 @@ import layer.DrawingLayer;
  * @author nickz
  */
 public class PointerListener implements PointerEventListener {
-
+    
     private SessionModel session;
     private LayerSubstrate substrate;
     private PointerInfo pointerInfo;
-
+    
     public PointerListener(PointerInfo pi) {
         this.pointerInfo = pi;
     }
-
+    
     public void setCurrentSession(SessionModel session, LayerSubstrate substrate) {
         if (this.substrate != null) {
             this.substrate.disableOverlay(); //for old substrate
@@ -41,7 +42,7 @@ public class PointerListener implements PointerEventListener {
             substrate.getOverlay().setCursors(new DisplayCursor(this.pointerInfo, true));
         }
     }
-
+    
     @Override
     public void pointerXYEvent(int deviceType, int pointerID, int eventType,
             boolean inverted, int x, int y, int pressure) {
@@ -55,15 +56,18 @@ public class PointerListener implements PointerEventListener {
                     SwingUtilities.convertPoint(substrate, p, drawLayer));
             pointerInfo.setOverlayPoint(p);
         }
+        if (session instanceof ServerSession) {
+            ((ServerSession) session).getServer().queueSend(pointerInfo);
+        }
         User.getLocalUser().drawingTool().draw(pointerInfo, session);
         pointerInfo.setPrevPoint(pointerInfo.getCurrentPoint());
     }
-
+    
     @Override
     public void pointerButtonEvent(int deviceType, int pointerID,
             int eventType, boolean inverted, int buttonIndex) {
     }
-
+    
     @Override
     public void pointerEvent(int deviceType, int pointerID, int eventType,
             boolean inverted) {

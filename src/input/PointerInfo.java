@@ -21,7 +21,7 @@ public class PointerInfo implements Serializable {
     private int pressure;
     private int maxPressure = 1023;
     private Point currentPoint;
-    private Point prevPoint;
+    private transient Point prevPoint;
     private Point overlayPoint;
 
     private User userTag;

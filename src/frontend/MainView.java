@@ -53,6 +53,7 @@ public class MainView extends javax.swing.JFrame {
         this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
         
         this.connectMenuItem.addActionListener(this.mc.new ConnectAction());
+        this.disconnectMenuItem.addActionListener(mc.new DisconnectAction());
     }
 
     /**

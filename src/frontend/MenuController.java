@@ -5,6 +5,7 @@
  */
 package frontend;
 
+import common.ServerSession;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -182,6 +183,18 @@ public class MenuController extends AbstractController {
             sv.setController(svc);
             svc.setModel(model);
             sv.setVisible(true);
+        }
+    }
+
+    class DisconnectAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                ServerSession sm = (ServerSession) getCurrentSessionModel();
+                sm.getServer().disconnect();
+            } catch (IOException ex) {
+            }
         }
 
     }

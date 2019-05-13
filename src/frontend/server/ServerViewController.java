@@ -97,14 +97,15 @@ public class ServerViewController extends AbstractController {
                             if (model.contains((SessionModel) o)) {
 
                             } else {
-                                ServerSession s = new ServerSession((SessionModel) o);
-                                s.setServer(ctssw);
-                                model.add(s);
+                                ServerSession ss = new ServerSession((SessionModel) o);
+                                ss.setServer(ctssw);
+                                model.add(ss);
+                                ctssw.addHandler(() -> model.remove(ss));
                             }
                         }
                     }
                 };
-                ctssw.addObjectHandler(oh);
+                ctssw.addHandler(oh);
                 ctssw.queueSend(Request.SessionModel);
                 serverView.dispose();
             } catch (IOException ex) {

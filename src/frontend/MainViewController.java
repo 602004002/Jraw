@@ -5,6 +5,7 @@
  */
 package frontend;
 
+import common.ServerSession;
 import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import java.awt.event.ActionEvent;
@@ -18,13 +19,21 @@ import javax.swing.event.ChangeListener;
  */
 public class MainViewController extends AbstractController {
 
+//    public void updateTabs() {
+//        DocumentPane dp = this.mainview.documentTabbedPane;
+//        for (int i = 0; i < model.size(); i++) {
+//            LayerSubstrate ls = this.model.getSubstrate(i);
+//            if (dp.indexOfComponent(ls) < 0) {
+//                dp.add(ls);
+//            }
+//        }
+//    }
     public void updateTabs() {
         DocumentPane dp = this.mainview.documentTabbedPane;
+        dp.removeAll();
         for (int i = 0; i < model.size(); i++) {
             LayerSubstrate ls = this.model.getSubstrate(i);
-            if (dp.indexOfComponent(ls) < 0) {
-                dp.add(ls);
-            }
+            dp.add(ls);
         }
     }
 
@@ -62,6 +71,16 @@ public class MainViewController extends AbstractController {
         this.mainview.selectAllMenuItem.setEnabled(sessionExists);
         this.mainview.deselectMenuItem.setEnabled(sessionExists);
         this.mainview.invertSelectionMenuItem.setEnabled(sessionExists);
+        
+        boolean serverConnected = false;
+        for (int i = 0; i < model.size(); i++) {
+            if (model.getSessionModel(i) instanceof ServerSession) {
+                serverConnected = true;
+                break;
+            }
+        }
+        this.mainview.connectMenuItem.setEnabled(!serverConnected);
+        this.mainview.disconnectMenuItem.setEnabled(serverConnected);
 
     }
 
@@ -85,8 +104,8 @@ public class MainViewController extends AbstractController {
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = model.getSessionModel(tabToClose);
             if (sm.isSaved()) {
-                int mainviewIndex = model.indexOf(sm);
-                mainview.documentTabbedPane.remove(mainviewIndex);
+                //int mainviewIndex = model.indexOf(sm);
+                //mainview.documentTabbedPane.remove(mainviewIndex);
                 model.remove(tabToClose);
                 mvUpdate();
             } else {
