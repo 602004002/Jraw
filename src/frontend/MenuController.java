@@ -73,7 +73,9 @@ public class MenuController extends AbstractController {
             if (f != null) {
                 try {
                     sm = CommonIO.readProprieteryFormat(f);
-                    model.add(sm);
+                    if (!model.contains(sm)) {
+                        model.add(sm);
+                    }
                 } catch (IOException ex) {
                     System.err.println(ex);
                 }
@@ -89,8 +91,8 @@ public class MenuController extends AbstractController {
             if (sm.isSaved()) {
                 return;
             }
-            if (sm.getLastPath().exists()) {
-
+            if (sm.getLastPath() != null && sm.getLastPath().exists()) {
+                
             }
         }
 
