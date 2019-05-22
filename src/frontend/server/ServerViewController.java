@@ -116,10 +116,6 @@ public class ServerViewController extends AbstractController {
 
     class PacketListenerThread extends Thread {
 
-        public PacketListenerThread() {
-            super("PacketListener");
-        }
-
         @Override
         public synchronized void run() {
             while (true) {

@@ -7,6 +7,8 @@ package frontend;
 
 import common.User;
 import input.PointerListener;
+import javax.swing.Action;
+import javax.swing.TransferHandler;
 import jwinpointer.JWinPointerReader;
 
 /**
@@ -14,13 +16,13 @@ import jwinpointer.JWinPointerReader;
  * @author nickz
  */
 public class MainView extends javax.swing.JFrame {
-    
+
     private final MainViewController mvc;
     private final MenuController mc;
     private final Model model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
-    
+
     public MainView() {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
@@ -30,7 +32,7 @@ public class MainView extends javax.swing.JFrame {
         this.mc.setModel(model);
         initComponents();
     }
-    
+
     public final void finishInit() {
         this.mvc.setMainView(this);
         this.mc.setMainView(this);
@@ -40,7 +42,7 @@ public class MainView extends javax.swing.JFrame {
         initHandlers();
         mvc.menuUpdate();
     }
-    
+
     private void initHandlers() {
         this.documentTabbedPane.finishInit();
         this.newMenuItem.addActionListener(this.mc.new NewFileAction());
@@ -49,9 +51,12 @@ public class MainView extends javax.swing.JFrame {
         this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
         this.saveAsMenuItem.addActionListener(this.mc.new SaveAsFileAction());
         this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
-        
+
+        this.cutMenuItem.setActionCommand((String) TransferHandler.getCutAction().getValue(Action.NAME));
+        this.cutMenuItem.addActionListener(TransferHandler.getCutAction());
+
         this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
-        
+
         this.connectMenuItem.addActionListener(this.mc.new ConnectAction());
         this.disconnectMenuItem.addActionListener(mc.new DisconnectAction());
     }

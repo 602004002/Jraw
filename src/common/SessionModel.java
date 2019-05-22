@@ -12,10 +12,10 @@ import java.io.Serializable;
 
 import layer.DrawingLayer;
 import layer.RasterLayer;
-import changestack.UndoRedoStack;
 import java.io.File;
 import java.util.Arrays;
 import java.util.UUID;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -105,7 +105,7 @@ public class SessionModel implements Serializable {
         this.size = sb.size;
         this.resolution = sb.resolution;
         this.framerate = sb.framerate;
-        this.stack = UndoRedoStack.createEmptyStack();
+        this.undoMgr = new UndoManager();
         if (sb.layerHierarchy == null) {
             this.layerHierarchy = new ArrayList<>();
             initializeFirstValues(sb.backgroundColor);
@@ -127,7 +127,7 @@ public class SessionModel implements Serializable {
     private int framerate;
     private Dimension size;
     public final ArrayList<DrawingLayer> layerHierarchy;
-    public transient final UndoRedoStack stack;
+    public transient final UndoManager undoMgr;
     private int[] selectedLayerIndexes;
 
     private void initializeFirstValues(Color bgColor) {
