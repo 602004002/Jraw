@@ -13,23 +13,20 @@ import networkio.ClientToServerSocketWrapper;
  */
 public class ServerSession extends SessionModel {
 
-    private ClientToServerSocketWrapper server;
+    private ClientToServerSocketWrapper ctssw;
 
-    public ServerSession(SessionModel sm) {
+    public ServerSession(SessionModel sm, ClientToServerSocketWrapper ctssw) {
         super(new Builder().creator(sm.creator)
                 .name(sm.name())
                 .drawingType(sm.getDrawingType())
                 .size(sm.size())
                 .resolution(sm.resolution())
                 .layerHierarchy(sm.layerHierarchy));
-    }
-
-    public void setServer(ClientToServerSocketWrapper ctssw) {
-        this.server = ctssw;
+        this.ctssw = ctssw;
     }
 
     public ClientToServerSocketWrapper getServer() {
-        return this.server;
+        return this.ctssw;
     }
 
 }

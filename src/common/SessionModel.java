@@ -9,13 +9,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.io.Serializable;
-
-import layer.DrawingLayer;
-import layer.RasterLayer;
 import java.io.File;
 import java.util.Arrays;
 import java.util.UUID;
-import javax.swing.undo.UndoManager;
+
+import layer.DrawingLayer;
+import layer.RasterLayer;
+import undoredo.UndoManager_Edit;
 
 /**
  *
@@ -105,7 +105,7 @@ public class SessionModel implements Serializable {
         this.size = sb.size;
         this.resolution = sb.resolution;
         this.framerate = sb.framerate;
-        this.undoMgr = new UndoManager();
+        this.undoMgr = new UndoManager_Edit();
         if (sb.layerHierarchy == null) {
             this.layerHierarchy = new ArrayList<>();
             initializeFirstValues(sb.backgroundColor);
@@ -127,7 +127,7 @@ public class SessionModel implements Serializable {
     private int framerate;
     private Dimension size;
     public final ArrayList<DrawingLayer> layerHierarchy;
-    public transient final UndoManager undoMgr;
+    public transient final UndoManager_Edit undoMgr;
     private int[] selectedLayerIndexes;
 
     private void initializeFirstValues(Color bgColor) {
@@ -148,6 +148,7 @@ public class SessionModel implements Serializable {
         }
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Accessors and Mutators">
     public String name() {
         return name;
     }
@@ -235,6 +236,7 @@ public class SessionModel implements Serializable {
         return this.uuid;
     }
 
+    //</editor-fold>
     @Override
     public String toString() {
         return "Class: " + getClass().getName() + "\nBEGIN_[Name: " + this.name

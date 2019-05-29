@@ -5,7 +5,6 @@
  */
 package frontend.newfile;
 
-import java.awt.event.ActionListener;
 import javax.swing.text.DocumentFilter;
 
 /**
@@ -20,7 +19,7 @@ public class NewFileForm extends javax.swing.JDialog {
      * Creates new form NewFileForm
      */
     public NewFileForm(java.awt.Frame parent) {
-        super(parent, false);
+        super(parent, true);
         initComponents();
 
     }

@@ -9,7 +9,7 @@ package fileio;
  *
  * @author nickz
  */
-public class FileExistsException extends Exception {
+public class FileExistsException extends RuntimeException {
 
     public FileExistsException(String msg) {
         super(msg);

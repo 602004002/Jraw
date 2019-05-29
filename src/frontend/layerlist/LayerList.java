@@ -6,8 +6,6 @@
 package frontend.layerlist;
 
 import common.SessionModel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.ParallelGroup;
 import javax.swing.GroupLayout.SequentialGroup;
@@ -95,12 +93,16 @@ public class LayerList extends javax.swing.JPanel {
     public void setSession(SessionModel session) {
         this.session = session;
         this.refresh();
+
     }
 
     public void refresh() {
         this.replaceCells();
         if (session != null) {
             setSelectedIndices(session.getSelectedLayerIndexes());
+            for (LayerListCell llc : cells) {
+                llc.layerNameField.getDocument().addUndoableEditListener(session.undoMgr);
+            }
         }
         this.revalidate();
         this.repaint();
@@ -115,7 +117,7 @@ public class LayerList extends javax.swing.JPanel {
         int size = this.session.layerHierarchy.size();
         this.cells = new LayerListCell[size];
         GroupLayout cellsPaneLayout = new GroupLayout(this.cellsPane);
-        
+
         ParallelGroup horizontal = cellsPaneLayout.createParallelGroup(
                 javax.swing.GroupLayout.Alignment.LEADING, true);
         SequentialGroup vSeq = cellsPaneLayout.createSequentialGroup();

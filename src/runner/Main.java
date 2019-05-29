@@ -8,7 +8,6 @@ package runner;
 import frontend.MainView;
 import java.util.ArrayList;
 import frontend.tools.DrawingTool;
-import java.lang.reflect.InvocationTargetException;
 import layer.LayerPreset;
 
 /**
@@ -20,17 +19,16 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) throws InterruptedException, InvocationTargetException {
+    public static void main(String args[]) {
         //Loading screen
         ArrayList<DrawingTool> dt = new ArrayList<>();
         ArrayList<LayerPreset> lp = new ArrayList<>();
-        java.awt.EventQueue.invokeAndWait(new ResourceLoader(dt, lp));
-        Thread mw = new Thread(() -> {
+        java.awt.EventQueue.invokeLater(new ResourceLoader(dt, lp));
+        java.awt.EventQueue.invokeLater(() -> {
             System.out.println("Main program thread started");
             MainView mv = new MainView();
             mv.finishInit();
             mv.setVisible(true);
-        }, "Main Window");
-        mw.start();
+        });
     }
 }

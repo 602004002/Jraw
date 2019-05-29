@@ -16,23 +16,23 @@ import jwinpointer.JWinPointerReader;
  * @author nickz
  */
 public class MainView extends javax.swing.JFrame {
-
+    
     private final MainViewController mvc;
     private final MenuController mc;
-    private final Model model;
+    private final AllSessionsModel model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
-
+    
     public MainView() {
         this.mvc = new MainViewController();
         this.mc = new MenuController();
-        this.model = new Model();
+        this.model = new AllSessionsModel();
         this.pointerListener = new PointerListener(User.getLocalUser().pointerInfo());
         this.mvc.setModel(model);
         this.mc.setModel(model);
         initComponents();
     }
-
+    
     public final void finishInit() {
         this.mvc.setMainView(this);
         this.mc.setMainView(this);
@@ -42,7 +42,7 @@ public class MainView extends javax.swing.JFrame {
         initHandlers();
         mvc.menuUpdate();
     }
-
+    
     private void initHandlers() {
         this.documentTabbedPane.finishInit();
         this.newMenuItem.addActionListener(this.mc.new NewFileAction());
@@ -51,12 +51,15 @@ public class MainView extends javax.swing.JFrame {
         this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
         this.saveAsMenuItem.addActionListener(this.mc.new SaveAsFileAction());
         this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
-
+        
+        this.undoMenuItem.addActionListener(this.mc.new UndoAction());
+        this.redoMenuItem.addActionListener(this.mc.new RedoAction());
+        
         this.cutMenuItem.setActionCommand((String) TransferHandler.getCutAction().getValue(Action.NAME));
-        this.cutMenuItem.addActionListener(TransferHandler.getCutAction());
-
+        this.cutMenuItem.setAction(TransferHandler.getCutAction());
+        
         this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
-
+        
         this.connectMenuItem.addActionListener(this.mc.new ConnectAction());
         this.disconnectMenuItem.addActionListener(mc.new DisconnectAction());
     }
@@ -75,7 +78,7 @@ public class MainView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         colorPalette2 = new frontend.tools.ColorToolbar();
         layerList = new frontend.layerlist.LayerList();
-        documentTabbedPane = new DocumentPane(this.mvc);
+        documentTabbedPane = new SubstratePane(this.mvc);
         mainMenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newMenuItem = new javax.swing.JMenuItem();
@@ -447,7 +450,7 @@ public class MainView extends javax.swing.JFrame {
     public javax.swing.JMenuItem deleteLayerMenuItem;
     public javax.swing.JMenuItem deselectMenuItem;
     public javax.swing.JMenuItem disconnectMenuItem;
-    public frontend.DocumentPane documentTabbedPane;
+    public frontend.SubstratePane documentTabbedPane;
     public javax.swing.JMenuItem duplicateLayerMenuItem;
     public javax.swing.JMenu editMenu;
     public javax.swing.JMenuItem exportMenuItem;

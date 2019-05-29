@@ -16,15 +16,15 @@ import javax.swing.JTabbedPane;
  *
  * @author nickz
  */
-public class DocumentPane extends JTabbedPane {
+public class SubstratePane extends JTabbedPane {
 
     private final MainViewController mvc;
 
-    public DocumentPane() {
+    public SubstratePane() {
         this.mvc = new MainViewController();
     }
 
-    public DocumentPane(MainViewController mvc) {
+    public SubstratePane(MainViewController mvc) {
         this.mvc = mvc;
     }
 

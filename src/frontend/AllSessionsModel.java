@@ -4,9 +4,9 @@ import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import java.util.ArrayList;
 
-public class Model {
+public class AllSessionsModel {
 
-    public Model() {
+    public AllSessionsModel() {
         this.sessionList = new ArrayList<>();
         this.substrateList = new ArrayList<>();
     }

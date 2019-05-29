@@ -97,8 +97,7 @@ public class ServerViewController extends AbstractController {
                             if (model.contains((SessionModel) o)) {
 
                             } else {
-                                ServerSession ss = new ServerSession((SessionModel) o);
-                                ss.setServer(ctssw);
+                                ServerSession ss = new ServerSession((SessionModel) o, ctssw);
                                 model.add(ss);
                                 ctssw.addHandler(() -> model.remove(ss));
                             }
@@ -115,6 +114,10 @@ public class ServerViewController extends AbstractController {
     }
 
     class PacketListenerThread extends Thread {
+        
+        PacketListenerThread() {
+            super("PacketListenerThread");
+        }
 
         @Override
         public synchronized void run() {

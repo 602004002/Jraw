@@ -201,7 +201,7 @@ public class LayerListCell extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLayeredPane jLayeredPane1;
-    private final javax.swing.JTextField layerNameField = new javax.swing.JTextField();
+    public final javax.swing.JTextField layerNameField = new javax.swing.JTextField();
     public final javax.swing.JToggleButton selBtn = new javax.swing.JToggleButton();
     public final javax.swing.JToggleButton visBtn = new javax.swing.JToggleButton();
     // End of variables declaration//GEN-END:variables

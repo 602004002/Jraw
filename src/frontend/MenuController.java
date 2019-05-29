@@ -5,22 +5,27 @@
  */
 package frontend;
 
-import common.ServerSession;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.Component;
+import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
+import javax.swing.undo.UndoManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
 
-import frontend.layerdisplay.LayerSubstrate;
+import common.ServerSession;
 import common.SessionModel;
+import frontend.layerdisplay.LayerSubstrate;
 import frontend.dialog.YesNoDialog;
 import frontend.newfile.NewFileForm;
-import fileio.CommonIO;
-import fileio.FileExistsException;
 import frontend.newfile.NewFileFormController;
 import frontend.server.ServerView;
 import frontend.server.ServerViewController;
+import fileio.CommonIO;
+import fileio.FileExistsException;
 import layer.RasterLayer;
 
 /**
@@ -42,13 +47,12 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             //check for save
-            boolean allSaved = true;
             for (int i = 0; i < model.size(); i++) {
-                allSaved &= model.getSessionModel(i).isSaved();
+                if (!model.getSessionModel(i).isSaved()) {
+                    return;
+                }
             }
-            if (allSaved) {
-                System.exit(0);
-            }
+            System.exit(0);
         }
     }
 
@@ -69,12 +73,13 @@ public class MenuController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             File f = CommonIO.showOpenDialog(mainview, JRAW);
-            SessionModel sm;
             if (f != null) {
                 try {
-                    sm = CommonIO.readProprieteryFormat(f);
+                    SessionModel sm = CommonIO.readProprieteryFormat(f);
                     if (!model.contains(sm)) {
                         model.add(sm);
+                        sm.setLastPath(f);
+                        sm.setSaved(true);
                     }
                 } catch (IOException ex) {
                     System.err.println(ex);
@@ -92,7 +97,13 @@ public class MenuController extends AbstractController {
                 return;
             }
             if (sm.getLastPath() != null && sm.getLastPath().exists()) {
-                
+                try {
+                    CommonIO.saveProprieteryFormat(sm, sm.getLastPath(), true);
+                    sm.setSaved(true);
+                } catch (IOException | FileExistsException ex) {
+                }
+            } else {
+                new SaveAsFileAction().actionPerformed(e);
             }
         }
 
@@ -110,6 +121,7 @@ public class MenuController extends AbstractController {
             if (f != null) {
                 try {
                     CommonIO.saveProprieteryFormat(sm, f, false);
+                    sm.setLastPath(f);
                     sm.setSaved(true);
                 } catch (IOException ex) {
                     System.err.println(ex);
@@ -118,12 +130,13 @@ public class MenuController extends AbstractController {
                     YesNoDialog ynd = new YesNoDialog(mainview, () -> {
                         try {
                             CommonIO.saveProprieteryFormat(sm, f, true);
+                            sm.setLastPath(f);
                             sm.setSaved(true);
-                        } catch (IOException | FileExistsException ex1) {
+                        } catch (IOException ex1) {
                             System.err.println(ex1);
                         }
                     });
-                    ynd.setMessage("Overwrite?");
+                    ynd.setMessage("Overwrite file?");
                     ynd.setVisible(true);
                 }
             }
@@ -142,6 +155,7 @@ public class MenuController extends AbstractController {
             if (f != null) {
                 try {
                     CommonIO.export(sm, f, false);
+                    sm.setLastPath(f);
                 } catch (IOException ex) {
                     System.err.println(ex);
                 } catch (FileExistsException ex) {
@@ -149,11 +163,12 @@ public class MenuController extends AbstractController {
                     YesNoDialog ynd = new YesNoDialog(mainview, () -> {
                         try {
                             CommonIO.export(sm, f, true);
-                        } catch (IOException | FileExistsException ex1) {
+                            sm.setLastPath(f);
+                        } catch (IOException ex1) {
                             System.err.println(ex1);
                         }
                     });
-                    ynd.setMessage("Overwrite?");
+                    ynd.setMessage("Overwrite export?");
                     ynd.setVisible(true);
                 }
             }
@@ -174,6 +189,44 @@ public class MenuController extends AbstractController {
             lv.updateLayers();
             mainview.layerList.refresh();
         }
+    }
+
+    class UndoAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SessionModel current = MenuController.this.getCurrentSessionModel();
+            try {
+                current.undoMgr.undo();
+            } catch (CannotUndoException ex) {
+
+            }
+        }
+
+    }
+
+    class RedoAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            SessionModel current = MenuController.this.getCurrentSessionModel();
+            try {
+                current.undoMgr.redo();
+            } catch (CannotRedoException ex) {
+
+            }
+        }
+
+    }
+
+    class BufferAction implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            UndoManager um = getCurrentSessionModel().undoMgr;
+            
+        }
+
     }
 
     class ConnectAction implements ActionListener {

@@ -11,13 +11,13 @@ import java.awt.Component;
 public abstract class AbstractController {
 
     protected MainView mainview;
-    protected Model model;
+    protected AllSessionsModel model;
 
     protected void setMainView(MainView mainview) {
         this.mainview = mainview;
     }
 
-    protected void setModel(Model model) {
+    protected void setModel(AllSessionsModel model) {
         this.model = model;
     }
 

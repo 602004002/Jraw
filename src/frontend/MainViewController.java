@@ -10,6 +10,7 @@ import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -29,7 +30,7 @@ public class MainViewController extends AbstractController {
 //        }
 //    }
     public void updateTabs() {
-        DocumentPane dp = this.mainview.documentTabbedPane;
+        SubstratePane dp = this.mainview.documentTabbedPane;
         dp.removeAll();
         for (int i = 0; i < model.size(); i++) {
             LayerSubstrate ls = this.model.getSubstrate(i);
@@ -46,7 +47,8 @@ public class MainViewController extends AbstractController {
     }
 
     public void menuUpdate() {
-        boolean sessionExists = this.getCurrentSessionModel() != null;
+        SessionModel currentModel = this.getCurrentSessionModel();
+        boolean sessionExists = currentModel != null;
         this.mainview.closeMenuItem.setEnabled(sessionExists);
         this.mainview.saveMenuItem.setEnabled(sessionExists);
         this.mainview.saveAsMenuItem.setEnabled(sessionExists);
@@ -71,6 +73,10 @@ public class MainViewController extends AbstractController {
         this.mainview.selectAllMenuItem.setEnabled(sessionExists);
         this.mainview.deselectMenuItem.setEnabled(sessionExists);
         this.mainview.invertSelectionMenuItem.setEnabled(sessionExists);
+        
+        if (sessionExists) {
+            
+        }
         
         boolean serverConnected = false;
         for (int i = 0; i < model.size(); i++) {
@@ -103,6 +109,13 @@ public class MainViewController extends AbstractController {
         @Override
         public void actionPerformed(ActionEvent e) {
             SessionModel sm = model.getSessionModel(tabToClose);
+            if (sm instanceof ServerSession) {
+                try {
+                    ((ServerSession) sm).getServer().disconnect();
+                } catch (IOException ex) {
+                }
+                return;
+            }
             if (sm.isSaved()) {
                 //int mainviewIndex = model.indexOf(sm);
                 //mainview.documentTabbedPane.remove(mainviewIndex);
