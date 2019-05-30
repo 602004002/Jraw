@@ -7,7 +7,6 @@ package frontend;
 
 import common.User;
 import input.PointerListener;
-import javax.swing.Action;
 import javax.swing.TransferHandler;
 import jwinpointer.JWinPointerReader;
 
@@ -16,52 +15,51 @@ import jwinpointer.JWinPointerReader;
  * @author nickz
  */
 public class MainView extends javax.swing.JFrame {
-    
+
     private final MainViewController mvc;
-    private final MenuController mc;
     private final AllSessionsModel model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
-    
+
     public MainView() {
         this.mvc = new MainViewController();
-        this.mc = new MenuController();
         this.model = new AllSessionsModel();
         this.pointerListener = new PointerListener(User.getLocalUser().pointerInfo());
         this.mvc.setModel(model);
-        this.mc.setModel(model);
         initComponents();
+        finishInit();
     }
-    
+
     public final void finishInit() {
         this.mvc.setMainView(this);
-        this.mc.setMainView(this);
         this.model.setMainViewController(mvc);
         this.pointerReader = new JWinPointerReader(this);
         this.pointerReader.addPointerEventListener(pointerListener);
         initHandlers();
         mvc.menuUpdate();
     }
-    
+
     private void initHandlers() {
-        this.documentTabbedPane.finishInit();
-        this.newMenuItem.addActionListener(this.mc.new NewFileAction());
-        this.quitMenuItem.addActionListener(this.mc.new QuitAction());
-        this.openMenuItem.addActionListener(this.mc.new OpenFileAction());
-        this.saveMenuItem.addActionListener(this.mc.new SaveFileAction());
-        this.saveAsMenuItem.addActionListener(this.mc.new SaveAsFileAction());
-        this.exportMenuItem.addActionListener(this.mc.new ExportFileAction());
-        
-        this.undoMenuItem.addActionListener(this.mc.new UndoAction());
-        this.redoMenuItem.addActionListener(this.mc.new RedoAction());
-        
-        this.cutMenuItem.setActionCommand((String) TransferHandler.getCutAction().getValue(Action.NAME));
-        this.cutMenuItem.setAction(TransferHandler.getCutAction());
-        
-        this.newRasterLayerMenuItem.addActionListener(this.mc.new NewRasterLayerAction());
-        
-        this.connectMenuItem.addActionListener(this.mc.new ConnectAction());
-        this.disconnectMenuItem.addActionListener(mc.new DisconnectAction());
+        this.sessionTabbedPane.addChangeListener(e -> this.mvc.fullUpdate());
+
+        this.newMenuItem.addActionListener(e -> this.mvc.com_NewFile());
+        this.quitMenuItem.addActionListener(e -> this.mvc.com_TryQuit());
+        this.openMenuItem.addActionListener(e -> this.mvc.com_OpenFile());
+        this.saveMenuItem.addActionListener(e -> this.mvc.com_SaveFile());
+        this.saveAsMenuItem.addActionListener(e -> this.mvc.com_SaveAsFile());
+        this.exportMenuItem.addActionListener(e -> this.mvc.com_Export());
+
+        this.undoMenuItem.addActionListener(e -> this.mvc.com_Undo());
+        this.redoMenuItem.addActionListener(e -> this.mvc.com_Redo());
+
+        this.cutMenuItem.addActionListener(TransferHandler.getCutAction());
+        this.copyMenuItem.addActionListener(TransferHandler.getCopyAction());
+        this.pasteMenuItem.addActionListener(TransferHandler.getPasteAction());
+
+        this.newRasterLayerMenuItem.addActionListener(e -> this.mvc.com_NewRasterLayer());
+
+        this.connectMenuItem.addActionListener(e -> this.mvc.com_Connect());
+        this.disconnectMenuItem.addActionListener(e -> this.mvc.com_Disconnect());
     }
 
     /**
@@ -78,7 +76,7 @@ public class MainView extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         colorPalette2 = new frontend.tools.ColorToolbar();
         layerList = new frontend.layerlist.LayerList();
-        documentTabbedPane = new SubstratePane(this.mvc);
+        sessionTabbedPane = new frontend.SubstratePane(this.mvc);
         mainMenuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         newMenuItem = new javax.swing.JMenuItem();
@@ -186,7 +184,7 @@ public class MainView extends javax.swing.JFrame {
 
         layerList.setMinimumSize(new java.awt.Dimension(216, 300));
 
-        documentTabbedPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED)));
+        sessionTabbedPane.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED), javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED)));
 
         mainMenuBar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         mainMenuBar.setFocusable(false);
@@ -413,7 +411,7 @@ public class MainView extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(subToolbarSplitPane, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(documentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(sessionTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 930, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
@@ -422,7 +420,7 @@ public class MainView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(toolbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(subToolbarSplitPane)
-            .addComponent(documentTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(sessionTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(layerList, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -450,7 +448,6 @@ public class MainView extends javax.swing.JFrame {
     public javax.swing.JMenuItem deleteLayerMenuItem;
     public javax.swing.JMenuItem deselectMenuItem;
     public javax.swing.JMenuItem disconnectMenuItem;
-    public frontend.SubstratePane documentTabbedPane;
     public javax.swing.JMenuItem duplicateLayerMenuItem;
     public javax.swing.JMenu editMenu;
     public javax.swing.JMenuItem exportMenuItem;
@@ -494,6 +491,7 @@ public class MainView extends javax.swing.JFrame {
     public javax.swing.JMenuItem saveMenuItem;
     public javax.swing.JMenuItem selectAllMenuItem;
     public javax.swing.JMenu selectionMenu;
+    public frontend.SubstratePane sessionTabbedPane;
     public javax.swing.JMenuItem shortcutSettingsMenuItem;
     private javax.swing.JSplitPane subToolbarSplitPane;
     public javax.swing.JMenuItem tabletSettingsMenuItem;

@@ -1,7 +1,6 @@
 package frontend;
 
 import frontend.layerdisplay.LayerSubstrate;
-import frontend.MainViewController.TabCloseAction;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
@@ -20,16 +19,12 @@ public class SubstratePane extends JTabbedPane {
 
     private final MainViewController mvc;
 
-    public SubstratePane() {
-        this.mvc = new MainViewController();
-    }
-
     public SubstratePane(MainViewController mvc) {
         this.mvc = mvc;
     }
 
-    public final void finishInit() {
-        this.addChangeListener(this.mvc.new UpdateSelectedTab());
+    public SubstratePane() {
+        mvc = null;
     }
 
     @Override
@@ -40,7 +35,7 @@ public class SubstratePane extends JTabbedPane {
         }
         JScrollPane jsp = new JScrollPane(component);
         super.add(jsp);
-        TabLabel tl = new TabLabel(component.getName(), this.mvc.new TabCloseAction((LayerSubstrate) component));
+        TabLabel tl = new TabLabel(component.getName(), e -> mvc.com_TryCloseTab((LayerSubstrate) component));
         int index = this.indexOfComponent(jsp);
         this.setTabComponentAt(index, tl);
         return component;
@@ -50,7 +45,7 @@ public class SubstratePane extends JTabbedPane {
     public Component getSelectedComponent() {
         Component c = super.getSelectedComponent();
         if (c instanceof JScrollPane) {
-            return ((JScrollPane)c).getViewport().getView();
+            return ((JScrollPane) c).getViewport().getView();
         }
         return c;
     }

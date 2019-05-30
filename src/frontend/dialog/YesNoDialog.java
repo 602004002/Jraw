@@ -12,15 +12,15 @@ package frontend.dialog;
 public class YesNoDialog extends javax.swing.JDialog {
 
     
-    private YesAction yni;
+    private DialogAction di;
     /**
      * Creates new form YesNoDialog
      * @param parent Which window it belongs to (Usually MainView)
      */
     
-    public YesNoDialog(java.awt.Frame parent, YesAction yni) {
+    public YesNoDialog(java.awt.Frame parent, DialogAction yni) {
         super(parent, true);
-        this.yni = yni;
+        this.di = yni;
         initComponents();
     }
 
@@ -88,12 +88,13 @@ public class YesNoDialog extends javax.swing.JDialog {
 
     private void yesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesActionPerformed
         // TODO add your handling code here:
-        this.yni.action();
+        this.di.action(true);
         this.dispose();
     }//GEN-LAST:event_yesActionPerformed
 
     private void noActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noActionPerformed
         // TODO add your handling code here:
+        this.di.action(false);
         this.dispose();
     }//GEN-LAST:event_noActionPerformed
 

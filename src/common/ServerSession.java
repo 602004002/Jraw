@@ -6,6 +6,7 @@
 package common;
 
 import networkio.ClientToServerSocketWrapper;
+import undoredo.UndoManager_Edit;
 
 /**
  *
@@ -23,6 +24,7 @@ public class ServerSession extends SessionModel {
                 .resolution(sm.resolution())
                 .layerHierarchy(sm.layerHierarchy));
         this.ctssw = ctssw;
+        this.setUndoMgr(new UndoManager_Edit(ctssw));
     }
 
     public ClientToServerSocketWrapper getServer() {

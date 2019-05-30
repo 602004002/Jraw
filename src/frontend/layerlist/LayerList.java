@@ -101,7 +101,7 @@ public class LayerList extends javax.swing.JPanel {
         if (session != null) {
             setSelectedIndices(session.getSelectedLayerIndexes());
             for (LayerListCell llc : cells) {
-                llc.layerNameField.getDocument().addUndoableEditListener(session.undoMgr);
+                llc.layerNameField.getDocument().addUndoableEditListener(session.getUndoMgr());
             }
         }
         this.revalidate();

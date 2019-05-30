@@ -29,6 +29,7 @@ public class UndoManager_Edit extends UndoManager {
     @Override
     public void undoableEditHappened(UndoableEditEvent e) {
         super.undoableEditHappened(e);
+        if (ctssw != null)
         ctssw.queueSend(e.getEdit());
     }
     

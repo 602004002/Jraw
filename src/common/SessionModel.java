@@ -127,7 +127,7 @@ public class SessionModel implements Serializable {
     private int framerate;
     private Dimension size;
     public final ArrayList<DrawingLayer> layerHierarchy;
-    public transient final UndoManager_Edit undoMgr;
+    private transient UndoManager_Edit undoMgr;
     private int[] selectedLayerIndexes;
 
     private void initializeFirstValues(Color bgColor) {
@@ -236,7 +236,23 @@ public class SessionModel implements Serializable {
         return this.uuid;
     }
 
+    public UndoManager_Edit getUndoMgr() {
+        return undoMgr;
+    }
+
+    protected final void setUndoMgr(UndoManager_Edit undoMgr) {
+        this.undoMgr = undoMgr;
+    }
+
     //</editor-fold>
+    public void addRasterLayer() {
+        RasterLayer newLayer = (RasterLayer) new RasterLayer.Builder()
+                .name("Layer " + layerCount())
+                .size(size())
+                .build();
+        layerHierarchy.add(newLayer);
+    }
+
     @Override
     public String toString() {
         return "Class: " + getClass().getName() + "\nBEGIN_[Name: " + this.name

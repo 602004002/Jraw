@@ -30,7 +30,7 @@ public abstract class AbstractController {
     }
 
     protected LayerSubstrate getCurrentViewport() {
-        Component c = this.mainview.documentTabbedPane.getSelectedComponent();
+        Component c = this.mainview.sessionTabbedPane.getSelectedComponent();
         if (c instanceof LayerSubstrate) {
             return (LayerSubstrate) c;
         }

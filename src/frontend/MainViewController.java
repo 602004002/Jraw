@@ -8,11 +8,19 @@ package frontend;
 import common.ServerSession;
 import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import fileio.CommonIO;
+import fileio.FileExistsException;
+import frontend.dialog.YesNoDialog;
+import frontend.newfile.NewFileForm;
+import frontend.newfile.NewFileFormController;
+import frontend.server.ServerView;
+import frontend.server.ServerViewController;
+import java.io.File;
 import java.io.IOException;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import undoredo.UndoManager_Edit;
 
 /**
  *
@@ -20,17 +28,16 @@ import javax.swing.event.ChangeListener;
  */
 public class MainViewController extends AbstractController {
 
-//    public void updateTabs() {
-//        DocumentPane dp = this.mainview.documentTabbedPane;
-//        for (int i = 0; i < model.size(); i++) {
-//            LayerSubstrate ls = this.model.getSubstrate(i);
-//            if (dp.indexOfComponent(ls) < 0) {
-//                dp.add(ls);
-//            }
-//        }
-//    }
+    private static final FileNameExtensionFilter JRAW, PNG, JPG;
+
+    static {
+        JRAW = new FileNameExtensionFilter("Jraw File Format (.jraw)", "jraw");
+        PNG = new FileNameExtensionFilter("Portable Network Graphics (.png)", "png");
+        JPG = new FileNameExtensionFilter("JPG Image (.jpg)", "jpg", "jpeg");
+    }
+
     public void updateTabs() {
-        SubstratePane dp = this.mainview.documentTabbedPane;
+        SubstratePane dp = this.mainview.sessionTabbedPane;
         dp.removeAll();
         for (int i = 0; i < model.size(); i++) {
             LayerSubstrate ls = this.model.getSubstrate(i);
@@ -38,7 +45,7 @@ public class MainViewController extends AbstractController {
         }
     }
 
-    public void mvUpdate() {
+    public void fullUpdate() {
         SessionModel s = this.getCurrentSessionModel();
         LayerSubstrate ls = this.getCurrentViewport();
         this.mainview.layerList.setSession(s);
@@ -73,11 +80,7 @@ public class MainViewController extends AbstractController {
         this.mainview.selectAllMenuItem.setEnabled(sessionExists);
         this.mainview.deselectMenuItem.setEnabled(sessionExists);
         this.mainview.invertSelectionMenuItem.setEnabled(sessionExists);
-        
-        if (sessionExists) {
-            
-        }
-        
+
         boolean serverConnected = false;
         for (int i = 0; i < model.size(); i++) {
             if (model.getSessionModel(i) instanceof ServerSession) {
@@ -86,46 +89,189 @@ public class MainViewController extends AbstractController {
             }
         }
         this.mainview.connectMenuItem.setEnabled(!serverConnected);
-        this.mainview.disconnectMenuItem.setEnabled(serverConnected);
-
+        this.mainview.disconnectMenuItem.setEnabled(currentModel instanceof ServerSession);
     }
 
-    class UpdateSelectedTab implements ChangeListener {
-
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            mvUpdate();
+    void com_TryCloseTab(LayerSubstrate tabToClose) {
+        SessionModel sm = model.getSessionModel(tabToClose);
+        if (sm instanceof ServerSession) {
+            try {
+                ((ServerSession) sm).getServer().disconnect();
+            } catch (IOException ex) {
+            }
+            return;
         }
-    }
-
-    class TabCloseAction implements ActionListener {
-
-        private final LayerSubstrate tabToClose;
-
-        TabCloseAction(LayerSubstrate tabToClose) {
-            this.tabToClose = tabToClose;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            SessionModel sm = model.getSessionModel(tabToClose);
-            if (sm instanceof ServerSession) {
-                try {
-                    ((ServerSession) sm).getServer().disconnect();
-                } catch (IOException ex) {
+        if (sm.isSaved()) {
+            model.remove(tabToClose);
+        } else {
+            //ask if they want to save
+            YesNoDialog yni = new YesNoDialog(mainview, b -> {
+                if (b) {
+                    com_SaveFile();
+                } else {
+                    model.remove(tabToClose);
                 }
-                return;
+            });
+            yni.setMessage("Save before closing?");
+            yni.setVisible(true);
+            //remove(index) if no
+            //pop up with CommonIO savedialog if file doesn't exist
+        }
+    }
+
+    void com_TryQuit() {
+        //check for save
+        for (int i = 0; i < model.size(); i++) {
+            com_TryCloseTab(model.getSubstrate(i));
+        }
+        System.exit(0);
+    }
+
+    void com_NewFile() {
+        NewFileForm nff = new NewFileForm(mainview);
+        NewFileFormController nffo = new NewFileFormController(nff);
+        nffo.setModel(model);
+        nff.setController(nffo);
+        nff.setVisible(true);
+    }
+
+    void com_OpenFile() {
+        File f = CommonIO.showOpenDialog(mainview, JRAW);
+        if (f != null) {
+            try {
+                SessionModel sm = CommonIO.readProprieteryFormat(f);
+                if (!model.contains(sm)) {
+                    model.add(sm);
+                    sm.setLastPath(f);
+                    sm.setSaved(true);
+                }
+            } catch (IOException ex) {
+                System.err.println(ex);
             }
-            if (sm.isSaved()) {
-                //int mainviewIndex = model.indexOf(sm);
-                //mainview.documentTabbedPane.remove(mainviewIndex);
-                model.remove(tabToClose);
-                mvUpdate();
-            } else {
-                //ask if they want to save
-                //remove(index) if no
-                //pop up with CommonIO savedialog if file doesn't exist
+        }
+    }
+
+    void com_SaveFile() {
+        SessionModel sm = getCurrentSessionModel();
+        if (sm.isSaved()) {
+            return;
+        }
+        if (sm.getLastPath() != null && sm.getLastPath().exists()) {
+            try {
+                CommonIO.saveProprieteryFormat(sm, sm.getLastPath(), true);
+                sm.setSaved(true);
+            } catch (IOException | FileExistsException ex) {
             }
+        } else {
+            com_SaveAsFile();
+        }
+    }
+
+    void com_SaveAsFile() {
+        SessionModel sm = getCurrentSessionModel();
+        if (sm == null) {
+            return;
+        }
+        File f = CommonIO.showSaveDialog(sm.getLastPath(), mainview, JRAW);
+        if (f != null) {
+            try {
+                CommonIO.saveProprieteryFormat(sm, f, false);
+                sm.setLastPath(f);
+                sm.setSaved(true);
+            } catch (IOException ex) {
+                System.err.println(ex);
+            } catch (FileExistsException ex) {
+                //overwrite?
+                YesNoDialog ynd = new YesNoDialog(mainview, b -> {
+                    if (b) {
+                        try {
+                            CommonIO.saveProprieteryFormat(sm, f, true);
+                            sm.setLastPath(f);
+                            sm.setSaved(true);
+                        } catch (IOException ex1) {
+                            System.err.println(ex1);
+                        }
+                    }
+                });
+                ynd.setMessage("Overwrite file?");
+                ynd.setVisible(true);
+            }
+        }
+    }
+
+    void com_Export() {
+        SessionModel sm = getCurrentSessionModel();
+        if (sm == null) {
+            return;
+        }
+        File f = CommonIO.showSaveDialog(mainview, PNG, JPG);
+        if (f != null) {
+            try {
+                CommonIO.export(sm, f, false);
+                sm.setLastPath(f);
+            } catch (IOException ex) {
+                System.err.println(ex);
+            } catch (FileExistsException ex) {
+                //overwrite?
+                YesNoDialog ynd = new YesNoDialog(mainview, b -> {
+                    if (b) {
+                        try {
+                            CommonIO.export(sm, f, true);
+                            sm.setLastPath(f);
+                        } catch (IOException ex1) {
+                            System.err.println(ex1);
+                        }
+                    }
+                });
+                ynd.setMessage("Overwrite export?");
+                ynd.setVisible(true);
+            }
+        }
+    }
+
+    void com_NewRasterLayer() {
+        SessionModel sm = getCurrentSessionModel();
+        LayerSubstrate lv = getCurrentViewport();
+        sm.addRasterLayer();
+        lv.updateLayers();
+        mainview.layerList.refresh();
+    }
+
+    void com_Undo() {
+        SessionModel current = this.getCurrentSessionModel();
+        try {
+            current.getUndoMgr().undo();
+        } catch (CannotUndoException ex) {
+
+        }
+    }
+
+    void com_Redo() {
+        SessionModel current = this.getCurrentSessionModel();
+        try {
+            current.getUndoMgr().redo();
+        } catch (CannotRedoException ex) {
+
+        }
+    }
+
+    void com_OpenBuffer() {
+        UndoManager_Edit ume = getCurrentSessionModel().getUndoMgr();
+    }
+
+    void com_Connect() {
+        ServerView sv = new ServerView(mainview);
+        ServerViewController svc = new ServerViewController(sv);
+        sv.setController(svc);
+        svc.setModel(model);
+        sv.setVisible(true);
+    }
+
+    void com_Disconnect() {
+        try {
+            ServerSession sm = (ServerSession) getCurrentSessionModel();
+            sm.getServer().disconnect();
+        } catch (IOException ex) {
         }
     }
 }

@@ -560,7 +560,7 @@
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="subToolbarSplitPane" min="-2" pref="184" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-              <Component id="documentTabbedPane" min="-2" pref="930" max="-2" attributes="0"/>
+              <Component id="sessionTabbedPane" min="-2" pref="930" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
               <Component id="layerList" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
@@ -571,7 +571,7 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="toolbar" max="32767" attributes="0"/>
           <Component id="subToolbarSplitPane" max="32767" attributes="0"/>
-          <Component id="documentTabbedPane" alignment="0" max="32767" attributes="0"/>
+          <Component id="sessionTabbedPane" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Component id="layerList" min="-2" max="-2" attributes="0"/>
@@ -664,7 +664,7 @@
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
     </Component>
-    <Container class="frontend.SubstratePane" name="documentTabbedPane">
+    <Container class="frontend.SubstratePane" name="sessionTabbedPane">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.CompoundBorderInfo">

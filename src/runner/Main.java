@@ -27,7 +27,6 @@ public class Main {
         java.awt.EventQueue.invokeLater(() -> {
             System.out.println("Main program thread started");
             MainView mv = new MainView();
-            mv.finishInit();
             mv.setVisible(true);
         });
     }

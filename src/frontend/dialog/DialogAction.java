@@ -9,6 +9,6 @@ package frontend.dialog;
  *
  * @author nickz
  */
-public interface YesAction {
-    void action();
+public interface DialogAction {
+    void action(boolean b);
 }
