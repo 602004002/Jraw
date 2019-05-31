@@ -5,13 +5,12 @@
  */
 package frontend.tools;
 
-import common.SessionModel;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.Serializable;
 import javax.swing.ImageIcon;
 
+import common.SessionModel;
 import layer.DrawingLayer;
 import layer.RasterLayer;
 import layer.VectorLayer;
@@ -21,17 +20,15 @@ import input.PointerInfo;
  *
  * @author nickz
  */
-public abstract class DrawingTool implements Serializable {
-
-    private static final long serialVersionUID = 10L;
+public abstract class DrawingTool {
 
     //like a preset for the cursor to draw 
     protected String name;
     protected int diameterSize, crosshairLength, dithering, hardness, density;
     protected boolean pressureAffectsSize, pressureAffectsDensity;
     protected Color color;
-    protected transient ImageIcon toolbarIcon;
-    protected transient BufferedImage canvasIcon; //this doesn't serialize
+    protected ImageIcon toolbarIcon;
+    protected BufferedImage canvasIcon;
 
     protected DrawingTool(AbstractBuilder b) {
         this.name = b.name;

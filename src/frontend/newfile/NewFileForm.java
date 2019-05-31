@@ -5,6 +5,7 @@
  */
 package frontend.newfile;
 
+import frontend.ColorChooserButton;
 import javax.swing.text.DocumentFilter;
 
 /**

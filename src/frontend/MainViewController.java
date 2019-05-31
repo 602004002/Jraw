@@ -46,15 +46,15 @@ public class MainViewController extends AbstractController {
     }
 
     public void fullUpdate() {
-        SessionModel s = this.getCurrentSessionModel();
-        LayerSubstrate ls = this.getCurrentViewport();
+        SessionModel s = this.getActiveSession();
+        LayerSubstrate ls = this.getActiveViewport();
         this.mainview.layerList.setSession(s);
         this.mainview.pointerListener.setCurrentSession(s, ls);
         menuUpdate();
     }
 
     public void menuUpdate() {
-        SessionModel currentModel = this.getCurrentSessionModel();
+        SessionModel currentModel = this.getActiveSession();
         boolean sessionExists = currentModel != null;
         this.mainview.closeMenuItem.setEnabled(sessionExists);
         this.mainview.saveMenuItem.setEnabled(sessionExists);
@@ -95,10 +95,7 @@ public class MainViewController extends AbstractController {
     void com_TryCloseTab(LayerSubstrate tabToClose) {
         SessionModel sm = model.getSessionModel(tabToClose);
         if (sm instanceof ServerSession) {
-            try {
-                ((ServerSession) sm).getServer().disconnect();
-            } catch (IOException ex) {
-            }
+            ((ServerSession) sm).getServer().disconnect();
             return;
         }
         if (sm.isSaved()) {
@@ -152,7 +149,7 @@ public class MainViewController extends AbstractController {
     }
 
     void com_SaveFile() {
-        SessionModel sm = getCurrentSessionModel();
+        SessionModel sm = this.getActiveSession();
         if (sm.isSaved()) {
             return;
         }
@@ -168,7 +165,7 @@ public class MainViewController extends AbstractController {
     }
 
     void com_SaveAsFile() {
-        SessionModel sm = getCurrentSessionModel();
+        SessionModel sm = this.getActiveSession();
         if (sm == null) {
             return;
         }
@@ -200,7 +197,7 @@ public class MainViewController extends AbstractController {
     }
 
     void com_Export() {
-        SessionModel sm = getCurrentSessionModel();
+        SessionModel sm = this.getActiveSession();
         if (sm == null) {
             return;
         }
@@ -230,33 +227,36 @@ public class MainViewController extends AbstractController {
     }
 
     void com_NewRasterLayer() {
-        SessionModel sm = getCurrentSessionModel();
-        LayerSubstrate lv = getCurrentViewport();
+        SessionModel sm = this.getActiveSession();
+        LayerSubstrate lv = getActiveViewport();
         sm.addRasterLayer();
         lv.updateLayers();
         mainview.layerList.refresh();
     }
 
     void com_Undo() {
-        SessionModel current = this.getCurrentSessionModel();
+        SessionModel current = this.getActiveSession();
         try {
-            current.getUndoMgr().undo();
+            current.getUndoManager().undo();
         } catch (CannotUndoException ex) {
 
         }
     }
 
     void com_Redo() {
-        SessionModel current = this.getCurrentSessionModel();
+        SessionModel current = this.getActiveSession();
         try {
-            current.getUndoMgr().redo();
+            current.getUndoManager().redo();
         } catch (CannotRedoException ex) {
 
         }
     }
 
     void com_OpenBuffer() {
-        UndoManager_Edit ume = getCurrentSessionModel().getUndoMgr();
+        UndoManager_Edit ume = getActiveSession().getUndoManager();
+        undoredo.Display d = undoredo.Display.getInstance(mainview);
+        d.setUndoManager(ume);
+        d.setVisible(true);
     }
 
     void com_Connect() {
@@ -268,10 +268,7 @@ public class MainViewController extends AbstractController {
     }
 
     void com_Disconnect() {
-        try {
-            ServerSession sm = (ServerSession) getCurrentSessionModel();
-            sm.getServer().disconnect();
-        } catch (IOException ex) {
-        }
+        ServerSession sm = (ServerSession) this.getActiveSession();
+        sm.getServer().disconnect();
     }
 }

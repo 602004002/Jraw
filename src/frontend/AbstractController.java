@@ -21,15 +21,15 @@ public abstract class AbstractController {
         this.model = model;
     }
 
-    protected SessionModel getCurrentSessionModel() {
-        int index = model.indexOf(this.getCurrentViewport());
+    protected SessionModel getActiveSession() {
+        int index = model.indexOf(this.getActiveViewport());
         if (index >= 0) {
             return this.model.getSessionModel(index);
         }
         return null;
     }
 
-    protected LayerSubstrate getCurrentViewport() {
+    protected LayerSubstrate getActiveViewport() {
         Component c = this.mainview.sessionTabbedPane.getSelectedComponent();
         if (c instanceof LayerSubstrate) {
             return (LayerSubstrate) c;

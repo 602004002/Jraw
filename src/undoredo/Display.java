@@ -5,18 +5,35 @@
  */
 package undoredo;
 
+import java.util.List;
+import java.util.Vector;
+import javax.swing.undo.UndoableEdit;
+
 /**
  *
  * @author nickz
  */
 public class Display extends javax.swing.JDialog {
 
+    private static Display INSTANCE;
+
+    public static Display getInstance(java.awt.Frame parent) {
+        if (INSTANCE == null) {
+            INSTANCE = new Display(parent);
+        }
+        return INSTANCE;
+    }
+
     /**
      * Creates new form Display
      */
-    public Display(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    private Display(java.awt.Frame parent) {
+        super(parent, false);
         initComponents();
+    }
+
+    public void setUndoManager(UndoManager_Edit ume) {
+        this.undoList.setListData(ume.getEdits());
     }
 
     /**
@@ -28,21 +45,54 @@ public class Display extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jScrollPane1 = new javax.swing.JScrollPane();
+        undoList = new javax.swing.JList<>();
+        undoBtn = new javax.swing.JButton();
+        redoBtn = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
+        undoList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        undoList.setToolTipText("");
+        jScrollPane1.setViewportView(undoList);
+
+        undoBtn.setText("Undo");
+
+        redoBtn.setText("Redo");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(undoBtn)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(redoBtn)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(undoBtn)
+                    .addComponent(redoBtn))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton redoBtn;
+    private javax.swing.JButton undoBtn;
+    private javax.swing.JList<UndoableEdit> undoList;
     // End of variables declaration//GEN-END:variables
 }

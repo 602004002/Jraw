@@ -5,35 +5,38 @@
  */
 package undoredo;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.UndoManager;
 import javax.swing.undo.UndoableEdit;
-import networkio.ClientToServerSocketWrapper;
 
 /**
  *
  * @author nickz
  */
 public class UndoManager_Edit extends UndoManager {
-    private ClientToServerSocketWrapper ctssw;
-    
+
+    private ArrayList<UndoableEditListener> events;
+
     public UndoManager_Edit() {
-        
+        events = new ArrayList<>();
     }
-    
-    public UndoManager_Edit(ClientToServerSocketWrapper ctssw) {
-        this.ctssw = ctssw;
+
+    public void addEditEvent(UndoableEditListener l) {
+        events.add(l);
     }
-    
+
     @Override
     public void undoableEditHappened(UndoableEditEvent e) {
         super.undoableEditHappened(e);
-        if (ctssw != null)
-        ctssw.queueSend(e.getEdit());
+        for (UndoableEditListener lis : events) {
+            lis.undoableEditHappened(e);
+        }
     }
-    
-    public List<UndoableEdit> getEdits() {
+
+    public Vector<UndoableEdit> getEdits() {
         return this.edits;
     }
 }

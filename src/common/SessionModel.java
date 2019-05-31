@@ -236,7 +236,7 @@ public class SessionModel implements Serializable {
         return this.uuid;
     }
 
-    public UndoManager_Edit getUndoMgr() {
+    public UndoManager_Edit getUndoManager() {
         return undoMgr;
     }
 
