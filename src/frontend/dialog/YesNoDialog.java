@@ -5,22 +5,50 @@
  */
 package frontend.dialog;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JDialog;
+import static javax.swing.JOptionPane.CANCEL_OPTION;
+
 /**
  *
  * @author nickz
  */
 public class YesNoDialog extends javax.swing.JDialog {
 
-    
-    private DialogAction di;
+    public static int YES_OPTION = 1, NO_OPTION = 0, ERROR_OPTION = -1;
+    private static YesNoDialog dialog;
+    private static int returnValue;
+
     /**
      * Creates new form YesNoDialog
+     *
      * @param parent Which window it belongs to (Usually MainView)
      */
-    
-    public YesNoDialog(java.awt.Frame parent, DialogAction yni) {
+    public static int showDialog(java.awt.Frame parent, String msg) {
+        if (dialog != null) {
+            // Prevent to show second instance of dialog if the previous one still exists
+            return ERROR_OPTION;
+        }
+        dialog = new YesNoDialog(parent);
+        dialog.message.setText(msg);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                returnValue = CANCEL_OPTION;
+            }
+        });
+        returnValue = ERROR_OPTION;
+
+        dialog.setVisible(true);
+        
+        dialog.getContentPane().removeAll();
+        dialog = null;
+        return returnValue;
+    }
+
+    private YesNoDialog(java.awt.Frame parent) {
         super(parent, true);
-        this.di = yni;
         initComponents();
     }
 
@@ -88,20 +116,20 @@ public class YesNoDialog extends javax.swing.JDialog {
 
     private void yesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_yesActionPerformed
         // TODO add your handling code here:
-        this.di.action(true);
+        returnValue = YesNoDialog.YES_OPTION;
         this.dispose();
     }//GEN-LAST:event_yesActionPerformed
 
     private void noActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noActionPerformed
         // TODO add your handling code here:
-        this.di.action(false);
+        returnValue = YesNoDialog.NO_OPTION;
         this.dispose();
     }//GEN-LAST:event_noActionPerformed
 
     public void setMessage(String msg) {
         this.message.setText(msg);
     }
-    
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel message;
     private javax.swing.JButton no;

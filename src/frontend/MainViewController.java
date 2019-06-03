@@ -92,34 +92,34 @@ public class MainViewController extends AbstractController {
         this.mainview.disconnectMenuItem.setEnabled(currentModel instanceof ServerSession);
     }
 
-    void com_TryCloseTab(LayerSubstrate tabToClose) {
+    boolean com_TryCloseTab(LayerSubstrate tabToClose) {
         SessionModel sm = model.getSessionModel(tabToClose);
         if (sm instanceof ServerSession) {
             ((ServerSession) sm).getServer().disconnect();
-            return;
+            return true;
         }
         if (sm.isSaved()) {
             model.remove(tabToClose);
+            return true;
         } else {
             //ask if they want to save
-            YesNoDialog yni = new YesNoDialog(mainview, b -> {
-                if (b) {
-                    com_SaveFile();
-                } else {
-                    model.remove(tabToClose);
-                }
-            });
-            yni.setMessage("Save before closing?");
-            yni.setVisible(true);
-            //remove(index) if no
-            //pop up with CommonIO savedialog if file doesn't exist
+            int result = YesNoDialog.showDialog(mainview, "Save before closing?");
+            if (result == YesNoDialog.YES_OPTION) {
+                return com_SaveFile(sm);
+            } else if (result == YesNoDialog.NO_OPTION) {
+                model.remove(tabToClose);
+                return true;
+            }
         }
+        return false;
     }
 
     void com_TryQuit() {
         //check for save
-        for (int i = 0; i < model.size(); i++) {
-            com_TryCloseTab(model.getSubstrate(i));
+        for (int i = model.size() - 1; i >= 0; i--) {
+            if (!com_TryCloseTab(model.getSubstrate(i))) {
+                return;
+            }
         }
         System.exit(0);
     }
@@ -148,26 +148,24 @@ public class MainViewController extends AbstractController {
         }
     }
 
-    void com_SaveFile() {
-        SessionModel sm = this.getActiveSession();
+    boolean com_SaveFile(SessionModel sm) {
         if (sm.isSaved()) {
-            return;
+            return true;
         }
         if (sm.getLastPath() != null && sm.getLastPath().exists()) {
             try {
                 CommonIO.saveProprieteryFormat(sm, sm.getLastPath(), true);
                 sm.setSaved(true);
+                return true;
             } catch (IOException | FileExistsException ex) {
             }
-        } else {
-            com_SaveAsFile();
         }
+        return com_SaveAsFile(sm);
     }
 
-    void com_SaveAsFile() {
-        SessionModel sm = this.getActiveSession();
+    boolean com_SaveAsFile(SessionModel sm) {
         if (sm == null) {
-            return;
+            return false;
         }
         File f = CommonIO.showSaveDialog(sm.getLastPath(), mainview, JRAW);
         if (f != null) {
@@ -175,31 +173,31 @@ public class MainViewController extends AbstractController {
                 CommonIO.saveProprieteryFormat(sm, f, false);
                 sm.setLastPath(f);
                 sm.setSaved(true);
+                return true;
             } catch (IOException ex) {
                 System.err.println(ex);
             } catch (FileExistsException ex) {
                 //overwrite?
-                YesNoDialog ynd = new YesNoDialog(mainview, b -> {
-                    if (b) {
-                        try {
-                            CommonIO.saveProprieteryFormat(sm, f, true);
-                            sm.setLastPath(f);
-                            sm.setSaved(true);
-                        } catch (IOException ex1) {
-                            System.err.println(ex1);
-                        }
+                int result = YesNoDialog.showDialog(mainview, "Overwrite?");
+                if (result == YesNoDialog.YES_OPTION) {
+                    try {
+                        CommonIO.saveProprieteryFormat(sm, f, true);
+                        sm.setLastPath(f);
+                        sm.setSaved(true);
+                        return true;
+                    } catch (IOException ex1) {
+                        System.err.println(ex1);
                     }
-                });
-                ynd.setMessage("Overwrite file?");
-                ynd.setVisible(true);
+                }
             }
         }
+        return false;
     }
 
-    void com_Export() {
+    boolean com_Export() {
         SessionModel sm = this.getActiveSession();
         if (sm == null) {
-            return;
+            return false;
         }
         File f = CommonIO.showSaveDialog(mainview, PNG, JPG);
         if (f != null) {
@@ -210,20 +208,19 @@ public class MainViewController extends AbstractController {
                 System.err.println(ex);
             } catch (FileExistsException ex) {
                 //overwrite?
-                YesNoDialog ynd = new YesNoDialog(mainview, b -> {
-                    if (b) {
-                        try {
-                            CommonIO.export(sm, f, true);
-                            sm.setLastPath(f);
-                        } catch (IOException ex1) {
-                            System.err.println(ex1);
-                        }
+                int result = YesNoDialog.showDialog(mainview, "Overwrite?");
+                if (result == YesNoDialog.YES_OPTION) {
+                    try {
+                        CommonIO.export(sm, f, true);
+                        sm.setLastPath(f);
+                        return true;
+                    } catch (IOException ex1) {
+                        System.err.println(ex1);
                     }
-                });
-                ynd.setMessage("Overwrite export?");
-                ynd.setVisible(true);
+                }
             }
         }
+        return false;
     }
 
     void com_NewRasterLayer() {

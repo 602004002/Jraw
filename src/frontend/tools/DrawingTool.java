@@ -26,7 +26,6 @@ public abstract class DrawingTool {
     protected String name;
     protected int diameterSize, crosshairLength, dithering, hardness, density;
     protected boolean pressureAffectsSize, pressureAffectsDensity;
-    protected Color color;
     protected ImageIcon toolbarIcon;
     protected BufferedImage canvasIcon;
 
@@ -38,7 +37,6 @@ public abstract class DrawingTool {
         this.density = b.density;
         this.pressureAffectsSize = b.pressureAffectsSize;
         this.pressureAffectsDensity = b.pressureAffectsDensity;
-        this.color = b.color;
         this.toolbarIcon = b.toolbarIcon;
         if (b.canvasIcon != null) {
             this.canvasIcon = b.canvasIcon;

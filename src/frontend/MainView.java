@@ -7,6 +7,8 @@ package frontend;
 
 import common.User;
 import input.PointerListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.TransferHandler;
 import jwinpointer.JWinPointerReader;
 
@@ -15,12 +17,12 @@ import jwinpointer.JWinPointerReader;
  * @author nickz
  */
 public class MainView extends javax.swing.JFrame {
-    
+
     private final MainViewController mvc;
     private final AllSessionsModel model;
     private JWinPointerReader pointerReader;
     PointerListener pointerListener;
-    
+
     public MainView() {
         this.mvc = new MainViewController();
         this.model = new AllSessionsModel();
@@ -29,7 +31,7 @@ public class MainView extends javax.swing.JFrame {
         initComponents();
         finishInit();
     }
-    
+
     public final void finishInit() {
         this.mvc.setMainView(this);
         this.model.setMainViewController(mvc);
@@ -38,27 +40,34 @@ public class MainView extends javax.swing.JFrame {
         initHandlers();
         mvc.menuUpdate();
     }
-    
+
     private void initHandlers() {
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                mvc.com_TryQuit();
+            }
+        });
+
         this.sessionTabbedPane.addChangeListener(e -> this.mvc.fullUpdate());
-        
+
         this.newMenuItem.addActionListener(e -> this.mvc.com_NewFile());
         this.quitMenuItem.addActionListener(e -> this.mvc.com_TryQuit());
         this.openMenuItem.addActionListener(e -> this.mvc.com_OpenFile());
-        this.saveMenuItem.addActionListener(e -> this.mvc.com_SaveFile());
-        this.saveAsMenuItem.addActionListener(e -> this.mvc.com_SaveAsFile());
+        this.saveMenuItem.addActionListener(e -> this.mvc.com_SaveFile(mvc.getActiveSession()));
+        this.saveAsMenuItem.addActionListener(e -> this.mvc.com_SaveAsFile(mvc.getActiveSession()));
         this.exportMenuItem.addActionListener(e -> this.mvc.com_Export());
-        
+
         this.undoMenuItem.addActionListener(e -> this.mvc.com_Undo());
         this.redoMenuItem.addActionListener(e -> this.mvc.com_Redo());
         this.bufferMenuItem.addActionListener(e -> this.mvc.com_OpenBuffer());
-        
+
         this.cutMenuItem.addActionListener(TransferHandler.getCutAction());
         this.copyMenuItem.addActionListener(TransferHandler.getCopyAction());
         this.pasteMenuItem.addActionListener(TransferHandler.getPasteAction());
-        
+
         this.newRasterLayerMenuItem.addActionListener(e -> this.mvc.com_NewRasterLayer());
-        
+
         this.connectMenuItem.addActionListener(e -> this.mvc.com_Connect());
         this.disconnectMenuItem.addActionListener(e -> this.mvc.com_Disconnect());
     }
@@ -145,7 +154,7 @@ public class MainView extends javax.swing.JFrame {
         aboutMenuItem = new javax.swing.JMenuItem();
         versionMenuItem = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Jraw");
         setFocusable(false);
         setMinimumSize(new java.awt.Dimension(800, 600));
