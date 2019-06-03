@@ -120,7 +120,7 @@ public class SessionModel implements Serializable {
     private UUID uuid;
     private transient File lastPath;
 
-    private String name;
+    private transient String name;
     private DrawingType drawingType;
     private transient boolean saved; //based on buffer changes
     private int resolution; //in pixels

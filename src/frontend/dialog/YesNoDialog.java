@@ -7,7 +7,6 @@ package frontend.dialog;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import javax.swing.JDialog;
 import static javax.swing.JOptionPane.CANCEL_OPTION;
 
 /**
@@ -41,7 +40,7 @@ public class YesNoDialog extends javax.swing.JDialog {
         returnValue = ERROR_OPTION;
 
         dialog.setVisible(true);
-        
+
         dialog.getContentPane().removeAll();
         dialog = null;
         return returnValue;

@@ -20,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import common.SessionModel;
+import frontend.dialog.YesNoDialog;
 import layer.DrawingLayer;
 import layer.RasterLayer;
 import layer.VectorLayer;
@@ -125,9 +126,12 @@ public class CommonIO {
         return ri;
     }
 
-    public static void export(SessionModel sm, File path, boolean overwrite) throws IOException, FileExistsException {
-        if (path.exists() && !overwrite) {
-            throw new FileExistsException("File exists");
+    public static void export(SessionModel sm, File path, java.awt.Frame parent) throws IOException {
+        if (path.exists()) {
+            int result = YesNoDialog.showDialog(parent, "Overwrite?");
+            if (result != YesNoDialog.YES_OPTION) {
+                return;
+            }
         }
         String stringpath = path.getPath();
         int dot = stringpath.lastIndexOf('.');
@@ -136,9 +140,12 @@ public class CommonIO {
         ImageIO.write(bi, type, path);
     }
 
-    public static void saveProprieteryFormat(SessionModel sm, File path, boolean overwrite) throws IOException, FileExistsException {
-        if (path.exists() && !overwrite) {
-            throw new FileExistsException("File exists");
+    public static void saveProprieteryFormat(SessionModel sm, File path, java.awt.Frame parent) throws IOException {
+        if (path.exists()) {
+            int result = YesNoDialog.showDialog(parent, "Overwrite?");
+            if (result != YesNoDialog.YES_OPTION) {
+                return;
+            }
         }
         FileOutputStream fos = new FileOutputStream(path);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -147,6 +154,8 @@ public class CommonIO {
         oos.close();
         fos.flush();
         fos.close();
+        String fileName = path.getName();
+        sm.rename(fileName.substring(0, fileName.lastIndexOf(".")));
     }
 
     public static SessionModel readProprieteryFormat(File path) throws IOException {
@@ -157,6 +166,8 @@ public class CommonIO {
             sm = (SessionModel) ois.readObject();
             ois.close();
             fis.close();
+            String fileName = path.getName();
+            sm.rename(fileName.substring(0, fileName.lastIndexOf(".")));
         } catch (ClassNotFoundException ex) {
             System.err.println(ex);
         }

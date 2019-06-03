@@ -60,6 +60,7 @@ public class AllSessionsModel {
         this.sessionList.remove(index);
         this.substrateList.remove(index);
         this.mvc.updateTabs();
+        System.gc();
     }
 
     /**

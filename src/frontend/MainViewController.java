@@ -9,7 +9,6 @@ import common.ServerSession;
 import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
 import fileio.CommonIO;
-import fileio.FileExistsException;
 import frontend.dialog.YesNoDialog;
 import frontend.newfile.NewFileForm;
 import frontend.newfile.NewFileFormController;
@@ -154,10 +153,11 @@ public class MainViewController extends AbstractController {
         }
         if (sm.getLastPath() != null && sm.getLastPath().exists()) {
             try {
-                CommonIO.saveProprieteryFormat(sm, sm.getLastPath(), true);
+                CommonIO.saveProprieteryFormat(sm, sm.getLastPath(), mainview);
                 sm.setSaved(true);
+                updateTabs();
                 return true;
-            } catch (IOException | FileExistsException ex) {
+            } catch (IOException ex) {
             }
         }
         return com_SaveAsFile(sm);
@@ -170,25 +170,13 @@ public class MainViewController extends AbstractController {
         File f = CommonIO.showSaveDialog(sm.getLastPath(), mainview, JRAW);
         if (f != null) {
             try {
-                CommonIO.saveProprieteryFormat(sm, f, false);
+                CommonIO.saveProprieteryFormat(sm, f, mainview);
                 sm.setLastPath(f);
                 sm.setSaved(true);
+                updateTabs();
                 return true;
             } catch (IOException ex) {
                 System.err.println(ex);
-            } catch (FileExistsException ex) {
-                //overwrite?
-                int result = YesNoDialog.showDialog(mainview, "Overwrite?");
-                if (result == YesNoDialog.YES_OPTION) {
-                    try {
-                        CommonIO.saveProprieteryFormat(sm, f, true);
-                        sm.setLastPath(f);
-                        sm.setSaved(true);
-                        return true;
-                    } catch (IOException ex1) {
-                        System.err.println(ex1);
-                    }
-                }
             }
         }
         return false;
@@ -202,22 +190,10 @@ public class MainViewController extends AbstractController {
         File f = CommonIO.showSaveDialog(mainview, PNG, JPG);
         if (f != null) {
             try {
-                CommonIO.export(sm, f, false);
+                CommonIO.export(sm, f, mainview);
                 sm.setLastPath(f);
             } catch (IOException ex) {
                 System.err.println(ex);
-            } catch (FileExistsException ex) {
-                //overwrite?
-                int result = YesNoDialog.showDialog(mainview, "Overwrite?");
-                if (result == YesNoDialog.YES_OPTION) {
-                    try {
-                        CommonIO.export(sm, f, true);
-                        sm.setLastPath(f);
-                        return true;
-                    } catch (IOException ex1) {
-                        System.err.println(ex1);
-                    }
-                }
             }
         }
         return false;

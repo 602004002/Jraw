@@ -14,6 +14,8 @@ import javax.swing.text.DocumentFilter;
  */
 public class NewFileForm extends javax.swing.JDialog {
 
+    private static int instanceCount = 1;
+
     private NewFileFormController nffo;
 
     /**
@@ -32,6 +34,7 @@ public class NewFileForm extends javax.swing.JDialog {
 
     private void initOtherStuff() {
         this.okButton.addActionListener(nffo);
+        this.okButton.addActionListener(e -> instanceCount++);
         DocumentFilter df = new DocumentFilter();
     }
 
@@ -71,7 +74,7 @@ public class NewFileForm extends javax.swing.JDialog {
         setFocusable(false);
         setType(java.awt.Window.Type.UTILITY);
 
-        filenameField.setText("New Canvas");
+        filenameField.setText("New Canvas " + instanceCount);
         filenameField.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel1.setText("Filename:");
