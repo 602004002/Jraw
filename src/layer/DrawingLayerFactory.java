@@ -11,7 +11,7 @@ package layer;
  */
 public class DrawingLayerFactory {
     
-    public static DrawingLayer.AbstractBuilder getBuilder(String type) {
+    public static DrawingLayer.Builder getBuilder(String type) {
         
         
         return null;

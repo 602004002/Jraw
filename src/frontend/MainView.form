@@ -645,7 +645,10 @@
             </DimensionLayout>
           </Layout>
         </Container>
-        <Component class="frontend.tools.ColorToolbar" name="colorPalette2">
+        <Component class="frontend.tools.ColorToolbar" name="colorToolbar">
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ColorToolbar(this)"/>
+          </AuxValues>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
               <JSplitPaneConstraints position="right"/>

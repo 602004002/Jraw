@@ -5,6 +5,12 @@
  */
 package frontend;
 
+import java.io.File;
+import java.io.IOException;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+
 import common.ServerSession;
 import frontend.layerdisplay.LayerSubstrate;
 import common.SessionModel;
@@ -14,11 +20,7 @@ import frontend.newfile.NewFileForm;
 import frontend.newfile.NewFileFormController;
 import frontend.server.ServerView;
 import frontend.server.ServerViewController;
-import java.io.File;
-import java.io.IOException;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
+import undoredo.Display;
 import undoredo.UndoManager_Edit;
 
 /**
@@ -48,6 +50,9 @@ public class MainViewController extends AbstractController {
         SessionModel s = this.getActiveSession();
         LayerSubstrate ls = this.getActiveViewport();
         this.mainview.layerList.setSession(s);
+        if (s != null) {
+            s.getUndoManager().setDisplay(Display.getInstance(mainview));
+        }
         this.mainview.pointerListener.setCurrentSession(s, ls);
         menuUpdate();
     }

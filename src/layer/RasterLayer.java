@@ -5,6 +5,7 @@
  */
 package layer;
 
+import common.User;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -19,10 +20,11 @@ import javax.imageio.ImageIO;
  * @author nickz
  */
 public class RasterLayer extends DrawingLayer implements Serializable {
-    
+
     private static final long serialVersionUID = 10L;
 
     private transient BufferedImage data;
+    private transient BufferedImage temporary;
 
     private RasterLayer(Builder b) {
         super(b);
@@ -33,7 +35,7 @@ public class RasterLayer extends DrawingLayer implements Serializable {
         }
     }
 
-    public static class Builder extends DrawingLayer.AbstractBuilder {
+    public static class Builder extends DrawingLayer.Builder {
 
         private Color fillColor;
 
@@ -63,15 +65,26 @@ public class RasterLayer extends DrawingLayer implements Serializable {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.data, 0, 0, this.size.width, this.size.height, this);
-    }
-
-    public void bufferlog() {
-        throw new UnsupportedOperationException("Not implemented yet.");
-        //s.bf.push();//push 
+        if (this.temporary != null) {
+            g.drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
+        }
     }
 
     public BufferedImage getRasterImage() {
         return this.data;
+    }
+
+    public BufferedImage getTemporary() {
+        if (temporary == null) {
+            temporary = new BufferedImage(this.size.width, this.size.height, BufferedImage.TYPE_INT_ARGB);
+        }
+        return temporary;
+    }
+
+    public void commitTemporary() {
+        this.data.getGraphics().drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
+        this.editListener.addEdit(new RasterEdit(this, temporary, User.getLocalUser()));
+        this.temporary = null;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

@@ -5,8 +5,11 @@
  */
 package undoredo;
 
-import java.util.List;
-import java.util.Vector;
+import java.awt.Color;
+import java.awt.Component;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.undo.UndoableEdit;
 
 /**
@@ -30,10 +33,29 @@ public class Display extends javax.swing.JDialog {
     private Display(java.awt.Frame parent) {
         super(parent, false);
         initComponents();
+        this.undoList.setCellRenderer(new UndoCell());
     }
 
     public void setUndoManager(UndoManager_Edit ume) {
         this.undoList.setListData(ume.getEdits());
+
+    }
+
+    private class UndoCell implements ListCellRenderer {
+
+        @Override
+        public Component getListCellRendererComponent(
+                JList list,
+                Object value,
+                int index,
+                boolean isSelected,
+                boolean cellHasFocus
+        ) {
+            JLabel label = new JLabel(((UndoableEdit) value).getPresentationName());
+            if (isSelected) label.setBackground(Color.gray);
+            return label;
+        }
+
     }
 
     /**

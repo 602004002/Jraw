@@ -6,6 +6,7 @@
 package frontend;
 
 import common.User;
+import frontend.tools.ColorToolbar;
 import input.PointerListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -84,7 +85,7 @@ public class MainView extends javax.swing.JFrame {
         toolbar = new frontend.tools.Toolbar();
         subToolbarSplitPane = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
-        colorPalette2 = new frontend.tools.ColorToolbar();
+        colorToolbar = new ColorToolbar(this);
         layerList = new frontend.layerlist.LayerList();
         sessionTabbedPane = new frontend.SubstratePane(this.mvc);
         mainMenuBar = new javax.swing.JMenuBar();
@@ -190,7 +191,7 @@ public class MainView extends javax.swing.JFrame {
         );
 
         subToolbarSplitPane.setTopComponent(jPanel1);
-        subToolbarSplitPane.setRightComponent(colorPalette2);
+        subToolbarSplitPane.setRightComponent(colorToolbar);
 
         layerList.setMinimumSize(new java.awt.Dimension(216, 300));
 
@@ -449,7 +450,7 @@ public class MainView extends javax.swing.JFrame {
     public javax.swing.JMenuItem clearMenuItem;
     public javax.swing.JMenuItem closeMenuItem;
     private javax.swing.JMenu collaborateMenu;
-    private frontend.tools.ColorToolbar colorPalette2;
+    private frontend.tools.ColorToolbar colorToolbar;
     public javax.swing.JMenuItem connectMenuItem;
     public javax.swing.JMenuItem connectionSettingsMenuItem;
     public javax.swing.JMenuItem copyMenuItem;

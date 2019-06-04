@@ -17,7 +17,7 @@ public class VectorLayer extends DrawingLayer {
         super(b);
     }
     
-    public static class Builder extends DrawingLayer.AbstractBuilder {
+    public static class Builder extends DrawingLayer.Builder {
 
         @Override
         public VectorLayer build() {

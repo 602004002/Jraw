@@ -28,6 +28,8 @@ public abstract class DrawingTool {
     protected boolean pressureAffectsSize, pressureAffectsDensity;
     protected ImageIcon toolbarIcon;
     protected BufferedImage canvasIcon;
+    
+    protected BufferedImage temporary;
 
     protected DrawingTool(AbstractBuilder b) {
         this.name = b.name;
@@ -111,22 +113,27 @@ public abstract class DrawingTool {
         DrawingLayer layer = sm.getDrawLayer();
         if (layer.isVisible() && pointerInfo.getPressure() > 0) {
             if (layer instanceof RasterLayer) {
-                drawRaster(pointerInfo, (RasterLayer) layer);
+                temporary = ((RasterLayer)layer).getTemporary();
+                drawRaster(pointerInfo, temporary.createGraphics());
             } else if (layer instanceof VectorLayer) {
                 drawVector(pointerInfo, (VectorLayer) layer);
             }
-            
-            sm.setSaved(false);
+        } else {
+            if (temporary != null && layer instanceof RasterLayer) {
+                ((RasterLayer)layer).commitTemporary();
+                temporary = null;
+                sm.setSaved(false);
+            }
         }
     }
 
     /**
-     * Raster Draw Method. Writes directly to the image
+     * Raster Draw Method. Writes directly to the graphics context every timer cycle.
      *
      * @param pointerInfo Information about the pointer's location and pressure.
-     * @param layer The layer to draw onto.
+     * @param g2d Graphics context to draw with
      */
-    public abstract void drawRaster(PointerInfo pointerInfo, RasterLayer layer);//draw with info from listeners
+    public abstract void drawRaster(PointerInfo pointerInfo, Graphics2D g2d);//draw with info from listeners
 
     /**
      * Vector Draw Method. Creates many points and updates path

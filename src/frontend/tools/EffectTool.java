@@ -6,7 +6,7 @@
 package frontend.tools;
 
 import input.PointerInfo;
-import layer.RasterLayer;
+import java.awt.Graphics2D;
 import layer.VectorLayer;
 
 /**
@@ -21,7 +21,7 @@ public class EffectTool extends DrawingTool {
     }
 
     @Override
-    public void drawRaster(PointerInfo pointerInfo, RasterLayer layer) {
+    public void drawRaster(PointerInfo pointerInfo, Graphics2D g2d) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

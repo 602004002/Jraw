@@ -5,7 +5,7 @@
  */
 package frontend.newfile;
 
-import frontend.ColorChooserButton;
+import frontend.dialog.ColorChooserDialog;
 import javax.swing.text.DocumentFilter;
 
 /**
@@ -18,11 +18,14 @@ public class NewFileForm extends javax.swing.JDialog {
 
     private NewFileFormController nffo;
 
+    private java.awt.Frame parent;
+
     /**
      * Creates new form NewFileForm
      */
     public NewFileForm(java.awt.Frame parent) {
         super(parent, true);
+        this.parent = parent;
         initComponents();
 
     }
@@ -257,8 +260,8 @@ public class NewFileForm extends javax.swing.JDialog {
 
     private void colorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_colorButtonActionPerformed
         // TODO add your handling code here:
-        ColorChooserButton ccb = new ColorChooserButton(this.colorButton);
-        ccb.setVisible(true);
+        this.colorButton.setBackground(
+                ColorChooserDialog.showDialog(this.parent, this.colorButton.getBackground()));
     }//GEN-LAST:event_colorButtonActionPerformed
 
 

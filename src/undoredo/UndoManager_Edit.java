@@ -19,9 +19,15 @@ import javax.swing.undo.UndoableEdit;
 public class UndoManager_Edit extends UndoManager {
 
     private ArrayList<UndoableEditListener> events;
+    private Display d;
 
     public UndoManager_Edit() {
         events = new ArrayList<>();
+    }
+    
+    public void setDisplay(Display d) {
+        this.d = d;
+        d.setUndoManager(this);
     }
 
     public void addEditEvent(UndoableEditListener l) {
@@ -34,6 +40,10 @@ public class UndoManager_Edit extends UndoManager {
         for (UndoableEditListener lis : events) {
             lis.undoableEditHappened(e);
         }
+        if (d != null) {
+            d.setUndoManager(this);
+        }
+            
     }
 
     public Vector<UndoableEdit> getEdits() {

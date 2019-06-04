@@ -36,11 +36,9 @@ public class PencilTool extends DrawingTool {
      * Not to be invoked by anywhere else other than input.PointerListener
      *
      * @param pointerInfo All current info returned by the pointer
-     * @param layer Which layer to draw on
      */
     @Override
-    public void drawRaster(PointerInfo pointerInfo, RasterLayer layer) {
-        Graphics2D g2d = layer.getRasterImage().createGraphics();
+    public void drawRaster(PointerInfo pointerInfo, Graphics2D g2d) {
         Color color = ColorToolbar.getGlobalColor();
         float stroke = this.diameterSize;
         float multiplier = ((float) pointerInfo.getPressure() / pointerInfo.getMaxPressure());

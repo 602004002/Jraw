@@ -3,25 +3,51 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package frontend;
+package frontend.dialog;
+
+import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  *
  * @author nickz
  */
-public class ColorChooserButton extends javax.swing.JFrame {
+public class ColorChooserDialog extends javax.swing.JDialog {
 
-    private javax.swing.JButton jbutton;
+    private static Color returnValue;
+    private static ColorChooserDialog dialog;
+
+    public static Color showDialog(java.awt.Frame parent, Color prevColor) {
+        if (dialog != null) {
+            // Prevent to show second instance of dialog if the previous one still exists
+            return prevColor;
+        }
+        dialog = new ColorChooserDialog(parent);
+        dialog.colorChooser.setColor(prevColor);
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                returnValue = prevColor;
+            }
+        });
+        returnValue = prevColor;
+
+        dialog.setVisible(true);
+
+        dialog.getContentPane().removeAll();
+        dialog = null;
+        return returnValue;
+    }
 
     /**
      * Creates new form ColorChooserButton
      *
      * @param jbutton The button that calls this form.
      */
-    public ColorChooserButton(javax.swing.JButton jbutton) {
-        this.jbutton = jbutton;
+    private ColorChooserDialog(java.awt.Frame parent) {
+        super(parent, true);
         initComponents();
-        this.colorChooser.setColor(jbutton.getBackground());
     }
 
     /**
@@ -36,8 +62,6 @@ public class ColorChooserButton extends javax.swing.JFrame {
         colorChooser = new javax.swing.JColorChooser();
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         okButton.setText("OK");
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -86,7 +110,7 @@ public class ColorChooserButton extends javax.swing.JFrame {
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         // TODO add your handling code here:
-        this.jbutton.setBackground(this.colorChooser.getColor());
+        returnValue = this.colorChooser.getColor();
         this.dispose();
     }//GEN-LAST:event_okButtonActionPerformed
 

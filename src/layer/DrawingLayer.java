@@ -9,6 +9,7 @@ import common.SessionModel;
 import java.awt.Dimension;
 import java.io.Serializable;
 import javax.swing.JComponent;
+import javax.swing.undo.UndoManager;
 
 /**
  *
@@ -20,10 +21,12 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
 
     protected Dimension size;
     protected int opacity;
+    protected UndoManager editListener;
     private boolean scrolling;
 
-    protected DrawingLayer(AbstractBuilder b) {
+    protected DrawingLayer(Builder b) {
         this.size = b.size;
+        this.editListener = b.mgr;
         this.setName(b.name);
     }
 
@@ -32,19 +35,25 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
         super.setName(name);
     }
 
-    public static abstract class AbstractBuilder {
+    public static abstract class Builder {
 
         protected SessionModel sm;
         protected String name;
         protected Dimension size;
+        protected UndoManager mgr;
 
-        public AbstractBuilder name(final String name) {
+        public Builder name(final String name) {
             this.name = name;
             return this;
         }
 
-        public AbstractBuilder size(final Dimension size) {
+        public Builder size(final Dimension size) {
             this.size = size;
+            return this;
+        }
+        
+        public Builder undoManager(UndoManager mgr) {
+            this.mgr = mgr;
             return this;
         }
 

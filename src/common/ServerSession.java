@@ -25,8 +25,7 @@ public class ServerSession extends SessionModel {
                 .layerHierarchy(sm.layerHierarchy));
         this.ctssw = ctssw;
         this.getUndoManager().addEditEvent(e -> {
-            ctssw.queueSend(new UndoableEditWrapper(e.getEdit(),
-                    User.getLocalUser()));
+            ctssw.queueSend(e.getEdit());
         });
     }
 
