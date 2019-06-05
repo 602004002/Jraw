@@ -17,6 +17,7 @@ import javax.swing.undo.UndoableEdit;
  */
 public class RasterEdit implements UndoableEdit {
     
+    private boolean undid;
     private RasterLayer layer;
     private BufferedImage change;
     private User userTag;
@@ -25,61 +26,69 @@ public class RasterEdit implements UndoableEdit {
         this.layer = layer;
         this.change = change;
         this.userTag = userTag;
+        this.undid = false;
     }
 
     @Override
     public void undo() throws CannotUndoException {
-        
+        System.out.println("undo @ RasterEdit");
+        //remove this change
     }
 
     @Override
     public boolean canUndo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return !undid;
     }
 
     @Override
     public void redo() throws CannotRedoException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //add this change back
     }
 
     @Override
     public boolean canRedo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return undid;
     }
 
     @Override
     public void die() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        System.out.println("die @ RasterEdit");
+        //commit to base?
     }
 
     @Override
     public boolean addEdit(UndoableEdit anEdit) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public boolean replaceEdit(UndoableEdit anEdit) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return false;
     }
 
     @Override
     public boolean isSignificant() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return true;
     }
 
     @Override
     public String getPresentationName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "Layer Edit";
     }
 
     @Override
     public String getUndoPresentationName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
     }
 
     @Override
     public String getRedoPresentationName() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return "";
+    }
+    
+    @Override
+    public String toString() {
+        return getPresentationName();
     }
     
 }

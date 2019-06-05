@@ -24,7 +24,7 @@ public class UndoManager_Edit extends UndoManager {
     public UndoManager_Edit() {
         events = new ArrayList<>();
     }
-    
+
     public void setDisplay(Display d) {
         this.d = d;
         d.setUndoManager(this);
@@ -43,7 +43,7 @@ public class UndoManager_Edit extends UndoManager {
         if (d != null) {
             d.setUndoManager(this);
         }
-            
+
     }
 
     public Vector<UndoableEdit> getEdits() {

@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import javax.imageio.ImageIO;
+import javax.swing.event.UndoableEditEvent;
 
 /**
  *
@@ -83,7 +84,11 @@ public class RasterLayer extends DrawingLayer implements Serializable {
 
     public void commitTemporary() {
         this.data.getGraphics().drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
-        this.editListener.addEdit(new RasterEdit(this, temporary, User.getLocalUser()));
+        if (editListener != null) {
+            editListener.undoableEditHappened(
+                    new UndoableEditEvent(this,
+                            new RasterEdit(this, temporary, User.getLocalUser())));
+        }
         this.temporary = null;
     }
 

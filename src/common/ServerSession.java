@@ -6,7 +6,7 @@
 package common;
 
 import networkio.ClientToServerSocketWrapper;
-import undoredo.*;
+import undoredo.UndoManager_Edit;
 
 /**
  *
@@ -18,12 +18,12 @@ public class ServerSession extends SessionModel {
 
     public ServerSession(SessionModel sm, ClientToServerSocketWrapper ctssw) {
         super(new Builder().creator(sm.creator)
-                .name(sm.name())
                 .drawingType(sm.getDrawingType())
                 .size(sm.size())
                 .resolution(sm.resolution())
                 .layerHierarchy(sm.layerHierarchy));
         this.ctssw = ctssw;
+        this.undoMgr = new UndoManager_Edit();
         this.getUndoManager().addEditEvent(e -> {
             ctssw.queueSend(e.getEdit());
         });

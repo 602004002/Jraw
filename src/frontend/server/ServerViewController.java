@@ -94,10 +94,9 @@ public class ServerViewController extends AbstractController {
                     public void handleObject(Object o) {
                         if (o instanceof SessionModel) {
                             //create new server session object
-                            if (model.contains((SessionModel) o)) {
-
-                            } else {
+                            if (!model.contains((SessionModel) o)) {
                                 ServerSession ss = new ServerSession((SessionModel) o, ctssw);
+                                ss.rename(reply.getServerName());
                                 model.add(ss);
                                 ctssw.addHandler(() -> model.remove(ss));
                             }
@@ -114,7 +113,7 @@ public class ServerViewController extends AbstractController {
     }
 
     class PacketListenerThread extends Thread {
-        
+
         PacketListenerThread() {
             super("PacketListenerThread");
         }

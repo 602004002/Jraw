@@ -113,17 +113,18 @@ public abstract class DrawingTool {
         DrawingLayer layer = sm.getDrawLayer();
         if (layer.isVisible() && pointerInfo.getPressure() > 0) {
             if (layer instanceof RasterLayer) {
-                temporary = ((RasterLayer)layer).getTemporary();
-                drawRaster(pointerInfo, temporary.createGraphics());
+                this.temporary = ((RasterLayer)layer).getTemporary();
+                drawRaster(pointerInfo, this.temporary.createGraphics());
             } else if (layer instanceof VectorLayer) {
                 drawVector(pointerInfo, (VectorLayer) layer);
             }
         } else {
-            if (temporary != null && layer instanceof RasterLayer) {
+            if (this.temporary != null && layer instanceof RasterLayer) {
+                this.temporary = null;
                 ((RasterLayer)layer).commitTemporary();
-                temporary = null;
                 sm.setSaved(false);
             }
+            
         }
     }
 

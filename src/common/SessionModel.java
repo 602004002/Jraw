@@ -23,7 +23,7 @@ import undoredo.UndoManager_Edit;
  */
 public class SessionModel implements Serializable {
 
-    private static final long serialVersionUID = 12L;
+    private static final long serialVersionUID = 13L;
 
     //this class is like a live file
     public static class Builder {
@@ -127,24 +127,21 @@ public class SessionModel implements Serializable {
     private int framerate;
     private Dimension size;
     public final ArrayList<DrawingLayer> layerHierarchy;
-    private transient UndoManager_Edit undoMgr;
+    protected transient UndoManager_Edit undoMgr;
     private int[] selectedLayerIndexes;
 
     private void initializeFirstValues(Color bgColor) {
-        RasterLayer blankLayer = (RasterLayer) new RasterLayer.Builder()
-                .name("Layer 1")
-                .size(size)
-                .build();
         if (bgColor != null) {
             RasterLayer colorLayer = (RasterLayer) new RasterLayer.Builder()
                     .fillColor(bgColor)
                     .name("Paper")
+                    .undoManager(undoMgr)
                     .size(size)
                     .build();
             this.layerHierarchy.add(colorLayer);
-            this.layerHierarchy.add(blankLayer);
+            this.addRasterLayer();
         } else {
-            this.layerHierarchy.add(blankLayer);
+            this.addRasterLayer();
         }
     }
 
@@ -236,18 +233,15 @@ public class SessionModel implements Serializable {
         return this.uuid;
     }
 
-    public UndoManager_Edit getUndoManager() {
+    public final UndoManager_Edit getUndoManager() {
         return undoMgr;
-    }
-
-    protected final void setUndoMgr(UndoManager_Edit undoMgr) {
-        this.undoMgr = undoMgr;
     }
 
     //</editor-fold>
     public void addRasterLayer() {
         RasterLayer newLayer = (RasterLayer) new RasterLayer.Builder()
                 .name("Layer " + layerCount())
+                .undoManager(undoMgr)
                 .size(size())
                 .build();
         layerHierarchy.add(newLayer);
