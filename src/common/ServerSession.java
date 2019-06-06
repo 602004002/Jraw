@@ -5,6 +5,7 @@
  */
 package common;
 
+import layer.DrawingLayer;
 import networkio.ClientToServerSocketWrapper;
 import undoredo.UndoManager_Edit;
 
@@ -24,7 +25,10 @@ public class ServerSession extends SessionModel {
                 .layerHierarchy(sm.layerHierarchy));
         this.ctssw = ctssw;
         this.undoMgr = new UndoManager_Edit();
-        this.getUndoManager().addEditEvent(e -> {
+        for (DrawingLayer dl : this.layerHierarchy) {
+            dl.setUndoManager(undoMgr);
+        }
+        this.undoMgr.addEditEvent(e -> {
             ctssw.queueSend(e.getEdit());
         });
     }

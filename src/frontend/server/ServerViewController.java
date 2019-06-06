@@ -98,7 +98,7 @@ public class ServerViewController extends AbstractController {
                                 ServerSession ss = new ServerSession((SessionModel) o, ctssw);
                                 ss.rename(reply.getServerName());
                                 model.add(ss);
-                                ctssw.addHandler(() -> model.remove(ss));
+                                ctssw.addDisconnectHandler(() -> model.remove(ss));
                             }
                         }
                     }

@@ -8,6 +8,8 @@ package runner;
 import frontend.MainView;
 import java.util.ArrayList;
 import frontend.tools.DrawingTool;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import layer.LayerPreset;
 
 /**
@@ -23,11 +25,19 @@ public class Main {
         //Loading screen
         ArrayList<DrawingTool> dt = new ArrayList<>();
         ArrayList<LayerPreset> lp = new ArrayList<>();
-        java.awt.EventQueue.invokeLater(new ResourceLoader(dt, lp));
-        java.awt.EventQueue.invokeLater(() -> {
+        Thread t1 = new Thread(new ResourceLoader(dt, lp));
+        Thread t2 = new Thread(() -> {
+            try {
+                t1.join();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
             System.out.println("Main program thread started");
             MainView mv = new MainView();
+            mv.finishInit();
             mv.setVisible(true);
         });
+        t2.start();
+        t1.start();
     }
 }

@@ -30,7 +30,6 @@ public class MainView extends javax.swing.JFrame {
         this.pointerListener = new PointerListener(User.getLocalUser().pointerInfo());
         this.mvc.setModel(model);
         initComponents();
-        finishInit();
     }
 
     public final void finishInit() {

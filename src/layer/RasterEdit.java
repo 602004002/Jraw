@@ -7,6 +7,11 @@ package layer;
 
 import common.User;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import javax.imageio.ImageIO;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoableEdit;
@@ -15,11 +20,11 @@ import javax.swing.undo.UndoableEdit;
  *
  * @author nickz
  */
-public class RasterEdit implements UndoableEdit {
+public class RasterEdit implements UndoableEdit, Serializable {
     
     private boolean undid;
-    private RasterLayer layer;
-    private BufferedImage change;
+    private transient RasterLayer layer;
+    private transient BufferedImage change;
     private User userTag;
     
     public RasterEdit(RasterLayer layer, BufferedImage change, User userTag) {
@@ -91,4 +96,13 @@ public class RasterEdit implements UndoableEdit {
         return getPresentationName();
     }
     
+    private void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        ImageIO.write(change, "png", oos);
+    }
+    
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        this.change = ImageIO.read(ois);
+    }
 }

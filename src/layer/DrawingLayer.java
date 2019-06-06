@@ -21,12 +21,12 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
 
     protected Dimension size;
     protected int opacity;
-    protected UndoManager editListener;
+    protected transient UndoManager undoManager;
     private boolean scrolling;
 
     protected DrawingLayer(Builder b) {
         this.size = b.size;
-        this.editListener = b.mgr;
+        this.undoManager = b.mgr;
         this.setName(b.name);
     }
 
@@ -74,6 +74,10 @@ public abstract class DrawingLayer extends JComponent implements Serializable {
 
     public void setScrolling(boolean scrolling) {
         this.scrolling = scrolling;
+    }
+    
+    public void setUndoManager(UndoManager um) {
+        this.undoManager = um;
     }
 
     @Override

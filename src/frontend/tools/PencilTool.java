@@ -30,6 +30,8 @@ public class PencilTool extends DrawingTool {
         }
 
     }
+    
+    private BasicStroke bs;
 
     /**
      * Not to be invoked by anywhere else other than input.PointerListener
@@ -54,13 +56,16 @@ public class PencilTool extends DrawingTool {
         } else {
             g2d.setColor(color);
         }
-        g2d.setStroke(new BasicStroke(stroke));
+        if (bs == null || bs.getLineWidth() != stroke) {
+            bs = new BasicStroke(stroke);
+            
+        }   
+        g2d.setStroke(bs);
         Point old = pointerInfo.getPrevPoint();
         Point cur = pointerInfo.getCurrentPoint();
         if (old != null && cur != null) {
             g2d.drawLine(old.x, old.y, cur.x, cur.y);
         }
-        g2d.dispose();
         //layer.repaint();
     }
 

@@ -8,6 +8,7 @@ package layer;
 import common.User;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,6 +27,7 @@ public class RasterLayer extends DrawingLayer implements Serializable {
 
     private transient BufferedImage data;
     private transient BufferedImage temporary;
+    private transient Graphics2D tempG2d;
 
     private RasterLayer(Builder b) {
         super(b);
@@ -75,21 +77,24 @@ public class RasterLayer extends DrawingLayer implements Serializable {
         return this.data;
     }
 
-    public BufferedImage getTemporary() {
+    public Graphics2D getTemporary() {
         if (temporary == null) {
             temporary = new BufferedImage(this.size.width, this.size.height, BufferedImage.TYPE_INT_ARGB);
+            tempG2d = temporary.createGraphics();
         }
-        return temporary;
+        return tempG2d;
     }
 
     public void commitTemporary() {
-        this.data.getGraphics().drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
-        if (editListener != null) {
-            editListener.undoableEditHappened(
+        Graphics g = this.data.getGraphics();
+        g.drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
+        if (undoManager != null) {
+            undoManager.undoableEditHappened(
                     new UndoableEditEvent(this,
                             new RasterEdit(this, temporary, User.getLocalUser())));
         }
         this.temporary = null;
+        this.tempG2d.dispose();
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {

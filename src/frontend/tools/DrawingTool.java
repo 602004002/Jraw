@@ -28,8 +28,8 @@ public abstract class DrawingTool {
     protected boolean pressureAffectsSize, pressureAffectsDensity;
     protected ImageIcon toolbarIcon;
     protected BufferedImage canvasIcon;
-    
-    protected BufferedImage temporary;
+
+    protected Graphics2D temporary;
 
     protected DrawingTool(AbstractBuilder b) {
         this.name = b.name;
@@ -113,23 +113,26 @@ public abstract class DrawingTool {
         DrawingLayer layer = sm.getDrawLayer();
         if (layer.isVisible() && pointerInfo.getPressure() > 0) {
             if (layer instanceof RasterLayer) {
-                this.temporary = ((RasterLayer)layer).getTemporary();
-                drawRaster(pointerInfo, this.temporary.createGraphics());
+                if (this.temporary == null) {
+                    this.temporary = ((RasterLayer) layer).getTemporary();
+                }
+                drawRaster(pointerInfo, this.temporary);
             } else if (layer instanceof VectorLayer) {
                 drawVector(pointerInfo, (VectorLayer) layer);
             }
         } else {
             if (this.temporary != null && layer instanceof RasterLayer) {
                 this.temporary = null;
-                ((RasterLayer)layer).commitTemporary();
+                ((RasterLayer) layer).commitTemporary();
                 sm.setSaved(false);
             }
-            
+
         }
     }
 
     /**
-     * Raster Draw Method. Writes directly to the graphics context every timer cycle.
+     * Raster Draw Method. Writes directly to the graphics context every timer
+     * cycle.
      *
      * @param pointerInfo Information about the pointer's location and pressure.
      * @param g2d Graphics context to draw with
@@ -164,9 +167,9 @@ public abstract class DrawingTool {
     public final void generateCanvasIcon() {
         int size = diameterSize + crosshairLength;
         this.canvasIcon = new BufferedImage(size, size, BufferedImage.TYPE_BYTE_GRAY);
-        Graphics2D g2d = this.canvasIcon.createGraphics();
+        //Graphics2D g2d = this.canvasIcon.createGraphics();
 
-        g2d.dispose();
+        //g2d.dispose();
     }
 
     @Override

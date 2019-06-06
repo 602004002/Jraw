@@ -21,15 +21,15 @@ import layer.DrawingLayer;
  * @author nickz
  */
 public class PointerListener implements PointerEventListener {
-    
+
     private SessionModel session;
     private LayerSubstrate substrate;
     private PointerInfo pointerInfo;
-    
+
     public PointerListener(PointerInfo pi) {
         this.pointerInfo = pi;
     }
-    
+
     public void setCurrentSession(SessionModel session, LayerSubstrate substrate) {
         if (this.substrate != null) {
             this.substrate.disableOverlay(); //for old substrate
@@ -42,7 +42,7 @@ public class PointerListener implements PointerEventListener {
             substrate.getOverlay().setCursors(new DisplayCursor(this.pointerInfo, true));
         }
     }
-    
+
     @Override
     public void pointerXYEvent(int deviceType, int pointerID, int eventType,
             boolean inverted, int x, int y, int pressure) {
@@ -62,12 +62,12 @@ public class PointerListener implements PointerEventListener {
         User.getLocalUser().drawingTool().draw(pointerInfo, session);
         pointerInfo.setPrevPoint(pointerInfo.getCurrentPoint());
     }
-    
+
     @Override
     public void pointerButtonEvent(int deviceType, int pointerID,
             int eventType, boolean inverted, int buttonIndex) {
     }
-    
+
     @Override
     public void pointerEvent(int deviceType, int pointerID, int eventType,
             boolean inverted) {
