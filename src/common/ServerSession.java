@@ -5,9 +5,10 @@
  */
 package common;
 
-import layer.DrawingLayer;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.undo.UndoableEdit;
+import layer.RasterEdit;
 import networkio.ClientToServerSocketWrapper;
-import undoredo.UndoManager_Edit;
 
 /**
  *
@@ -18,18 +19,17 @@ public class ServerSession extends SessionModel {
     private ClientToServerSocketWrapper ctssw;
 
     public ServerSession(SessionModel sm, ClientToServerSocketWrapper ctssw) {
-        super(new Builder().creator(sm.creator)
-                .drawingType(sm.getDrawingType())
-                .size(sm.size())
-                .resolution(sm.resolution())
-                .layerHierarchy(sm.layerHierarchy));
+        super(sm);
         this.ctssw = ctssw;
-        this.undoMgr = new UndoManager_Edit();
-        for (DrawingLayer dl : this.layerHierarchy) {
-            dl.setUndoManager(undoMgr);
-        }
         this.undoMgr.addEditEvent(e -> {
-            ctssw.queueSend(e.getEdit());
+            if (e.getEdit() instanceof RasterEdit && !((RasterEdit) e.getEdit()).isFromStream()) {
+                ctssw.queueSend(e.getEdit());
+            }
+        });
+        this.ctssw.addHandler((Object o) -> {
+            if (o instanceof RasterEdit) {
+                this.undoMgr.undoableEditHappened(new UndoableEditEvent(this, (UndoableEdit) o));
+            }
         });
     }
 

@@ -5,6 +5,7 @@
  */
 package layer;
 
+import common.SessionModel;
 import common.User;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -22,13 +23,13 @@ import javax.swing.event.UndoableEditEvent;
  * @author nickz
  */
 public class RasterLayer extends DrawingLayer implements Serializable {
-
+    
     private static final long serialVersionUID = 10L;
-
+    
     private transient BufferedImage data;
     private transient BufferedImage temporary;
     private transient Graphics2D tempG2d;
-
+    
     private RasterLayer(Builder b) {
         super(b);
         this.data = new BufferedImage(this.size.width, this.size.height,
@@ -37,16 +38,16 @@ public class RasterLayer extends DrawingLayer implements Serializable {
             fillColor(b.fillColor);
         }
     }
-
+    
     public static class Builder extends DrawingLayer.Builder {
-
+        
         private Color fillColor;
-
+        
         public Builder fillColor(final Color fillColor) {
             this.fillColor = fillColor;
             return this;
         }
-
+        
         @Override
         public RasterLayer build() {
             if (this.size == null) {
@@ -54,16 +55,16 @@ public class RasterLayer extends DrawingLayer implements Serializable {
             }
             return new RasterLayer(this);
         }
-
+        
     }
-
+    
     private void fillColor(Color c) {
         Graphics g = this.data.createGraphics();
         g.setColor(c);
         g.fillRect(0, 0, this.size.width, this.size.height);
         g.dispose();
     }
-
+    
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -72,11 +73,11 @@ public class RasterLayer extends DrawingLayer implements Serializable {
             g.drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
         }
     }
-
+    
     public BufferedImage getRasterImage() {
         return this.data;
     }
-
+    
     public Graphics2D getTemporary() {
         if (temporary == null) {
             temporary = new BufferedImage(this.size.width, this.size.height, BufferedImage.TYPE_INT_ARGB);
@@ -84,24 +85,24 @@ public class RasterLayer extends DrawingLayer implements Serializable {
         }
         return tempG2d;
     }
-
-    public void commitTemporary() {
-        Graphics g = this.data.getGraphics();
-        g.drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
+    
+    public void commitTemporary(SessionModel sm) {
+        //Graphics g = this.data.getGraphics();
+        //g.drawImage(this.temporary, 0, 0, this.size.width, this.size.height, this);
         if (undoManager != null) {
             undoManager.undoableEditHappened(
                     new UndoableEditEvent(this,
-                            new RasterEdit(this, temporary, User.getLocalUser())));
+                            new RasterEdit(sm.layerHierarchy.indexOf(this), temporary, User.getLocalUser())));
         }
         this.temporary = null;
         this.tempG2d.dispose();
     }
-
+    
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
         ImageIO.write(this.getRasterImage(), "png", out);
     }
-
+    
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.data = ImageIO.read(in);

@@ -10,6 +10,8 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
 import java.util.UUID;
 
@@ -23,7 +25,7 @@ import undoredo.UndoManager_Edit;
  */
 public class SessionModel implements Serializable {
 
-    private static final long serialVersionUID = 13L;
+    private static final long serialVersionUID = 15L;
 
     //this class is like a live file
     public static class Builder {
@@ -36,8 +38,6 @@ public class SessionModel implements Serializable {
         private int resolution; //in pixels
         private int framerate;
         private Color backgroundColor;
-
-        private ArrayList<DrawingLayer> layerHierarchy;
 
         public Builder creator(final User creator) {
             this.creator = creator;
@@ -74,11 +74,6 @@ public class SessionModel implements Serializable {
             return this;
         }
 
-        protected Builder layerHierarchy(final ArrayList<DrawingLayer> layerHierarchy) {
-            this.layerHierarchy = layerHierarchy;
-            return this;
-        }
-
         public SessionModel build() {
             if (name == null || name.isEmpty()) {
                 throw new IllegalStateException("Name cannot be null or empty");
@@ -96,6 +91,25 @@ public class SessionModel implements Serializable {
         }
     }
 
+    /**
+     * WARNING: layerHierarchy of sm is NOT cloned.
+     *
+     * @param sm Model to clone
+     */
+    protected SessionModel(SessionModel sm) {
+        this.creator = sm.creator;
+        this.uuid = UUID.randomUUID();
+        this.name = sm.name;
+        this.drawingType = sm.drawingType;
+        this.saved = true;
+        this.size = sm.size;
+        this.resolution = sm.resolution;
+        this.framerate = sm.framerate;
+        this.undoMgr = sm.undoMgr;
+        this.layerHierarchy = sm.layerHierarchy;
+        this.selectedLayerIndexes = new int[]{this.layerCount() - 1};
+    }
+
     protected SessionModel(Builder sb) {
         this.creator = sb.creator;
         this.uuid = UUID.randomUUID();
@@ -105,13 +119,9 @@ public class SessionModel implements Serializable {
         this.size = sb.size;
         this.resolution = sb.resolution;
         this.framerate = sb.framerate;
-        this.undoMgr = new UndoManager_Edit();
-        if (sb.layerHierarchy == null) {
-            this.layerHierarchy = new ArrayList<>();
-            initializeFirstValues(sb.backgroundColor);
-        } else {
-            this.layerHierarchy = sb.layerHierarchy;
-        }
+        this.undoMgr = new UndoManager_Edit(this);
+        this.layerHierarchy = new ArrayList<>();
+        initializeFirstValues(sb.backgroundColor);
         this.selectedLayerIndexes = new int[]{this.layerCount() - 1};
     }
     //keep a base image of commited changes
@@ -245,6 +255,14 @@ public class SessionModel implements Serializable {
                 .size(size())
                 .build();
         layerHierarchy.add(newLayer);
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        this.undoMgr = new UndoManager_Edit(this);
+        for (DrawingLayer dl : this.layerHierarchy) {
+            dl.setUndoManager(this.undoMgr);
+        }
     }
 
     @Override

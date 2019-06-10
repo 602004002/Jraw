@@ -31,17 +31,17 @@ public class Toolbar extends JToolBar {
     private static final ImageIcon TESTICON = new ImageIcon(Toolbar.class.getResource("/frontend/tools/testIcon.png"));
 
     private void debug() {
-
+        ImageIcon penIcon = new ImageIcon(Toolbar.class.getResource("/frontend/layerlist/pen.png"));
         DrawingTool pencil = DrawingToolFactory.getBuilder("PenTool")
                 .name("Test Pencil")
-                .color(Color.yellow)
                 //.toolBarIcon(TESTICON)
+                .toolBarIcon(penIcon)
                 .diameterSize(10)
                 .build();
         DrawingTool pressurePencil = DrawingToolFactory.getBuilder("PenTool")
                 .name("Pressure Pencil")
-                .color(Color.BLACK)
                 .diameterSize(5)
+                .toolBarIcon(penIcon)
                 .pressureAffectsDensity(true)
                 .pressureAffectsSize(true)
                 .build();

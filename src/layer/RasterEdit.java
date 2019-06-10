@@ -21,17 +21,19 @@ import javax.swing.undo.UndoableEdit;
  * @author nickz
  */
 public class RasterEdit implements UndoableEdit, Serializable {
-    
+
     private boolean undid;
-    private transient RasterLayer layer;
+    private boolean fromStream;
+    private int layerIndex;
     private transient BufferedImage change;
     private User userTag;
-    
-    public RasterEdit(RasterLayer layer, BufferedImage change, User userTag) {
-        this.layer = layer;
+
+    public RasterEdit(int layerIndex, BufferedImage change, User userTag) {
+        this.layerIndex = layerIndex;
         this.change = change;
         this.userTag = userTag;
         this.undid = false;
+        this.fromStream = false;
     }
 
     @Override
@@ -90,19 +92,36 @@ public class RasterEdit implements UndoableEdit, Serializable {
     public String getRedoPresentationName() {
         return "";
     }
+
+    public int getLayerIndex() {
+        return layerIndex;
+    }
+
+    public BufferedImage getChange() {
+        return change;
+    }
+
+    public User getUserTag() {
+        return userTag;
+    }
     
+    public boolean isFromStream() {
+        return fromStream;
+    }
+
     @Override
     public String toString() {
         return getPresentationName();
     }
-    
+
     private void writeObject(ObjectOutputStream oos) throws IOException {
         oos.defaultWriteObject();
         ImageIO.write(change, "png", oos);
     }
-    
+
     private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
         this.change = ImageIO.read(ois);
+        this.fromStream = true;
     }
 }

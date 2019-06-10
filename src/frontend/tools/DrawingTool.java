@@ -123,7 +123,7 @@ public abstract class DrawingTool {
         } else {
             if (this.temporary != null && layer instanceof RasterLayer) {
                 this.temporary = null;
-                ((RasterLayer) layer).commitTemporary();
+                ((RasterLayer) layer).commitTemporary(sm);
                 sm.setSaved(false);
             }
 

@@ -104,7 +104,6 @@ public class ServerViewController extends AbstractController {
                     }
                 };
                 ctssw.addHandler(oh);
-                ctssw.queueSend(Request.SessionModel);
                 serverView.dispose();
             } catch (IOException ex) {
                 System.err.println(ex);

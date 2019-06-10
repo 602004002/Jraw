@@ -28,10 +28,7 @@ public class LayerSubstrate extends JLayeredPane {
     public LayerSubstrate(SessionModel session) {
         this.session = session;
         this.size = session.size();
-        this.timer = new Timer(10, (ActionEvent ae) -> {
-            this.repaint();
-        });
-
+        this.timer = new Timer(10, e -> this.repaint());
         init();
     }
 
