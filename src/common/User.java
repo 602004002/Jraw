@@ -15,8 +15,8 @@ import java.util.UUID;
  * @author nickz
  */
 public class User implements Serializable {
-    
-    private static final long serialVersionUID = 10L;
+
+    private static final long serialVersionUID = 11L;
 
     private static User localUser;
 
@@ -42,7 +42,7 @@ public class User implements Serializable {
     public PointerInfo pointerInfo() {
         return this.pointerInfo;
     }
-    
+
     public void setPointerInfo(PointerInfo pointerInfo) {
         this.pointerInfo = pointerInfo;
     }
@@ -53,16 +53,30 @@ public class User implements Serializable {
 
     public void setDrawingTool(DrawingTool drawingTool) {
         this.drawingTool = drawingTool;
+        this.pointerInfo.setDiameter(drawingTool.diameter());
     }
 
     public String username() {
         return this.username;
     }
-    
+
     public UUID uuid() {
         return this.uuid;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User)) {
+            return false;
+        }
+        return uuid.equals(((User) o).uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return uuid.hashCode();
+    }
+
     @Override
     public String toString() {
         return this.username + " " + this.uuid;

@@ -6,7 +6,6 @@
 package frontend.layerdisplay;
 
 import common.User;
-import frontend.tools.DrawingTool;
 import input.PointerInfo;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -37,9 +36,9 @@ public class DisplayCursor {
 
     public void draw(Graphics2D g2d) {
         Point overlay = pi.getOverlayPoint();
-        DrawingTool currentTool = this.user.drawingTool();
-        if (overlay != null && currentTool != null) {
-            int diameter = currentTool.diameter();
+        //DrawingTool currentTool = this.user.drawingTool();
+        if (overlay != null) {
+            int diameter = pi.getDiameter();
             int radius = diameter / 2;
             e2d.setFrame(overlay.x - radius, overlay.y - radius, diameter, diameter);
             g2d.draw(e2d);

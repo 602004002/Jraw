@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 public class PointerInfo implements Serializable {
     
-    private static final long serialVersionUID = 10L;
+    private static final long serialVersionUID = 11L;
 
     private boolean inverted;
     private int pressure;
@@ -23,6 +23,7 @@ public class PointerInfo implements Serializable {
     private Point currentPoint;
     private transient Point prevPoint;
     private Point overlayPoint;
+    private int diameter;
 
     private User userTag;
 
@@ -85,6 +86,14 @@ public class PointerInfo implements Serializable {
 
     public void setOverlayPoint(Point overlayPoint) {
         this.overlayPoint = overlayPoint;
+    }
+
+    public int getDiameter() {
+        return diameter;
+    }
+
+    public void setDiameter(int diameter) {
+        this.diameter = diameter;
     }
 
     public User getUserTag() {

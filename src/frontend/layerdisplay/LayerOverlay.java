@@ -5,6 +5,7 @@
  */
 package frontend.layerdisplay;
 
+import input.PointerInfo;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -18,15 +19,24 @@ import javax.swing.JComponent;
  */
 public class LayerOverlay extends JComponent {
 
-    private List<DisplayCursor> cursors;
-
-    public LayerOverlay() {
-        this.cursors = new ArrayList<>();
-
-    }
+    private List<DisplayCursor> cursors = new ArrayList<>();
 
     public void setCursors(DisplayCursor... cursors) {
         this.cursors = Arrays.asList(cursors);
+    }
+
+    public void addPointerInfo(PointerInfo pi) {
+        for (DisplayCursor d : cursors) {
+            if (d.user.equals(pi.getUserTag())) {
+                updateCursor(d, pi);
+                return;
+            }
+        }
+        cursors.add(new DisplayCursor(pi, true));
+    }
+
+    public void updateCursor(DisplayCursor d, PointerInfo pi) {
+        d.pi.setOverlayPoint(pi.getOverlayPoint());
     }
 
     @Override

@@ -8,7 +8,6 @@ package input;
 import common.ServerSession;
 import common.SessionModel;
 import common.User;
-import frontend.layerdisplay.DisplayCursor;
 import frontend.layerdisplay.LayerOverlay;
 import frontend.layerdisplay.LayerSubstrate;
 import java.awt.Point;
@@ -39,7 +38,8 @@ public class PointerListener implements PointerEventListener {
         if (substrate != null) {
             substrate.enableOverlay();
             //temp
-            substrate.getOverlay().setCursors(new DisplayCursor(this.pointerInfo, true));
+            //substrate.getOverlay().setCursors(new DisplayCursor(this.pointerInfo, true));
+            substrate.getOverlay().addPointerInfo(pointerInfo);
         }
     }
 

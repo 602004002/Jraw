@@ -18,11 +18,12 @@ import java.util.ArrayList;
 import common.SessionModel;
 import common.User;
 import frontend.AbstractController;
+import frontend.layerdisplay.LayerSubstrate;
+import input.PointerInfo;
 import networkio.ClientQuery;
 import networkio.ClientToServerSocketWrapper;
 import networkio.ObjectHandler;
 import networkio.P2PUtilities;
-import networkio.Request;
 import networkio.ServerReply;
 
 /**
@@ -98,6 +99,12 @@ public class ServerViewController extends AbstractController {
                                 ServerSession ss = new ServerSession((SessionModel) o, ctssw);
                                 ss.rename(reply.getServerName());
                                 model.add(ss);
+                                LayerSubstrate ls = model.getSubstrate(ss);
+                                ctssw.addHandler(obj -> {
+                                    if (obj instanceof PointerInfo) {
+                                        ls.getOverlay().addPointerInfo((PointerInfo) obj);
+                                    }
+                                });
                                 ctssw.addDisconnectHandler(() -> model.remove(ss));
                             }
                         }
